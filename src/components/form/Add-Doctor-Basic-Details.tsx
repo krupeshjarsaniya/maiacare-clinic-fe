@@ -87,9 +87,10 @@ export default function AddDoctorBasicDetails({
 
   const handleNextClick = () => {
     const errors = validateForm(formData); // single form errors All
-
     setFormError(errors);
     if (Object.keys(errors).length === 0) {
+      localStorage.setItem("doctorData", JSON.stringify(formData));
+
       onNext();
     } else {
       console.log("Form has errors:", { errors });

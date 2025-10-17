@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import CustomTabs from "./ui/CustomTabs";
 import AddDoctorBasicDetails from "./form/Add-Doctor-Basic-Details";
-import EditKycDetails from "../components/form/Edit-Kyc-Details";
+import EditKycDetails from "./form/Add-Doctor-Kyc-Details";
 import AddDoctorClinicdetails from "./form/Add-Doctor-Clinic-details";
 
 const AddDoctor = () => {

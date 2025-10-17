@@ -21,7 +21,6 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Modal from "../ui/Modal";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-
 export default function EditKycDetails({
   onNext,
   onPrevious,
@@ -47,7 +46,6 @@ export default function EditKycDetails({
   const panFileRef = useRef<HTMLInputElement | null>(null);
   const aadharFileRef = useRef<HTMLInputElement>(null);
   const licenceFileRef = useRef<HTMLInputElement>(null);
-
   type FormData = {
     Adcard: string;
     Pancard: string;
@@ -71,7 +69,6 @@ export default function EditKycDetails({
   const validateForm = (data: FormData): FormError => {
     const errors: FormError = {};
 
-    // if (!data.Adcard.trim()) errors.Adcard = "Adcard \number is required";
     if (!data.Adcard.trim()) {
       errors.Adcard = "Aadhar  card number is required";
     } else {
@@ -82,7 +79,6 @@ export default function EditKycDetails({
       }
     }
 
-    // if (!data.Adcard) errors.Adphoto = "Aadhar card photo is required";
     // Aadhaar photo
     if (!aadharFile) {
       errors.Adphoto = "Aadhaar card photo is required";
@@ -91,16 +87,12 @@ export default function EditKycDetails({
       errors.Panphoto = "PAN card photo is required";
     }
 
-    // if (!data.Pancard) errors.Panphoto = "Pancard photo is required";
-    // if (!data.Pancard.trim()) errors.Pancard = "Pancard is required";
-
     if (!data.Pancard.trim()) {
       errors.Pancard = "Pancard  number is required";
     } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(data.Pancard)) {
       errors.Pancard = "Invalid Pancard format (e.g. ABCDE1234F)";
     }
 
-    // if (!data.Experience.trim()) errors.Experience = "Experience is required";
     if (!data.LicNumber.trim()) {
       errors.LicNumber = "Licence Number is required";
     } else if (!/^\d+$/.test(data.LicNumber)) {
@@ -108,7 +100,7 @@ export default function EditKycDetails({
     } else if (data.LicNumber.length !== 10) {
       errors.LicNumber = "Licence Number must be exactly 10 digits";
     }
-    // if (!data.LicNumber) errors.Licphoto = "Licence photo is required";
+
     // Licence photo
     if (!licenceFile) {
       errors.Licphoto = "Licence photo is required";
@@ -117,18 +109,6 @@ export default function EditKycDetails({
     return errors;
   };
 
-  //  const handleSaveChange = () => {
-  //     const errors = validateForm(formData);
-  //     setFormError(errors);
-
-  //     if (Object.keys(errors).length === 0) {
-  //       console.log("✅ Form is valid, go to next step");
-  //       router.push("/doctors");
-
-  //     } else {
-  //       console.log("❌ Form has errors:", errors);
-  //     }
-  //   };
   const handleSaveChange = () => {
     const errors = validateForm(formData);
     setFormError(errors);

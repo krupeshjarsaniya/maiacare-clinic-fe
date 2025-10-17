@@ -70,28 +70,15 @@ export default function EditContactDetails({
     }
     return errors;
   };
-
-  // nextpage
-  // const handleNextClick = () => {
-  //   const errors = validateForm(formData);
-  //   setFormError(errors);
-  //   if (Object.keys(errors).length === 0) {
-  //     onNext();
-  //   } else {
-  //     console.log("Form has errors:", errors);
-  //   }
-  // };
-
   const handleSaveChange = () => {
     const errors = validateForm(formData);
     setFormError(errors);
 
     if (Object.keys(errors).length === 0) {
-      console.log("✅ Form is valid, go to next step");
-      router.push("/profile"); //navigate for profile screen
-      // onNext(); // navigate to next tab or page
+      console.log(" Form is valid, go to next step");
+      router.push("/profile");
     } else {
-      console.log("❌ Form has errors:", errors);
+      console.log(" Form has errors:", errors);
     }
   };
 

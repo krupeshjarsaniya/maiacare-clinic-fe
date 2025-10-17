@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect } from 'react'
-import DoctorDetailPageComponent from "../../../components/DoctorDetailPageComponent";
+import DoctorProfileTabs from "../../../components/DoctorProfileTabs";
 import { setHeaderData } from '@/utlis/redux/slices/headerSlice';
 import { AppDispatch } from '@/utlis/redux/store';
 import { useDispatch } from 'react-redux';
@@ -13,7 +13,7 @@ export default function page() {
     }, []);
   return (
     <div>
-      <DoctorDetailPageComponent/>
+      <DoctorProfileTabs />
     </div>
   )
 }

@@ -32,15 +32,6 @@ export default function Doctor() {
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("All Time");
 
-  // const [leaveData, setLeaveData] = useState<LeaveEntry[]>(defaultLeaveData);
-  // const handleDownload = (url: string, name: string) => {
-  //   const link = document.createElement("a");
-  //   link.href = url;
-  //   link.download = name;
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // };
 
   // delete function
   const handleDelete = (id: number) => {
@@ -169,43 +160,6 @@ export default function Doctor() {
         );
       },
     },
-
-    // {
-    //   header: "Name",
-    //   cell: (info) => {
-    //     const imgSrc = info.row.original.image;
-    //     const name = info.row.original.name;
-    //     const id = info.row.original.id;
-
-    //     return (
-    //       <Link
-    //         href={`/doctors/${id}`}
-    //         className="text-decoration-none text-dark"
-    //       >
-    //         <div className="d-flex align-items-center gap-2">
-    //           {typeof imgSrc === "string" ? (
-    //             <img
-    //               src={imgSrc}
-    //               alt={name}
-    //               className="rounded-circle border"
-    //               width="36"
-    //               height="36"
-    //             />
-    //           ) : (
-    //             <Image
-    //               src={imgSrc}
-    //               alt={name}
-    //               width={36}
-    //               height={36}
-    //               className="rounded-circle border"
-    //             />
-    //           )}
-    //           {name}
-    //         </div>
-    //       </Link>
-    //     );
-    //   },
-    // },
     {
       header: "Member Since",
       accessorKey: "date",

@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import Image from "next/image";
 import DoctorAddedImg from "@/assets/images/doctor-success.png"; // use your image
+import { useRouter } from "next/navigation";
 
 export default function DoctorAddedModal() {
   const [show, setShow] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // Check flag from localStorage
@@ -55,7 +57,7 @@ export default function DoctorAddedModal() {
             className="px-4 maiacare-button common-btn-blue w-50"
             onClick={() => {
               setShow(false);
-              window.location.href = "/doctors/profile"; // change to actual route
+              router.push("/doctors/DoctorDetailPageComponent"); // change to actual route
             }}
           >
             View Details
