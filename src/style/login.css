@@ -1,0 +1,211 @@
+.input-email-login-data .maiacare-input-field {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+    color: var(--color-radio-lable) !important;
+
+}
+
+
+.input-email-login-data .maiacare-input-field::placeholder {
+    color: var(--color-radio) !important;
+
+}
+
+.login-title .main-login-title {
+    align-items: center !important;
+}
+
+.login-title1 .main-login-title {
+    align-items: center !important;
+}
+
+.login-button {
+    padding: 12px 24px !important;
+}
+
+.input-forrgot-password {
+    cursor: pointer !important;
+}
+
+.eye-color {
+
+    color: #B0B4C1 !important;
+}
+
+.forgot-password-screen {
+    width: 75%;
+}
+
+.profile-card {
+    border: 1px solid var(--google-icon-border);
+    background-color: #FFFFFF !important;
+    padding: 16px !important;
+    cursor: pointer !important;
+    border-radius: 16px;
+    width: 480px !important;
+    height: 102px !important;
+}
+
+.profile-card:hover .select-profile-title{
+    color: var(--color-modal-heading);
+}
+
+.select-clinic-image {
+    border-radius: 50%;
+}
+
+.select-profile-img-wrapeer {
+    border-radius: 8px !important;
+    padding: 8px;
+
+}
+
+.verificationcode-main {
+    padding: 48px;
+    background-color: #FFFFFF;
+    /* height: 420px ;
+    width: 652px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 24px !important;
+
+}
+
+.verfication-code-main {
+    height: 95vh !important;
+}
+
+.passwored-eye-icon {
+    cursor: pointer;
+}
+
+/* apply this media 1524px > big screen */
+/* @media screen and (min-width: 1940px) {
+    .forgot-password-screen {
+        width: 35%;
+    }
+}
+
+@media screen and (min-width: 1536px) {
+    .forgot-password-screen {
+        width: 46%;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .forgot-password-screen {
+        width: 62%;
+    }
+} */
+
+@media screen and (max-width: 1024px) {
+    .profile-card {
+        width: 380px !important;
+    }
+    .forgot-password-screen {
+        width: 85%;
+    }
+}
+@media screen and (max-width: 992px){
+    .forgot-password-screen {
+        width: 87%;
+    }
+
+}
+
+@media screen and (max-width: 768px) {
+    .profile-card {
+        width: 280px !important;
+    }
+    .forgot-password-screen {
+        width: 52%;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .profile-card {
+        width: 480px !important;
+    }
+    .forgot-password-screen {
+        width: 70%;
+    }
+}
+
+@media screen and (max-width: 426px) {
+    .profile-card {
+        width: 380px !important;
+    }
+    .forgot-password-screen {
+        width: 79%;
+    }
+}
+
+@media screen and (max-width: 376px) {
+    .profile-card {
+        width: 300px !important;
+    }
+    .forgot-password-screen {
+        width: 90%;
+    }
+}
+@media screen and (max-width: 321px) {
+    .forgot-password-screen {
+        width: 98%;
+    }
+}
+
+
+@media screen and (min-width: 1441px) {
+    .forgot-password-screen {
+        width: 59%;
+    }
+}
+
+@media screen and (min-width: 1537px) {
+    .forgot-password-screen {
+        width: 46%;
+    }
+}
+
+@media screen and (min-width: 1941px) {
+    .forgot-password-screen {
+        width: 35%;
+    }
+}
+.forgot-passwored-detail{
+    max-width: 860px;
+}
+
+
+@media  screen and (min-width: 1100px) {
+    .forgot-passwored-detail{
+        width: 53% !important;
+    }
+}
+
+@media  screen and (min-width: 1400px) {
+    .forgot-passwored-detail{
+        width: 53% !important;
+    }
+}
+
+@media screen and (max-width:767px) {
+    .forgot-passwored-detail{
+        width: 68% !important;
+    }
+}
+.login-subtitle br {
+    display: none;
+}
+@media screen and (min-width: 768px) and (max-width: 1100px) {
+    .login-subtitle br {
+        display: block;
+    }
+}
+
+@media screen and (max-width:575px) {
+    .forgot-passwored-detail{
+        width: 95% !important;
+    }
+}

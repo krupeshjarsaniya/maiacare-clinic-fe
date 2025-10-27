@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import { Container, Row, Col, Form, Table, Accordion } from "react-bootstrap";
-import Add from "../../assets/images/Add.png";
+
 import Delete from "../../assets/images/Delete.png";
 import LightEditimg from "../../assets/images/LightEditimg.png";
 import Pdfimg from "../../assets/images/Pdfimg.png";
@@ -9,6 +9,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import phone from "../../assets/images/Phone.png";
 import ContentContainer from "../ui/ContentContainer";
+import EditProfile from "../assets/images/LightEditimg.png";
+
 import editprofile from "../../assets/images/EditProfile.png";
 import Modal from "../ui/Modal";
 import { InputFieldGroup } from "../ui/InputField";
@@ -299,6 +301,7 @@ const DoctorBasicDetails = () => {
           {/* Clinic Details */}
           <div>
             <ContentContainer className="mt-4">
+              {/* edit clinic details */}
               <div className="d-flex flex-column flex-md-row justify-content-md-between align-items-center text-center text-md-start mb-3">
                 <h5 className="profile-card-main-titile mb-2 mb-md-0">
                   Clinic Details
@@ -310,7 +313,7 @@ const DoctorBasicDetails = () => {
                     <span className="clinic_card_title">Sunrise Fertility</span>
                     <Button
                       className="maiacare-button-large  default-layout profile-card-boeder  bg-transparent btn btn-primary"
-                      onClick={() => router.push("/profile")}
+                      onClick={() => router.push("/editDoctor")}
                     >
                       <Image
                         src={editprofile}

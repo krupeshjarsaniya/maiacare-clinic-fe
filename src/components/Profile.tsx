@@ -7,7 +7,7 @@ import Stethoscope from "../assets/images/Stethoscope.png";
 import Phone from "../assets/images/Phone.png";
 import Email from "../assets/images/Email.png";
 import Button from "./ui/Button";
-import EditProfile from "../assets/images/EditProfile.png";
+import EditProfile from "../assets/images/LightEditimg.png";
 import { useRouter } from "next/navigation";
 import Bed from "../assets/images/Bed.png";
 import Location from "../assets/images/location.png";

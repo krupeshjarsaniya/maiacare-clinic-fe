@@ -21,7 +21,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Modal from "../ui/Modal";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-export default function EditKycDetails({
+export default function EditDoctorKycDetails({
   onNext,
   onPrevious,
 }: {
@@ -114,14 +114,9 @@ export default function EditKycDetails({
     setFormError(errors);
 
     if (Object.keys(errors).length === 0) {
-      console.log("✅ Form is valid, go to next step");
-
-      // Save flag before redirect
-      localStorage.setItem("doctorAddedSuccess", "true");
-
-      router.push("/doctors");
+      router.push(`/doctors/[id]`);
     } else {
-      console.log("❌ Form has errors:", errors);
+      console.log("Form has errors:", errors);
     }
   };
 
@@ -772,7 +767,7 @@ export default function EditKycDetails({
             {completedFiles.map((file, idx) => (
               <div
                 key={idx}
-                className="border rounded-3 p-3 text-center position-relative bg-white"
+                className="border rounded-3 p-3 text-center  position-relative bg-white"
                 style={{ width: "160px", height: "160px" }}
               >
                 {/* Delete Icon */}
@@ -1085,7 +1080,7 @@ export default function EditKycDetails({
           className="maiacare-button common-btn-blue"
           onClick={handleSaveChange} // navigate
         >
-          Add Doctor
+          Save Changes
         </Button>
       </div>
     </div>
