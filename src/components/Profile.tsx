@@ -108,7 +108,7 @@ const Profile: React.FC = () => {
                     </div>
 
                     <div
-                      className=" profile-member-since profile-sub-title"
+                      className="  profile-sub-title"
                       style={{ marginLeft: "3px" }}
                     >
                       <Image

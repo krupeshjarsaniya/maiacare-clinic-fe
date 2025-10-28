@@ -8,6 +8,12 @@ import Doctor1 from "@/assets/images/doctor1.png";
 import Doctor2 from "@/assets/images/doctor2.png";
 import Doctor3 from "@/assets/images/doctor3.png";
 import Doctor4 from "@/assets/images/doctor4.png";
+import patient1 from "../assets/images/patient1.png";
+import patient2 from "../assets/images/patient2.png";
+import patient3 from "../assets/images/patient3.png";
+import patient4 from "../assets/images/patient4.png";
+import patient5 from "../assets/images/patient5.png";
+import patient6 from "../assets/images/patient6.png";
 
 export interface DoctorEntry {
   id: number; // <-- ADD ID
@@ -22,7 +28,7 @@ export interface DoctorEntry {
   verified: boolean;
 }
 
-export interface InventoryEntry {
+export interface AssignedPatients {
   id: number; // <-- ADD ID
   name: string;
   mobile: string;
@@ -30,7 +36,9 @@ export interface InventoryEntry {
   pin: string;
   status: string;
   image: string | StaticImageData;
+  treatmenttype: string;
   date?: string; // ✅ optional date field
+  visit: string;
 }
 
 export type Doctor = {
@@ -163,58 +171,128 @@ export const DoctorData: DoctorEntry[] = [
   },
 ];
 
-// export const inventoryData: InventoryEntry[] = [
-//   {
-//     id: 1,
-//     name: "Rani Desai",
-//     mobile: "9092038491",
-//     email: "ranidesai@protonmail.com",
-//     pin: "400077",
-//     status: "Completed",
-//     image: doctor1,
-//     date: "2025-09-16",
-//   },
-//   {
-//     id: 2,
-//     name: "Nina Gupta",
-//     mobile: "9092038491",
-//     email: "ninagupta@protonmail.com",
-//     pin: "400077",
-//     status: "Pending",
-//     image: doctor1,
-//     date: "2025-09-15",
-//   },
-//   {
-//     id: 3,
-//     name: "Himari Roy",
-//     mobile: "9092038491",
-//     email: "himariroy@protonmail.com",
-//     pin: "400077",
-//     status: "Scheduled",
-//     image: doctor1,
-//     date: "2025-09-15",
-//   },
-//   {
-//     id: 4,
-//     name: "Anjali Shinde",
-//     mobile: "9092038491",
-//     email: "anjalishinde@protonmail.com",
-//     pin: "400077",
-//     status: "No Response",
-//     image: doctor1,
-//     date: "2025-09-25",
-//   },
-//   {
-//     id: 5,
-//     name: "Anjali Shinde",
-//     mobile: "9092038491",
-//     email: "anjalishinde@protonmail.com",
-//     pin: "400077",
-//     status: "Cancelled",
-//     image: doctor1,
-//     date: "2025-10-15",
-//   },
-// ];
+export const AssignedPatients: AssignedPatients[] = [
+  {
+    id: 1,
+    name: "Anicka Jain",
+    mobile: "9092038491",
+    email: "ranidesai@protonmail.com",
+    pin: "400077",
+    status: "Active",
+    image: patient1,
+    date: "2025-09-16",
+    treatmenttype: "IVF",
+    visit: "2nd Feb 2025",
+  },
+  {
+    id: 2,
+    name: "Radhika More",
+    mobile: "9092038491",
+    email: "ninagupta@protonmail.com",
+    pin: "400077",
+    status: "Active",
+    image: patient2,
+    treatmenttype: "IVF",
+    date: "2025-09-15",
+    visit: "2nd Feb 2025",
+  },
+  {
+    id: 3,
+    name: "Seema Gupta",
+    mobile: "9092038491",
+    email: "himariroy@protonmail.com",
+    pin: "400077",
+    status: "Active",
+    image: patient3,
+    treatmenttype: "IVF",
+    date: "2025-09-15",
+    visit: "2nd Feb 2025",
+  },
+  {
+    id: 4,
+    name: "Nisha Dandge",
+    mobile: "9092038491",
+    email: "anjalishinde@protonmail.com",
+    pin: "400077",
+    status: "Paused",
+    image: patient4,
+    treatmenttype: "IVF",
+    date: "2025-09-25",
+    visit: "2nd Feb 2025",
+  },
+  {
+    id: 5,
+    name: "Himika Bose",
+    mobile: "9092038491",
+    email: "anjalishinde@protonmail.com",
+    pin: "400077",
+    status: "Paused",
+    image: patient5,
+    treatmenttype: "IVF",
+    date: "2025-10-15",
+    visit: "2nd Feb 2025",
+  },
+  {
+    id: 6,
+    name: "Sakshi Sinha",
+    mobile: "9092038491",
+    email: "anjalishinde@protonmail.com",
+    pin: "400077",
+    status: "Paused",
+    image: patient1,
+    treatmenttype: "IVF",
+    date: "2025-10-15",
+    visit: "2nd Feb 2025",
+  },
+  {
+    id: 7,
+    name: "Hardik  Mehta",
+    mobile: "9092038491",
+    email: "anjalishinde@protonmail.com",
+    pin: "400077",
+    status: "Paused",
+    image: patient6,
+    treatmenttype: "IVF",
+    date: "2025-10-15",
+    visit: "2nd Feb 2025",
+  },
+  {
+    id: 8,
+    name: "Anicka Jain",
+    mobile: "9092038491",
+    email: "anjalishinde@protonmail.com",
+    pin: "400077",
+    status: "Paused",
+    image: patient1,
+    treatmenttype: "IVF",
+    date: "2025-10-15",
+    visit: "2nd Feb 2025",
+  },
+  {
+    id: 9,
+    name: "Anicka Jain",
+    mobile: "9092038491",
+    email: "anjalishinde@protonmail.com",
+    pin: "400077",
+    status: "Paused",
+    image: patient1,
+    treatmenttype: "IVF",
+    date: "2025-10-15",
+    visit: "2nd Feb 2025",
+  },
+  {
+    id: 10,
+    name: "Anicka Jain",
+    mobile: "9092038491",
+    email: "anjalishinde@protonmail.com",
+    pin: "400077",
+    status: "Paused",
+    image: patient1,
+    treatmenttype: "IVF",
+    date: "2025-10-15",
+    visit: "2nd Feb 2025",
+  },
+];
 
 // export const doctorsData: Doctor[] = [
 //   {
@@ -262,12 +340,13 @@ export type LeaveEntry = {
   startDate: string;
   endDate: string;
   days: string;
+  status?: string;
 };
 
 export const leaveData: LeaveEntry[] = [
   {
     id: "01",
-    type: "Casual leave",
+    type: "Holi",
     startDate: "12/08/25",
     endDate: "12/08/25",
     days: "1 Day",

@@ -140,7 +140,7 @@ const DoctorDetailPageComponent = () => {
 
               <div className="profile-details">
                 <div className="detail-row profile-sub-title">
-                  <span>
+                  <span className="d-flex align-items-center gap-1">
                     <Image
                       src={Stethoscope}
                       alt="Specialization"
@@ -149,7 +149,7 @@ const DoctorDetailPageComponent = () => {
                     />
                     {doctor.specialization}
                   </span>
-                  <span>
+                  <span className="d-flex align-items-center gap-1">
                     <Image
                       src={Expirence}
                       alt="experience"
@@ -161,22 +161,22 @@ const DoctorDetailPageComponent = () => {
                 </div>
 
                 <div className="profile-sub-title">
-                  <span>
+                  <span className="d-flex align-items-center gap-1">
                     <Image src={Bithdate} alt="dob" width={18} height={18} />
                     {doctor.dob}
                   </span>
-                  <span>
+                  <span className="d-flex align-items-center gap-1">
                     <Image src={Gender} alt="gender" width={18} height={18} />
                     {doctor.gender}
                   </span>
                 </div>
 
                 <div className="detail-row profile-sub-title">
-                  <span>
+                  <span className="d-flex align-items-center gap-1">
                     <Image src={Phone} alt="phone" width={18} height={18} />
                     {doctor.phone}
                   </span>
-                  <span>
+                  <span className="d-flex align-items-center gap-1">
                     <Image src={Email} alt="email" width={18} height={18} />
                     {doctor.email}
                   </span>

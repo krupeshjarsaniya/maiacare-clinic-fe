@@ -197,6 +197,9 @@
   /* font-style: italic; */
   font-size: 14px;
   font-weight: 400;
+  font-weight: 400;
+  font-style: italic;
+  color: #3e4a57;
 }
 
 .edit-profile-btn {

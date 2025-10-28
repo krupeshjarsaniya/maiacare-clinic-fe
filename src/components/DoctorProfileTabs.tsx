@@ -10,6 +10,8 @@ import ContentContainer from "./ui/ContentContainer";
 import DoctorDetailPageComponent from "./DoctorDetailPageComponent";
 import DoctorBasicDetails from "./form/Doctor-Basic-Details";
 import DoctorManageLeave from "./form/Doctor-Manage-Leave";
+import DoctorAssignedPatients from "./form/Doctor-Assigned-Patients";
+import DoctorAppointment from "./form/Doctor-Appointment";
 
 const ProfileTabes = () => {
   const [activeTab, setActiveTab] = useState<string>("basic");
@@ -34,16 +36,20 @@ const ProfileTabes = () => {
       label: "Assigned Patients",
       content: (
         <>
-          <ContentContainer className="mt-5">
-            <h1>Reviews Content</h1>
-          </ContentContainer>
+          {
+            <DoctorAssignedPatients />
+          }
         </>
       ),
     },
     {
       key: "appointments",
       label: "Appointments",
-      content: <>{/* <ProfileManageLeave /> */}</>,
+      content:  <>
+          {
+            <DoctorAppointment />
+          }
+        </>,
     },
   ];
 

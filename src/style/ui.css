@@ -3,7 +3,14 @@
   /* border: 1px solid var(--color-brand) !important; */
   border-radius: 8px !important;
 }
-
+.leave_modal .maiacare-input-field {
+  border-radius: 8px !important;
+  padding: 8px !important;
+}
+.leave_modal .form-select {
+  border: var(--bs-border-width) solid var(--bs-border-color) !important;
+  padding: 10px !important;
+}
 .maiacare-input-field:focus {
   border: 1px solid var(--color-brand) !important;
 }

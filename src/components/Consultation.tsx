@@ -57,15 +57,7 @@ export default function Consultation() {
     setFilteredData(updated);
   };
 
-  // useEffect(() => {
-  //     if (filter === "completed") {
-  //         setFilteredData(consultationData.filter(item => item.status === "Completed"));
-  //     } else if (filter === "cancelled") {
-  //         setFilteredData(consultationData.filter(item => item.status === "Cancelled"));
-  //     } else {
-  //         setFilteredData(consultationData);
-  //     }
-  // }, [filter]);
+
   useEffect(() => {
     let data = DoctorData;
 
