@@ -1,7 +1,9 @@
 "use client";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
 import BookCalendar from "../../assets/images/BookCalendar.png";
+import { useSearchParams } from "next/navigation";
+
 import Image from "next/image";
 import {
   leaveData as defaultLeaveData,
@@ -20,6 +22,7 @@ import email from "../../assets/images/Email.png";
 import { InputFieldGroup } from "../ui/InputField";
 import { DatePickerFieldGroup } from "../ui/CustomDatePicker";
 import leavesubmit from "../../assets/images/leavesubmit.png";
+import { PiSlidersDuotone } from "react-icons/pi";
 
 // ✅ formatDate helper — converts "2025-10-31" → "31/10/25"
 const formatDate = (dateString: string): string => {
@@ -195,6 +198,103 @@ const DoctorManageLeave = () => {
       setEditLeave(null);
     }
   };
+  // search and filter
+  const searchParams = useSearchParams();
+
+  const filter = searchParams.get("filter");
+  const [filteredData, setFilteredData] = useState(leaveData);
+  const [searchQuery, setSearchQuery] = useState("");
+  // const [timeFilter, setTimeFilter] = useState("All Time");
+  // 🔹 Time filter options
+  const [timeFilter, setTimeFilter] = useState("All Time");
+
+  // 🔹 Filtered Data
+  useEffect(() => {
+    let data = leaveData;
+
+    // 🔹 filter by status (query param)
+    if (filter === "active") {
+      data = data.filter((item) => item.status === "Active");
+    } else if (filter === "cancelled") {
+      data = data.filter((item) => item.status === "Inactive");
+    }
+
+    // 🔹 filter by search
+    if (searchQuery.trim() !== "") {
+      const q = searchQuery.toLowerCase();
+      data = data.filter(
+        (item) =>
+          item.startDate.toLowerCase().includes(q) ||
+          item.endDate.toLowerCase().includes(q) ||
+          item.days.toLowerCase().includes(q) ||
+          item.type.toLowerCase().includes(q)
+      );
+    }
+
+    // 🔹 filter by time
+    if (timeFilter !== "All Time") {
+      const now = new Date();
+
+      data = data.filter((item) => {
+        if (!item.startDate) return false;
+        const itemDate = new Date(item.startDate);
+        if (isNaN(itemDate.getTime())) return false;
+
+        // Dynamic date filter handling
+        switch (timeFilter) {
+          case "Today":
+            return itemDate.toDateString() === now.toDateString();
+
+          case "1 Day":
+            return (
+              itemDate >= new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000)
+            );
+
+          case "2 Days":
+            return (
+              itemDate >= new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000)
+            );
+
+          case "15 Days":
+            return (
+              itemDate >= new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000)
+            );
+
+          case "This Week": {
+            const weekStart = new Date(now);
+            weekStart.setDate(now.getDate() - now.getDay());
+            weekStart.setHours(0, 0, 0, 0);
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 7);
+            return itemDate >= weekStart && itemDate < weekEnd;
+          }
+
+          case "This Month":
+            return (
+              itemDate.getMonth() === now.getMonth() &&
+              itemDate.getFullYear() === now.getFullYear()
+            );
+
+          case "Last 1 Month": {
+            const pastMonth = new Date(now);
+            pastMonth.setMonth(now.getMonth() - 1);
+            return itemDate >= pastMonth && itemDate <= now;
+          }
+
+          case "Last 6 Months": {
+            const past6Months = new Date(now);
+            past6Months.setMonth(now.getMonth() - 6);
+            return itemDate >= past6Months && itemDate <= now;
+          }
+
+          default:
+            return true;
+        }
+      });
+    }
+
+    setFilteredData(data);
+  }, [filter, searchQuery, timeFilter, leaveData]);
 
   const leaveColumns = [
     ...defaultLeaveColumns,
@@ -226,12 +326,28 @@ const DoctorManageLeave = () => {
           <h4 className="mb-2 mb-md-0 profile-card-main-titile">
             Leave History
           </h4>
+
           <div className="d-flex align-items-center flex-wrap gap-2">
             <div className="d-flex align-items-center gap-2">
-              <span className="about-text ">Sort by:</span>
-              <Button className="last-month " variant="outline">
-                Last 6 Months
-              </Button>
+              {/* Sort + Filter */}
+              <div className="d-flex align-items-center gap-2 ">
+                <span className="text-muted small short-by">Sort by:</span>
+                <Form.Select
+                  className="custom-sort-select"
+                  value={timeFilter}
+                  onChange={(e) => setTimeFilter(e.target.value)}
+                >
+                  <option>All Time</option>
+                  <option>Today</option>
+                  <option>1 Day</option>
+                  <option>2 Days</option>
+                  <option>15 Days</option>
+                  <option>This Week</option>
+                  <option>This Month</option>
+                  <option>Last 1 Month</option>
+                  <option>Last 6 Months</option>
+                </Form.Select>
+              </div>
             </div>
             <Button
               className="d-flex align-items-center border-none gap-2 px-2 py-2 maiacare-button"
@@ -250,7 +366,7 @@ const DoctorManageLeave = () => {
         </div>
 
         <div className="mt-4">
-          <BaseTable data={leaveData} columns={leaveColumns} />
+          <BaseTable data={filteredData} columns={leaveColumns} />
         </div>
       </div>
 

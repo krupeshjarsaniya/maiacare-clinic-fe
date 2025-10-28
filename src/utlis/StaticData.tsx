@@ -36,9 +36,9 @@ export interface AssignedPatients {
   pin: string;
   status: string;
   image: string | StaticImageData;
-  treatmenttype: string;
-  date?: string; // ✅ optional date field
-  visit: string;
+  treatmenttype: string[];
+  date?: string;
+  visit?: string;
 }
 
 export type Doctor = {
@@ -181,7 +181,7 @@ export const AssignedPatients: AssignedPatients[] = [
     status: "Active",
     image: patient1,
     date: "2025-09-16",
-    treatmenttype: "IVF",
+    treatmenttype: ["IVF", "Egg Freezing"],
     visit: "2nd Feb 2025",
   },
   {
@@ -190,9 +190,9 @@ export const AssignedPatients: AssignedPatients[] = [
     mobile: "9092038491",
     email: "ninagupta@protonmail.com",
     pin: "400077",
-    status: "Active",
+    status: "Paused",
     image: patient2,
-    treatmenttype: "IVF",
+    treatmenttype: ["IVF", "Egg Freezing"],
     date: "2025-09-15",
     visit: "2nd Feb 2025",
   },
@@ -204,7 +204,7 @@ export const AssignedPatients: AssignedPatients[] = [
     pin: "400077",
     status: "Active",
     image: patient3,
-    treatmenttype: "IVF",
+    treatmenttype: ["IVF", "Egg Freezing"],
     date: "2025-09-15",
     visit: "2nd Feb 2025",
   },
@@ -216,7 +216,7 @@ export const AssignedPatients: AssignedPatients[] = [
     pin: "400077",
     status: "Paused",
     image: patient4,
-    treatmenttype: "IVF",
+    treatmenttype: ["IVF", "Egg Freezing"],
     date: "2025-09-25",
     visit: "2nd Feb 2025",
   },
@@ -226,9 +226,9 @@ export const AssignedPatients: AssignedPatients[] = [
     mobile: "9092038491",
     email: "anjalishinde@protonmail.com",
     pin: "400077",
-    status: "Paused",
+    status: "Active",
     image: patient5,
-    treatmenttype: "IVF",
+    treatmenttype: ["IVF", "Egg Freezing"],
     date: "2025-10-15",
     visit: "2nd Feb 2025",
   },
@@ -240,7 +240,7 @@ export const AssignedPatients: AssignedPatients[] = [
     pin: "400077",
     status: "Paused",
     image: patient1,
-    treatmenttype: "IVF",
+    treatmenttype: ["IVF", "Egg Freezing"],
     date: "2025-10-15",
     visit: "2nd Feb 2025",
   },
@@ -250,9 +250,9 @@ export const AssignedPatients: AssignedPatients[] = [
     mobile: "9092038491",
     email: "anjalishinde@protonmail.com",
     pin: "400077",
-    status: "Paused",
+    status: "Active",
     image: patient6,
-    treatmenttype: "IVF",
+    treatmenttype: ["Sperm Freezing"],
     date: "2025-10-15",
     visit: "2nd Feb 2025",
   },
@@ -262,9 +262,9 @@ export const AssignedPatients: AssignedPatients[] = [
     mobile: "9092038491",
     email: "anjalishinde@protonmail.com",
     pin: "400077",
-    status: "Paused",
+    status: "Active",
     image: patient1,
-    treatmenttype: "IVF",
+    treatmenttype: ["IVF", "Egg Freezing"],
     date: "2025-10-15",
     visit: "2nd Feb 2025",
   },
@@ -274,9 +274,9 @@ export const AssignedPatients: AssignedPatients[] = [
     mobile: "9092038491",
     email: "anjalishinde@protonmail.com",
     pin: "400077",
-    status: "Paused",
+    status: "Active",
     image: patient1,
-    treatmenttype: "IVF",
+    treatmenttype: ["IVF", "Egg Freezing"],
     date: "2025-10-15",
     visit: "2nd Feb 2025",
   },
@@ -286,11 +286,143 @@ export const AssignedPatients: AssignedPatients[] = [
     mobile: "9092038491",
     email: "anjalishinde@protonmail.com",
     pin: "400077",
-    status: "Paused",
+    status: "Active",
     image: patient1,
-    treatmenttype: "IVF",
+    treatmenttype: ["IVF", "Egg Freezing"],
     date: "2025-10-15",
     visit: "2nd Feb 2025",
+  },
+];
+
+export interface appointement {
+  id: number; // <-- ADD ID
+  name: string;
+  mobile: string;
+  status: string;
+  image: string | StaticImageData;
+  time: string;
+  date?: string;
+  visit?: string[];
+}
+export const appointement: appointement[] = [
+  {
+    id: 1,
+    name: "Anicka Jain",
+    mobile: "9092038491",
+
+    status: "Confirmed",
+    image: patient1,
+    visit: ["IUI", "IVF", "Fertility Support"],
+    time: "2:30 PM",
+    date: "2nd Feb 2025",
+  },
+  {
+    id: 2,
+    name: "Radhika More",
+    mobile: "9092038491",
+
+    status: "Confirmed",
+    image: patient2,
+    time: "2:30 PM",
+    visit: ["IUI", "IVF", "Fertility Support"],
+
+    date: "2nd Feb 2025",
+  },
+  {
+    id: 3,
+    name: "Seema Gupta",
+    mobile: "9092038491",
+
+    status: "Completed",
+    image: patient3,
+    time: "2:30 PM",
+    visit: [ "Fertility Support"],
+
+    date: "2nd Feb 2025",
+  },
+  {
+    id: 4,
+    name: "Nisha Dandge",
+    mobile: "9092038491",
+
+    status: "Rejected",
+    image: patient4,
+    time: "2:30 PM",
+    visit: ["IUI", "IVF", "Fertility Support"],
+
+    date: "2nd Feb 2025",
+  },
+  {
+    id: 5,
+    name: "Himika Bose",
+    mobile: "9092038491",
+    visit: ["IUI"],
+
+    status: "No Show",
+    image: patient5,
+    time: "2:30 PM",
+
+    date: "2nd Feb 2025",
+  },
+  {
+    id: 6,
+    name: "Sakshi Sinha",
+    mobile: "9092038491",
+
+    status: "Upcomming",
+    image: patient1,
+    time: "2:30 PM",
+    visit: ["Egg Freezing ", "IVF", "Fertility Support"],
+
+    date: "2nd Feb 2025",
+  },
+  {
+    id: 7,
+    name: "Hardik  Mehta",
+    mobile: "9092038491",
+    visit: ["Sperm Freezing", "IVF", ],
+
+    status: "Cancelled",
+    image: patient6,
+    time: "2:30 PM",
+
+    date: "2nd Feb 2025",
+  },
+  {
+    id: 8,
+    name: "Anicka Jain",
+    mobile: "9092038491",
+    visit: ["Egg Freezing ", "IVF", "Fertility Support"],
+
+    status: "Rescheduled",
+    image: patient1,
+    time: "2:30 PM",
+
+    date: "2nd Feb 2025",
+  },
+  {
+    id: 9,
+    name: "Anicka Jain",
+    mobile: "9092038491",
+    visit: ["IUI", "IVF", "Fertility Support"],
+
+    status: "Engaged",
+    image: patient1,
+    time: "2:30 PM",
+
+    date: "2nd Feb 2025",
+  },
+  {
+    id: 10,
+    name: "Anicka Jain",
+    mobile: "9092038491",
+    visit: ["Fertility Support", "IUI", "IVF"],
+
+    status: "Rescheduled",
+    image: patient1,
+    time: "2:30 PM",
+
+    date: "2nd Feb 2025",
   },
 ];
 

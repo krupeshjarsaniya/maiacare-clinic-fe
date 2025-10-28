@@ -189,7 +189,7 @@ export default function Consultation() {
         return (
           <div className="text-center d-flex">
             <Button
-              size="sm"
+           
               className="d-flex bg-white justify-content-center align-items-center border profile-card-boeder rounded Download-border me-2"
               onClick={() =>
                 handleDownload(`/files/${name}.pdf`, `${name}.pdf`)
@@ -198,7 +198,7 @@ export default function Consultation() {
               <LuArrowDown className="arrow-down" />
             </Button>
             <Button
-              size="sm"
+             
               className="btn btn-sm profile-card-boeder border bg-white"
               onClick={() => handleDelete(id)} // <-- pass id
             >

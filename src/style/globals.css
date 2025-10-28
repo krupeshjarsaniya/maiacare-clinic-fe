@@ -458,7 +458,10 @@ body {
   background-color: #def7ec;
   color: #057a55;
 }
-
+.status-paused {
+  background: #fffac9;
+  color: #c27803;
+}
 .status-inactive {
   background: #fdf2f2;
   color: #f05252;
@@ -1108,11 +1111,9 @@ body {
   font-weight: 700;
   color: black !important;
 }
-.leavesubmit  {
-    max-width: 450px !important;
+.leavesubmit {
+  max-width: 450px !important;
 }
-
-
 
 @media (max-width: 525px) {
   .notification-title,
@@ -1674,17 +1675,23 @@ body {
   text-align: center;
 }
 
-.status-completed {
+.status-completed,
+.status-confirmed {
   background-color: #def7ec;
   color: #057a55;
 }
 
-.status-pending {
+.status-pending,
+.status-upcomming {
   background-color: #ebf5ff;
   color: #3f83f8;
 }
-
-.status-cancelled {
+.status-engaged {
+  color: #7a5a9c;
+  background: #7a5a9c1a;
+}
+.status-cancelled,
+.status-rejected {
   background-color: #fdf2f2;
   color: #f05252;
 }
@@ -1700,8 +1707,12 @@ body {
 }
 
 .status-rescheduled {
-  background-color: #edfafa;
-  color: #0694a2;
+  background: #fff8f1;
+  color: #ff8a4c;
+}
+.status-noshow {
+  background: #f3f4f6;
+  color: #111928;
 }
 
 .table .btn-sm {

@@ -21,6 +21,8 @@ import Link from "next/link";
 import Stethoscope from "../assets/images/doctorstethoscope.png";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import VerifiedIcon from "../assets/images/verifiedreview.png";
+import edit from "../assets/images/edit.png";
+import trash from "../assets/images/Delete.png";
 import DoctorAddedModal from "./DoctorAddedModel";
 export type ConsultationStatus = "Active" | "Inactive" | "On Leave";
 
@@ -31,7 +33,6 @@ export default function Doctor() {
   const [filteredData, setFilteredData] = useState(DoctorData);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("All Time");
-
 
   // delete function
   const handleDelete = (id: number) => {
@@ -202,12 +203,26 @@ export default function Doctor() {
               </Dropdown.Toggle>
               <Dropdown.Menu className="dropdown-menu-end">
                 <Dropdown.Item onClick={() => router.push(`/doctors/${id}`)}>
+                  <Image
+                    src={edit}
+                    alt="edit"
+                    width={18}
+                    height={18}
+                    className="me-1"
+                  />
                   Edit
                 </Dropdown.Item>
                 <Dropdown.Item
                   className="text-danger"
                   onClick={() => handleDelete(id)}
                 >
+                  <Image
+                    src={trash}
+                    alt="trash"
+                    width={18}
+                    height={18}
+                    className="me-1"
+                  />
                   Delete
                 </Dropdown.Item>
               </Dropdown.Menu>
@@ -290,7 +305,7 @@ export default function Doctor() {
 
       {/* Table */}
       <CommonTable data={filteredData} columns={columns} />
-      <DoctorAddedModal/> 
+      <DoctorAddedModal />
       {/* Pagination */}
       <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap">
         <small className="text-muted">
