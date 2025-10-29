@@ -26,15 +26,16 @@ import { RadioButtonGroup } from "../components/ui/RadioField";
 import { InputFieldGroup } from "./ui/InputField";
 import activation from "../assets/images/activation.png";
 import deactivation from "../assets/images/deactivation.png";
+// import { profile } from "console";
 const DoctorDetailPageComponent = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   type FormData = {
-    gender: string; // default will be "female"
+    profile: string; // default will be "female"
   };
 
   const initialFormData: FormData = {
-    gender: "activate", // default value
+    profile: "activate", // default value
   };
   interface FormError {
     [key: string]: string;
@@ -55,6 +56,16 @@ const DoctorDetailPageComponent = () => {
     email: "riyadharang@miacare.com",
     memberSince: "02 March 23",
     image: Profiledoctor,
+    fees: "₹800",
+    service: "IVF",
+    endYear: "2020",
+    startYear: "2017",
+    field: "Gynecologist",
+    years: "3",
+    university: "Medical University",
+    degree: "MD",
+    about:
+      "I'm Dr. Riya Dharang, a fertility specialist with over 12 years of experience in reproductive medicine. I specialize in IVF, IUI, and fertility preservation, providing personalized, compassionate care to help individuals and couples achieve their parenthood dreams. Your well-being and trust are my top priorities.",
   };
 
   const handleActive = () => setShowModal(true);
@@ -205,7 +216,15 @@ const DoctorDetailPageComponent = () => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="dropdown-menu-end">
-              <Dropdown.Item onClick={() => router.push("/editDoctor")}>
+              <Dropdown.Item
+                onClick={() => {
+                  localStorage.setItem(
+                    "selectedDoctor",
+                    JSON.stringify(doctorData)
+                  );
+                  router.push("/editDoctor");
+                }}
+              >
                 <Image
                   src={EditProfile}
                   alt="edit"
@@ -234,7 +253,11 @@ const DoctorDetailPageComponent = () => {
       <Modal
         show={showModal}
         onHide={handleClose}
-        header="Activate / Deactivate Profile Request"
+        header={
+          formData.profile === "activate"
+            ? "Activate Profile Request"
+            : "Deactivate Profile Request"
+        }
         closeButton
         dialogClassName="custom-modal-width"
       >
@@ -301,10 +324,10 @@ const DoctorDetailPageComponent = () => {
           <Col md={6} className="mt-3 ">
             <RadioButtonGroup
               label="Select Action"
-              name="gender"
-              value={formData.gender}
+              name="profile"
+              value={formData.profile}
               onChange={handleRadioChange} // ✅ now the correct type
-              error={formError.gender}
+              error={formError.profile}
               required
               options={[
                 { label: "Activate", value: "activate" },
@@ -389,17 +412,17 @@ const DoctorDetailPageComponent = () => {
       >
         <div className="text-center ">
           <Image
-            src={formData.gender === "activate" ? activation : deactivation}
+            src={formData.profile === "activate" ? activation : deactivation}
             alt="Result Image"
             width={200}
             height={150}
           />
           <h6 className="mt-3 modal-custom-header">
-            {formData.gender === "activate"
+            {formData.profile === "activate"
               ? "Activation Request Sent!"
               : "Deactivation Request Sent!"}
           </h6>
-          <p  style={{ fontSize: "14px", color: "#3E4A57" }}>
+          <p style={{ fontSize: "14px", color: "#3E4A57" }}>
             The Admin will be informed about your request and will react out to
             you for confirmation.
           </p>

@@ -19,13 +19,16 @@ import photo1 from "../../assets/images/profilephoto1.png";
 import photo2 from "../../assets/images/profilephoto2.png";
 import photo3 from "../../assets/images/profilephoto3.png";
 import photo4 from "../../assets/images/profilephoto4.png";
-import photo5 from "../../assets/images/profilephoto5.png";
 import Download from "../../assets/images/Uploadimg.png";
-export default function PersonalDetails({ onNext }: { onNext: () => void }) {
+import { useDoctorData } from "@/utlis/hooks/DoctorData";
+import AddDoctor from "../AddDoctor";
+export default function Editbasicdetails({ onNext }: { onNext: () => void }) {
   // Personal Details
   interface FormError {
     [key: string]: string;
   }
+
+  
   const initialFormError: FormError = {};
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState<FormError>(initialFormError);
@@ -877,7 +880,6 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
 
                   {/* Bottom Section */}
                   <div className="w-100 border-top pt-3 d-flex justify-content-between align-items-center flex-wrap">
-                   
                     <div className="d-flex gap-3 align-items-center flex-wrap">
                       {/* Add Photo */}
                       <div
@@ -929,7 +931,6 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                       </div>
                     </div>
 
-                   
                     <div className="d-flex gap-3 mt-md-0 align-items-center">
                       <button className="btn p-0" onClick={handleUploadDelete}>
                         <Image

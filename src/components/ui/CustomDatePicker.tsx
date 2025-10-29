@@ -1,6 +1,10 @@
-import React, { useRef } from 'react';
-import { Form } from 'react-bootstrap';
-import { InputFieldLabel, InputFieldHelperText, InputFieldError } from './InputField';
+import React, { useRef } from "react";
+import { Form } from "react-bootstrap";
+import {
+  InputFieldLabel,
+  InputFieldHelperText,
+  InputFieldError,
+} from "./InputField";
 
 export const DatePickerFieldGroup = ({
   label = "",
@@ -16,6 +20,8 @@ export const DatePickerFieldGroup = ({
   error = "",
   helperText = "",
   className = "",
+  iconColor,
+  icon,
   ...rest
 }: {
   label?: string;
@@ -31,6 +37,8 @@ export const DatePickerFieldGroup = ({
   error?: string;
   helperText?: string;
   className?: string;
+  iconColor?: string; // custom prop
+  icon?: React.ReactNode;
   [key: string]: any;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,7 +54,7 @@ export const DatePickerFieldGroup = ({
     <div className={`maiacare-input-field-container ${className}`}>
       <InputFieldLabel label={label} required={required} />
 
-      <div onClick={handleContainerClick} style={{ cursor: 'pointer' }}>
+      <div onClick={handleContainerClick} style={{ cursor: "pointer" }}>
         <Form.Control
           ref={inputRef}
           className="maiacare-input-field"

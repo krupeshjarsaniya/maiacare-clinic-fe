@@ -336,7 +336,7 @@ export const appointement: appointement[] = [
     status: "Completed",
     image: patient3,
     time: "2:30 PM",
-    visit: [ "Fertility Support"],
+    visit: ["Fertility Support"],
 
     date: "2nd Feb 2025",
   },
@@ -380,7 +380,7 @@ export const appointement: appointement[] = [
     id: 7,
     name: "Hardik  Mehta",
     mobile: "9092038491",
-    visit: ["Sperm Freezing", "IVF", ],
+    visit: ["Sperm Freezing", "IVF"],
 
     status: "Cancelled",
     image: patient6,
@@ -425,6 +425,12 @@ export const appointement: appointement[] = [
     date: "2nd Feb 2025",
   },
 ];
+export const PatientsDetails: SelectPatientType[] = [
+  { id: "1", ProfilePhoto: patient1, name: "Nisha S" },
+  { id: "2", ProfilePhoto: patient2, name: "Kavita Sharma" },
+  { id: "3", ProfilePhoto: patient3, name: "Anjali Rao" },
+  { id: "4", ProfilePhoto: patient4, name: "Priya Desai" },
+];
 
 // export const doctorsData: Doctor[] = [
 //   {
@@ -464,7 +470,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import Trash from "../assets/images/Trash.png";
 import LightEditimg from "../assets/images/LightEditimg.png";
 import Image from "next/image";
-import { Patient } from "./types/interfaces";
+import { Patient, SelectPatientType } from "./types/interfaces";
 
 export type LeaveEntry = {
   id: string;

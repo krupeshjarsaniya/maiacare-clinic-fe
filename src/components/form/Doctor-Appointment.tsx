@@ -25,6 +25,10 @@ import appointmentcalander from "../../assets/images/bookappoin.png";
 import { LuTrash2 } from "react-icons/lu";
 import Modal from "../ui/Modal";
 import { InputFieldGroup } from "../ui/InputField";
+import {
+  BookAppointment,
+  SuccessModalBookAppointment,
+} from "./BookAppointment";
 export type ConsultationStatus =
   | "Confirmed"
   | "Completed"
@@ -42,7 +46,11 @@ export default function DoctorAppointment() {
   const [filteredData, setFilteredData] = useState(appointement);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("All Time");
-
+  const [BookAppointmentModal, setBookAppointmentModal] = useState(false);
+  const [showSuccessModalBook, setShowSuccessModalBook] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [editData, setEditData] = useState<any | null>(null);
+  const [editingAppointment, setEditingAppointment] = useState<any>(null);
   // delete function
   const handleDelete = (id: number) => {
     const updated = filteredData.filter((item) => item.id !== id);
@@ -210,7 +218,13 @@ export default function DoctorAppointment() {
         const id = info.row.original.id; // <-- use id directly
         return (
           <div className="text-center d-flex">
-            <Button className="d-flex bg-white justify-content-center align-items-center border profile-card-boeder rounded Download-border me-2">
+            <Button
+              className="d-flex bg-white justify-content-center align-items-center border profile-card-boeder rounded Download-border me-2"
+              onClick={() => {
+                setEditData(info.row.original); // store row data
+                setBookAppointmentModal(true); // open modal
+              }}
+            >
               <Image src={edit} alt="edit" width={20} height={20} />
             </Button>
             <Button
@@ -225,12 +239,9 @@ export default function DoctorAppointment() {
     },
   ];
   // modal bookappointment
-  const [showModal, setShowModal] = useState(false);
+
   const handleClose = () => {
     setShowModal(false);
-  };
-  const handleopen = () => {
-    setShowModal(true);
   };
 
   return (
@@ -297,7 +308,9 @@ export default function DoctorAppointment() {
           <Button
             className="d-flex align-items-center gap-2 common-btn-blue px-4 maiacare-button"
             variant="default"
-            onClick={handleopen}
+            onClick={() => {
+              setBookAppointmentModal(true);
+            }}
             style={{ padding: "12px" }}
           >
             <Image
@@ -332,35 +345,38 @@ export default function DoctorAppointment() {
       </div>
 
       {/* book appointment modal */}
-      <Modal
-        show={showModal}
-        onHide={handleClose}
-        header="Book Appointment"
-        closeButton
-        dialogClassName="custom-modal-width "
-      >
-        <div>
-          <div className="fw-semibold">Appointment Details</div>
-          <div className="mt-3">
-            <InputFieldGroup
-              label="Appointment ID "
-              name="AppointmentID "
-              type="text"
-              placeholder="Appointment ID "
-              required={true}
-            />
-          </div>
-          <div>
-            <Button
-              variant="dark"
-              className="maiacare-button common-btn-blue w-50 tetx-left fw-semibold"
-              // onClick={handleNext}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      <>
+        <Modal
+          show={BookAppointmentModal}
+          onHide={() => {
+            setBookAppointmentModal(false);
+            setEditData(null);
+          }}
+          header={editData ? "Edit Appointment" : "Book Appointment"}
+          closeButton={true}
+        >
+          <BookAppointment
+            setBookAppointmentModal={setBookAppointmentModal}
+            setShowSuccessModalBook={setShowSuccessModalBook}
+            editData={editData}
+            onSave={(updatedData) => {
+              setFilteredData((prev) =>
+                prev.map((item) =>
+                  item.id === updatedData.id
+                    ? { ...item, ...updatedData }
+                    : item
+                )
+              );
+              setEditData(null);
+            }}
+          />
+        </Modal>
+
+        <SuccessModalBookAppointment
+          showSuccessModalBook={showSuccessModalBook}
+          setShowSuccessModalBook={setShowSuccessModalBook}
+        />
+      </>
     </div>
   );
 }

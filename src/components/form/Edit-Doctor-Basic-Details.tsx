@@ -17,7 +17,8 @@ import ImageSquare from "../../assets/images/ImageSquare.png";
 import Camera from "../../assets/images/Camera.png";
 import { PhoneNumberInput } from "../ui/PhoneNumberInput";
 import cross from "../../assets/images/crossedit.png";
-import InputSelect from "../ui/InputSelect";
+import { InputSelect } from "../../components/ui/InputSelect";
+import { useDoctorData } from "@/utlis/hooks/DoctorData";
 export default function EditDoctorBasicDetails({
   onNext,
 }: {
@@ -27,6 +28,7 @@ export default function EditDoctorBasicDetails({
   interface FormError {
     [key: string]: string;
   }
+
   const initialFormError: FormError = {};
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState<FormError>(initialFormError);
@@ -41,6 +43,7 @@ export default function EditDoctorBasicDetails({
     Email: string;
     Fees: string;
     About: string;
+    service: string;
 
     degree: string;
     field: string;
@@ -59,7 +62,7 @@ export default function EditDoctorBasicDetails({
     Email: "",
     Fees: "",
     About: "",
-
+    service: "",
     degree: "",
     field: "",
     university: "",
@@ -68,6 +71,94 @@ export default function EditDoctorBasicDetails({
   };
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [qualifications, setQualifications] = useState([
+    { degree: "", field: "", university: "", startYear: "", endYear: "" },
+  ]);
+
+  const [formErrors, setFormErrors] = useState([
+    { degree: "", field: "", university: "", startYear: "", endYear: "" },
+  ]);
+
+  const doctor = useDoctorData();
+  console.log("hy", doctor);
+  useEffect(() => {
+    if (!doctor) return;
+    setFormData({
+      Name: doctor.name || "",
+      Speciality: doctor.specialization || "",
+      Experience: doctor.experience?.toString() || "",
+      date: doctor.dob ? new Date(doctor.dob).toISOString().split("T")[0] : "",
+      gender: doctor.gender
+        ? doctor.gender.toLowerCase() === "male"
+          ? "male"
+          : "female"
+        : "",
+      Contact: doctor.phone || "",
+      Email: doctor.email || "",
+      Fees: doctor.fees || "",
+      About: doctor.about || "",
+      service: doctor.service || "",
+      degree: doctor.degree || "",
+      field: doctor.field || "",
+      university: doctor.university || "",
+      startYear: doctor.startYear || "",
+      endYear: doctor.endYear || "",
+    });
+    if (doctor.image) {
+      setSelectedImage(doctor.image);
+    }
+    if (doctor.services && Array.isArray(doctor.services)) {
+      const matchedServices = services.filter((s) =>
+        doctor.services.includes(s.service)
+      );
+      setSelectedServices(matchedServices);
+    }
+
+    // Prefill qualifications
+    doctor.qualifications = [
+      {
+        degree: "MBBS",
+        field: "Gynecology",
+        university: "AIIMS",
+        startYear: "2015",
+        endYear: "2020",
+      },
+    ];
+
+    if (doctor.qualifications && Array.isArray(doctor.qualifications)) {
+      setQualifications(
+        doctor.qualifications.map((q: any) => ({
+          degree: q.degree || "",
+          field: q.field || "",
+          university: q.university || "",
+          startYear: q.startYear?.toString() || "",
+          endYear: q.endYear?.toString() || "",
+        }))
+      );
+      setFormErrors(
+        doctor.qualifications.map(() => ({
+          degree: "",
+          field: "",
+          university: "",
+          startYear: "",
+          endYear: "",
+        }))
+      );
+    }
+
+    // Prefill services
+    if (doctor.services && Array.isArray(doctor.services)) {
+      const matchedServices = services.filter((s) =>
+        doctor.services.includes(s.service)
+      );
+      setSelectedServices(matchedServices);
+    }
+
+    // Prefill image
+    if (doctor.image) {
+      setSelectedImage(doctor.image);
+    }
+  }, [doctor]);
 
   // All Validatation
 
@@ -267,12 +358,6 @@ export default function EditDoctorBasicDetails({
       service: "Immunological Testing",
     },
   ];
-  const [qualifications, setQualifications] = useState([
-    { degree: "", field: "", university: "", startYear: "", endYear: "" },
-  ]);
-  const [formErrors, setFormErrors] = useState([
-    { degree: "", field: "", university: "", startYear: "", endYear: "" },
-  ]);
 
   type Qualification = {
     degree: string;
@@ -662,7 +747,11 @@ export default function EditDoctorBasicDetails({
         <div>
           <div>
             <h5 className="profile-card-main-titile">Services Offered</h5>
-            <Form.Select onChange={handleSelect} defaultValue="">
+            <Form.Select
+              onChange={handleSelect}
+              // defaultValue=""
+              value={formData.service}
+            >
               <option value="" disabled>
                 Select Services
               </option>
@@ -718,7 +807,6 @@ export default function EditDoctorBasicDetails({
           </div>
         </div>
       </ContentContainer>
-
       {/* Qualtification details */}
       <ContentContainer className="mt-3">
         <h5 className="profile-card-main-titile mb-4">Qualification Details</h5>

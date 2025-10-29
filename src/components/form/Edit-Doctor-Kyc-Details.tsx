@@ -420,7 +420,7 @@ export default function EditDoctorKycDetails({
   return (
     <div>
       <ContentContainer className="mt-4">
-        <div className=" p-4">
+        <div className="">
           <h5 className="mb-3 profile-card-main-titile">KYC Details</h5>
 
           {/* Aadhar & Pan Card Inputs + Uploads Responsive */}

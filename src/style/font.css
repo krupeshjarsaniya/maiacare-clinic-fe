@@ -201,7 +201,13 @@
   font-style: italic;
   color: #3e4a57;
 }
-
+.profile-name-font {
+  font-size: 20px;
+  font-weight: 600;
+  line-height:18px;
+  color: var(--color-heading);
+  font-family: var(--font-geist-sans1);
+}
 .edit-profile-btn {
   border: 1px solid var(--color-radio-lable);
   color: var(--color-brand) !important;
