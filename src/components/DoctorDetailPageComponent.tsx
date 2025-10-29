@@ -26,6 +26,7 @@ import { RadioButtonGroup } from "../components/ui/RadioField";
 import { InputFieldGroup } from "./ui/InputField";
 import activation from "../assets/images/activation.png";
 import deactivation from "../assets/images/deactivation.png";
+import { useDoctor } from "./DoctorContext";
 // import { profile } from "console";
 const DoctorDetailPageComponent = () => {
   const router = useRouter();
@@ -58,16 +59,20 @@ const DoctorDetailPageComponent = () => {
     image: Profiledoctor,
     fees: "₹800",
     service: "IVF",
-    endYear: "2020",
-    startYear: "2017",
-    field: "Gynecologist",
-    years: "3",
-    university: "Medical University",
-    degree: "MD",
     about:
       "I'm Dr. Riya Dharang, a fertility specialist with over 12 years of experience in reproductive medicine. I specialize in IVF, IUI, and fertility preservation, providing personalized, compassionate care to help individuals and couples achieve their parenthood dreams. Your well-being and trust are my top priorities.",
+    qualifications: [
+      {
+        field: "Gynecologist",
+        years: "3",
+        university: "Medical University",
+        degree: "MD",
+        endYear: "2020",
+        startYear: "2017",
+      },
+    ],
   };
-
+  const { setDoctor } = useDoctor();
   const handleActive = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
@@ -218,10 +223,7 @@ const DoctorDetailPageComponent = () => {
             <Dropdown.Menu className="dropdown-menu-end">
               <Dropdown.Item
                 onClick={() => {
-                  localStorage.setItem(
-                    "selectedDoctor",
-                    JSON.stringify(doctorData)
-                  );
+                  setDoctor(doctorData);
                   router.push("/editDoctor");
                 }}
               >

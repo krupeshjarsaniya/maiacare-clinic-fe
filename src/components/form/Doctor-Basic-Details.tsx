@@ -14,7 +14,7 @@ import EditProfile from "../assets/images/LightEditimg.png";
 import editprofile from "../../assets/images/EditProfile.png";
 import Modal from "../ui/Modal";
 import { InputFieldGroup } from "../ui/InputField";
-import {InputSelect} from "../../components/ui/InputSelect";
+import { InputSelect } from "../../components/ui/InputSelect";
 import Button from "../ui/Button";
 import toast from "react-hot-toast";
 import cliniccard from "../../assets/images/cliniccard.png";
@@ -64,7 +64,7 @@ const DoctorBasicDetails = () => {
   };
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
-
+ 
   const [qualifications, setQualifications] = useState<FormData[]>([
     { ...initialFormData },
   ]);

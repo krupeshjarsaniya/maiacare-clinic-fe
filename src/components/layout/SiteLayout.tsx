@@ -34,14 +34,12 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
   const navRef = useRef<HTMLDivElement | null>(null);
 
   const headerValue = useSelector((state: RootState) => state.header.value);
-  console.log("Header Value:", headerValue);
   const { title, subtitle } = headerValue || {};
-  // 🔥 Offcanvas state
   const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   const navItems = [
     { label: "Dashboard", href: "/profile", icon: <MdWindow size={22} /> },
-  
+
     {
       label: "Doctors",
       href: "/doctors",

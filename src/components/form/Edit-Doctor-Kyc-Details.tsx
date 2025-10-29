@@ -1,5 +1,5 @@
 "use client";
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { Row, Col, Form, Button, ProgressBar, Toast } from "react-bootstrap";
 import Jpgimg from "../../assets/images/Jpgimg.png";
 import ContentContainer from "../ui/ContentContainer";
@@ -21,6 +21,8 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Modal from "../ui/Modal";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useDoctor } from "../DoctorContext";
+
 export default function EditDoctorKycDetails({
   onNext,
   onPrevious,
@@ -58,6 +60,89 @@ export default function EditDoctorKycDetails({
   };
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
+  const { doctor } = useDoctor();
+
+  useEffect(() => {
+    if (doctor != null) {
+      doctor.kyc = [
+        {
+          aadhaar: "1234 5678 9123",
+          aadhaarFile: "/uploads/kyc/aadhaar.pdf",
+          pan: "ABCDE1234F",
+          panFile: "/uploads/kyc/pan.png",
+          license: "1234567890",
+          licenseFile: "/uploads/kyc/license.jpg",
+        },
+      ];
+      if (Array.isArray(doctor.kyc) && doctor.kyc.length > 0) {
+        const kyc = doctor.kyc[0];
+        setFormData((prev) => ({
+          ...prev,
+          Adcard: kyc.aadhaar || "",
+          Pancard: kyc.pan || "",
+          LicNumber: kyc.license || "",
+        }));
+        // adhaarcard
+        if (kyc.aadhaarFile) {
+          const aadhaarFilePath =
+            typeof kyc.aadhaarFile === "string"
+              ? kyc.aadhaarFile
+              : kyc.aadhaarFile.src;
+
+          setAadharFile({
+            name: aadhaarFilePath.split("/").pop() || "Aadhar Card",
+            size: "—",
+            date: new Date().toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }),
+            preview: aadhaarFilePath,
+            status: "completed",
+            reportName: "Aadhar Card",
+          });
+        }
+        // pan
+        if (kyc.panFile) {
+          const panFilePath =
+            typeof kyc.panFile === "string" ? kyc.panFile : kyc.panFile.src;
+
+          setPanFile({
+            name: panFilePath.split("/").pop() || "Pan Card",
+            size: "—",
+            date: new Date().toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }),
+            preview: panFilePath,
+            status: "completed",
+            reportName: "Pan Card",
+          });
+        }
+        // licenseFile
+        if (kyc.licenseFile) {
+          const licenseFilePath =
+            typeof kyc.licenseFile === "string"
+              ? kyc.licenseFile
+              : kyc.licenseFile.src;
+
+          setLicenceFile({
+            name: licenseFilePath.split("/").pop() || "License",
+            size: "—",
+            date: new Date().toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }),
+            preview: licenseFilePath,
+            status: "completed",
+            reportName: "Licence",
+          });
+        }
+      }
+    }
+  }, [doctor]);
 
   const formatAadhaar = (value: string) => {
     return value

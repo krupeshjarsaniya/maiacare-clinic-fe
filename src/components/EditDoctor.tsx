@@ -20,13 +20,12 @@ const EditDoctor = () => {
   }, [tabFromQuery]);
 
   const handleNextClick = () => {
-    setActiveTab("KYC");
+    setActiveTab("Clinic");
   };
 
   const handlePrevious = () => {
     setActiveTab("basic");
   };
-
   const tabOptions = [
     { key: "basic", label: "Basic Details", content: <></> },
     { key: "Clinic", label: "Clinic Details", content: <></> },
