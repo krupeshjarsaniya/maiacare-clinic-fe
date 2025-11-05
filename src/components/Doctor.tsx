@@ -7,6 +7,8 @@ import {
   Button,
   Pagination,
   Dropdown,
+  Col,
+  Row,
 } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import { DoctorData } from "../utlis/StaticData";
@@ -14,6 +16,8 @@ import Image from "next/image";
 import CommonTable from "@/components/ui/BaseTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
+import activation from "../assets/images/restricted-access.png";
+import deactivation from "../assets/images/restricted-access.png";
 import add from "../assets/images/plus.png";
 import { PiSlidersDuotone } from "react-icons/pi";
 import serchicon from "../assets/images/searchicon.png";
@@ -22,9 +26,19 @@ import Stethoscope from "../assets/images/doctorstethoscope.png";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import VerifiedIcon from "../assets/images/verifiedreview.png";
 import edit from "../assets/images/edit.png";
-import trash from "../assets/images/Delete.png";
 import DoctorAddedModal from "./DoctorAddedModel";
 export type ConsultationStatus = "Active" | "Inactive" | "On Leave";
+import eye from "../assets/images/Eye.png";
+import Poweractivate from "../assets/images/Poweractivate.png";
+import DoctorImg from "../assets/images/doctor1.png";
+import Arrowup from "../assets/images/ArrowUpRight.png";
+import Modal from "./ui/Modal";
+import phone from "../assets/images/Phone.png";
+import email from "../assets/images/Email.png";
+import sthetoscope from "../assets/images/Stethoscope.png";
+import patient from "../assets/images/patient.png";
+import { RadioButtonGroup } from "./ui/RadioField";
+import { InputFieldGroup } from "./ui/InputField";
 
 export default function Doctor() {
   const router = useRouter();
@@ -33,6 +47,7 @@ export default function Doctor() {
   const [filteredData, setFilteredData] = useState(DoctorData);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("All Time");
+  const [selectedDoctor, setSelectedDoctor] = useState<any | null>(null);
 
   // delete function
   const handleDelete = (id: number) => {
@@ -177,6 +192,14 @@ export default function Doctor() {
       header: "Email",
       accessorKey: "email",
     },
+    // {
+    //   header: "Status",
+    //   cell: (info) => {
+    //     const status = info.row.original.status;
+    //     const statusClass = `status-${status.toLowerCase().replace(/\s/g, "")}`;
+    //     return <span className={`status-pill ${statusClass}`}>{status}</span>;
+    //   },
+    // },
     {
       header: "Status",
       cell: (info) => {
@@ -203,27 +226,34 @@ export default function Doctor() {
               </Dropdown.Toggle>
               <Dropdown.Menu className="dropdown-menu-end">
                 <Dropdown.Item onClick={() => router.push(`/doctors/${id}`)}>
+                  <img
+                    src={eye.src}
+                    alt="eye"
+                    width={18}
+                    height={18}
+                    className="me-2"
+                  />
+                  View Profile
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => router.push(`/doctors/${id}`)}>
                   <Image
                     src={edit}
                     alt="edit"
                     width={18}
                     height={18}
-                    className="me-1"
+                    className="me-2"
                   />
-                  Edit
+                  Edit Profile
                 </Dropdown.Item>
-                <Dropdown.Item
-                  className="text-danger"
-                  onClick={() => handleDelete(id)}
-                >
+                <Dropdown.Item onClick={() => handleActive(info.row.original)}>
                   <Image
-                    src={trash}
-                    alt="trash"
+                    src={Poweractivate}
+                    alt="Poweractivate"
                     width={18}
                     height={18}
-                    className="me-1"
+                    className="me-2"
                   />
-                  Delete
+                  Activate/Deactivate
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
@@ -233,6 +263,103 @@ export default function Doctor() {
     },
   ];
 
+  // modal
+
+  type FormData = {
+    profile: string; // default will be "female"
+  };
+
+  const initialFormData: FormData = {
+    profile: "activate", // default value
+  };
+  interface FormError {
+    [key: string]: string;
+  }
+  const initialFormError: FormError = {};
+
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formError, setFormError] = useState<FormError>(initialFormError);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleClose = () => setShowModal(false);
+  const [showResultModal, setShowResultModal] = useState(false);
+  // handle active
+  // const handleActive = (doctor: any) => {
+  //   const newProfileState =
+  //     doctor.status === "Active" ? "deactivate" : "activate";
+
+  //   setFormData({ profile: newProfileState });
+  //   setShowModal(true);
+  // };
+
+  const handleActive = (doctor: any) => {
+    const newProfileState =
+      doctor.status === "Active" ? "deactivate" : "activate";
+
+    setSelectedDoctor(doctor); // store doctor
+    setFormData({ profile: newProfileState }); // set initial radio button
+    setShowModal(true);
+  };
+
+  type Reason = {
+    id: number;
+    reason: string;
+  };
+  const reason: Reason[] = [
+    {
+      id: 1,
+      reason: "Resignation/Termination",
+    },
+    {
+      id: 2,
+      reason: "Retirement",
+    },
+    {
+      id: 3,
+      reason: "Decseased",
+    },
+    {
+      id: 4,
+      reason: "Change in specialisation",
+    },
+  ];
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setShowModal(false);
+  //   setShowResultModal(true);
+  // };
+
+  // handle submit
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedDoctor) return;
+
+    const updatedData = filteredData.map((doc) =>
+      doc.id === selectedDoctor.id
+        ? {
+            ...doc,
+            status: formData.profile === "activate" ? "Active" : "Inactive",
+          }
+        : doc
+    );
+
+    setFilteredData(updatedData); // update state (table refreshes)
+    setShowModal(false);
+    setShowResultModal(true);
+  };
+
+  const handleresultclose = () => {
+    setShowResultModal(false);
+  };
+  const handleCancel = () => {
+    setShowModal(false);
+  };
   return (
     <div className="">
       {/* list */}
@@ -323,6 +450,195 @@ export default function Doctor() {
           <Pagination.Next />
         </Pagination>
       </div>
+
+      {/* ✅ Modal placed outside Dropdown */}
+      <Modal
+        show={showModal}
+        onHide={handleClose}
+        header={
+          formData.profile === "activate"
+            ? "Activate Profile Request"
+            : "Deactivate Profile Request"
+        }
+        closeButton
+        // dialogClassName="custom-modal-width"
+      >
+        <div className="kycmodal_info">
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="kycmodal_profile">
+              <Image src={DoctorImg} alt="doctor" width={50} height={50} />
+              <h6 className="mb-0 fw-semibold">Dr.Riya Dharang</h6>
+              {/* <Image src={Verified} alt="Verified" width={22} height={22} /> */}
+            </div>
+            <Button
+              className="maiacare-button-large  default-layout profile-card-boeder  bg-transparent btn btn-primary"
+              // onClick={() => router.push("/profile")}
+            >
+              <Image src={Arrowup} alt="Arrow" width={12} height={12} />
+            </Button>
+          </div>
+          <div className="kycmodal_info_text mt-3">
+            <div>
+              <Image
+                src={phone}
+                alt="phone"
+                width={18}
+                height={18}
+                className="me-1"
+              />
+              <span>+91 12345 67890</span>
+            </div>
+            <div>
+              <Image
+                src={email}
+                alt="email"
+                width={18}
+                height={18}
+                className="me-1"
+              />
+              <span>riyadharang@miacare.com</span>
+            </div>
+          </div>
+          <div className="kycmodal_info_text mt-2 gap-5">
+            <div>
+              <Image
+                src={sthetoscope}
+                alt="sthetoscope"
+                width={18}
+                height={18}
+                className="me-1"
+              />
+              <span>Gynecologist</span>
+            </div>
+            <div>
+              <Image
+                src={patient}
+                alt="patient"
+                width={18}
+                height={13}
+                className="me-1"
+              />
+              <span>22 Patients</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <Col md={6} className="mt-3 ">
+            <RadioButtonGroup
+              label="Select Action"
+              name="profile"
+              value={formData.profile}
+              onChange={handleRadioChange} // ✅ now the correct type
+              error={formError.profile}
+              required
+              options={[
+                { label: "Activate", value: "activate" },
+                { label: "Deactivate", value: "deactivate" },
+              ]}
+            />
+          </Col>
+        </div>
+        <div className="mt-3">
+          <label className="maiacare-input-field-label">Reason</label>
+          <Form.Select defaultValue="" className="radio_options form-select">
+            <option value="" disabled>
+              Select
+            </option>
+            {reason.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.reason}
+              </option>
+            ))}
+          </Form.Select>
+        </div>
+        <div className="mt-3">
+          <Form.Check
+            type="checkbox"
+            label="Notify admin via email"
+            className="text-nowrap check-box input "
+            style={{ fontSize: "13px", color: "#3E4A57" }}
+          />
+        </div>
+        <div>
+          <InputFieldGroup
+            label=" Any additional note"
+            name=" Any additional note"
+            type="text"
+            // value={formData.Name}
+            // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            //   setFormData({ ...formData, Name: e.target.value });
+            //   if (formError.Name) {
+            //     // typing in hide error
+            //     setFormError({ ...formError, Name: "" });
+            //   }
+            // }}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
+            placeholder="Placeholder Text"
+            required={true}
+            disabled={false}
+            readOnly={false}
+            // error={formError.Name}
+            className="position-relative "
+          ></InputFieldGroup>
+        </div>
+        <div className="mt-3">
+          <Row>
+            <Col md={6} className="pe-0">
+              <Button
+                variant="outline"
+                className="edit-profile-btn w-100 fw-semibold"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+            </Col>
+            <Col md={6}>
+              <Button
+                variant="dark"
+                className="maiacare-button common-btn-blue w-100 fw-semibold"
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
+            </Col>
+          </Row>
+        </div>
+      </Modal>
+
+      {/* --- Result Modal (After Submit) --- */}
+      <Modal
+        show={showResultModal}
+        onHide={handleresultclose}
+        centered
+        className="activateModal"
+      >
+        <div className="text-center ">
+          <Image
+            src={formData.profile === "activate" ? activation : deactivation}
+            alt="Result Image"
+            width={200}
+            height={150}
+          />
+          <h6 className="mt-3 modal-custom-header">
+            {formData.profile === "activate"
+              ? "Activation request sent"
+              : "Deactivation request sent"}
+          </h6>
+          <p style={{ fontSize: "14px", color: "#3E4A57" }}>
+            The Admin will be informed about your request and will react out to
+            you for confirmation.
+          </p>
+          <Button
+            className="maiacare-button common-btn-blue w-100"
+            onClick={() => {
+              setShowResultModal(false);
+              setShowModal(false);
+            }}
+          >
+            Done
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

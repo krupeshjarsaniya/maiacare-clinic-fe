@@ -42,14 +42,14 @@ export default function Consultation() {
   const [timeFilter, setTimeFilter] = useState("All Time");
 
   // const [leaveData, setLeaveData] = useState<LeaveEntry[]>(defaultLeaveData);
-  const handleDownload = (url: string, name: string) => {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = name;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  // const handleDownload = (url: string, name: string) => {
+  //   const link = document.createElement("a");
+  //   link.href = url;
+  //   link.download = name;
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // };
 
   // delete function
   const handleDelete = (id: number) => {
@@ -116,7 +116,14 @@ export default function Consultation() {
 
     setFilteredData(data);
   }, [filter, searchQuery, timeFilter]);
-
+  const handleDownload = (url: string, name: string) => {
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
   const columns: ColumnDef<any>[] = [
     {
       header: "#",
@@ -191,15 +198,13 @@ export default function Consultation() {
             <Button
            
               className="d-flex bg-white justify-content-center align-items-center border profile-card-boeder rounded Download-border me-2"
-              onClick={() =>
-                handleDownload(`/files/${name}.pdf`, `${name}.pdf`)
-              }
+              onClick={() => handleDownload(`/files/${name}.pdf`, `${name}.pdf`)}
             >
               <LuArrowDown className="arrow-down" />
             </Button>
             <Button
              
-              className="btn btn-sm profile-card-boeder border bg-white"
+              className="btn profile-card-boeder border bg-white"
               onClick={() => handleDelete(id)} // <-- pass id
             >
               <LuTrash2 className="trash" />

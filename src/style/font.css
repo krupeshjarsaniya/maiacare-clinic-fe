@@ -231,10 +231,10 @@
   margin-left: 1.5rem;
   margin-right: 1.5rem;
 }
-.total_text{
-      color: #E29578;
-    font-weight: 600;
-    font-size: 17px;
+.total_text {
+  color: #e29578;
+  font-weight: 600;
+  font-size: 17px;
 }
 /* ==================  Profile  / Edit Componet css  =============== */
 
@@ -418,6 +418,34 @@
   font-weight: 500;
   font-size: 14px;
 }
+
+.support-accordion-header {
+  color: var(--color-radio-lable);
+  padding: 0 10px;
+  font-size: 16px;
+  font-weight: 550;
+  line-height: 20px;
+}
+.support-accordion-content {
+  color: #858b95;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  padding: 20px !important;
+}
+
+.support-faqs-desc {
+  color: var(--color-heading);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+.contact-detail {
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+}
 /* Doctorprofilebasicdetails */
 .service_text {
   color: #8a8d93;
@@ -428,6 +456,39 @@
 .clinic_card_title {
   font-size: 16px;
   font-weight: 600;
+}
+.settings-accordion-subtitle {
+  color: var(--color-radio-lable);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+.password-requirements {
+  color: var(--color-radio-lable);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 17px;
+}
+
+/* login page */
+.login-image-contetnt {
+  color: var(--color-white);
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 56px;
+  font-style: SemiBold;
+}
+.login-title {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 44px;
+  color: var(--login-font);
+}
+.login-subtitle {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--font-subtitle);
+  line-height: 160%;
 }
 /* Media Query: Tablets (991px and below) */
 @media (max-width: 991px) {
@@ -732,5 +793,21 @@
 @media screen and (max-width: 1024px) {
   .accordion-title {
     font-size: 20px;
+  }
+}
+@media screen and (max-width: 1391px) {
+  .support-accordion-header {
+    font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 1400px) {
+  .login-image-contetnt {
+    font-size: 40px;
+  }
+}
+@media screen and (max-width: 1366px) {
+  .login-title {
+    font-size: 32px;
   }
 }

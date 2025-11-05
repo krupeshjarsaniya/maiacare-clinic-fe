@@ -9,14 +9,17 @@ import { usePathname } from "next/navigation";
 function MasterHelper({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(true);
   const authPages = [
-    "/login",
+    "/loginpage",
     "/register",
-    "/forgot-password",
-    "/reset-password",
-    "/verification",
+    "/forgotppassword",
+    "/resetpassword",
+    "/verificationcode",
+    "/selectprofile",
+    "/selectclinic",
   ];
-  const pathName = usePathname();
 
+  const pathName = usePathname();
+ 
   return (
     <Provider store={store}>
       {authPages.includes(pathName) ? (

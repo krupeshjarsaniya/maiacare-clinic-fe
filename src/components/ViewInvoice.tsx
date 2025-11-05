@@ -92,14 +92,34 @@ export default function ViewInvoice() {
               <div>Description</div>
               <div>Total Price</div>
             </div>
-            <div className="service_card">
-              <div className="mb-3">IVF Treatment</div>
-              <div>Fertility Tests</div>
+            <div className="d-flex align-items-center justify-content-between">
+              <div className="service_card">
+                <div className="mb-3">IVF Treatment</div>
+                <div>Fertility Tests</div>
+              </div>
+              <div className="service_card">
+                <div className="mb-3">
+                  <span style={{ color: "#8A8D93" }}>₹</span> 500
+                </div>
+                <div>
+                  <span style={{ color: "#8A8D93" }}>₹</span> 1500
+                </div>
+              </div>
             </div>
             <div className="service_border"></div>
-            <div className="service_card">
-              <div className="mb-2">Commission(5%)</div>
-              <div className="total_text">Grand Total</div>
+            <div className="d-flex align-items-center justify-content-between">
+              <div className="service_card">
+                <div className="mb-2">Commission(5%)</div>
+                <div className="total_text">Grand Total</div>
+              </div>
+              <div className="service_card">
+                <div className="mb-3">
+                  <span style={{ color: "#8A8D93" }}>₹</span> 320
+                </div>
+                <div style={{fontSize:"20px",fontWeight:"600"}}>
+                  <span style={{ color: "#3E4A57" }}>₹</span> 320
+                </div>
+              </div>
             </div>
           </div>
         </div>

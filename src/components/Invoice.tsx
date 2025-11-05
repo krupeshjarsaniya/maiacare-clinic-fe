@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import {
   Form,
@@ -17,26 +16,9 @@ import { useSearchParams } from "next/navigation";
 import { PiSlidersDuotone } from "react-icons/pi";
 import Link from "next/link";
 import search from "../assets/images/searchlight.png";
-import calendar from "../assets/images/calendar.png";
-import { HiOutlineDotsVertical } from "react-icons/hi";
-import edit from "../assets/images/edit.png";
-import trash from "../assets/images/Delete.png";
-import appointmentcalander from "../assets/images/bookappoin.png";
 import add from "../assets/images/addlight.png";
-import { LuTrash2 } from "react-icons/lu";
 import { IoEyeOutline } from "react-icons/io5";
-import { InputFieldGroup } from "../components/ui/InputField";
-import { AppointmentData } from "../utlis/types/interfaces";
 import download from "../assets/images/invoicedownload.png";
-export type ConsultationStatus =
-  | "Confirmed"
-  | "Completed"
-  | "Rejected"
-  | "No Show"
-  | "Upcomming"
-  | "Cancelled"
-  | "Rescheduled"
-  | "Engaged";
 
 export default function DoctorAppointment() {
   const router = useRouter();
@@ -45,17 +27,6 @@ export default function DoctorAppointment() {
   const [filteredData, setFilteredData] = useState(invoice);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("All Time");
-
-  const [showSuccessModalBook, setShowSuccessModalBook] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [editData, setEditData] = useState<any | null>(null);
-  const [editingAppointment, setEditingAppointment] = useState<any>(null);
-  // delete function
-  const handleDelete = (id: number) => {
-    const updated = filteredData.filter((item) => item.id !== id);
-    setFilteredData(updated);
-  };
-
   useEffect(() => {
     let data = invoice;
 
@@ -108,7 +79,15 @@ export default function DoctorAppointment() {
 
     setFilteredData(data);
   }, [searchQuery, timeFilter]);
-
+  // Handle download
+  const handleDownload = (url: string, name: string) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   const columns: ColumnDef<any>[] = [
     {
       header: "#",
@@ -221,17 +200,14 @@ export default function DoctorAppointment() {
         const id = info.row.original.id; // <-- use id directly
         return (
           <div className="text-center d-flex">
-            <Button
-              className="d-flex bg-white justify-content-center view-container   align-items-center border profile-card-boeder rounded Download-border me-2"
-              onClick={() => {
-                setEditData(info.row.original); // store row data
-              }}
-            >
+            <Button className="d-flex bg-white justify-content-center view-container   align-items-center border profile-card-boeder rounded Download-border me-2">
               <IoEyeOutline />
             </Button>
             <Button
               className="btn profile-card-boeder border bg-white"
-              onClick={() => handleDelete(id)} // <-- pass id
+              onClick={() =>
+                handleDownload(`/files/${name}.pdf`, `${name}.pdf`)
+              }
             >
               <Image src={download} alt="download" width={23} height={23} />
             </Button>
@@ -240,16 +216,7 @@ export default function DoctorAppointment() {
       },
     },
   ];
-  // modal bookappointment
 
-  const handleClose = () => {
-    setShowModal(false);
-  };
-  const [appointments, setAppointments] = useState<AppointmentData[]>([]);
-
-  const handleAddAppointment = (newAppointment: AppointmentData) => {
-    setAppointments((prev) => [...prev, newAppointment]);
-  };
   return (
     <div className="mt-4">
       {/* list */}
