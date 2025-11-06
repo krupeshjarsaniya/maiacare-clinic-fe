@@ -790,6 +790,191 @@
   font-size: 17px;
   font-weight: 500;
 }
+
+/* login css */
+.login-title {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 44px;
+  font-style: SemiBold;
+  color: var(--login-font);
+}
+.input-forrgot-password {
+  color: var(--input-forgot-password);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  font-style: bold;
+  cursor: pointer !important;
+}
+.loginpage-or-btn {
+  font-size: 12px;
+  font-weight: 600;
+  font-style: SemiBold;
+  color: var(--or-font-color);
+}
+.login-dont {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  font-style: Regular;
+  color: var(--color-radio-lable);
+}
+.successful_modal .modal-lg {
+  width: 500px;
+}
+
+/* Dashboard.css */
+.phisical-assessment-accordion-title-showData {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 20px;
+
+  color: var(--color-radio-lable);
+}
+.dashboard-card-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--color-radio-lable);
+}
+.dashboard-card-green {
+  font-weight: 600;
+  line-height: 20px;
+  font-style: SemiBold;
+  color: var(--dashboard-card-green);
+  font-size: 14px !important;
+}
+
+.dashboard-card-orange {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  font-style: SemiBold;
+  color: var(--login-font);
+}
+.dashboard-subheader {
+  font-size: 31px;
+  font-weight: 600;
+  line-height: 33px;
+
+  color: var(--color-heading);
+}
+.card {
+  border: none;
+  border-radius: 12px;
+}
+.dashboard-progress-bar {
+  border-radius: 4px !important;
+  gap: 1px !important;
+  height: 36px !important;
+  display: flex !important;
+  overflow: hidden !important;
+}
+.dashboard-progress-bars {
+  /* marginRight: 2px !important; */
+  gap: 1px !important;
+  display: flex !important;
+}
+.dashboard-chart-dropdown1 .maiacare-input-field {
+  width: 69px !important;
+  padding: 5px 5px 5px 8px !important;
+}
+.treatment-success-rate-charts-patients {
+  background-color: #def7ec !important;
+  border-radius: 8px !important;
+  margin-left: 20px !important;
+  padding: 5px !important;
+}
+.patient-journey-up-icon1 {
+  background-color: var(--color-white);
+  border: 1px solid var(--google-icon-border);
+  cursor: pointer;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  display: flex;
+}
+.treatment-success-rate-datas {
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 26px;
+  font-style: bold;
+  color: var(--color-heading);
+}
+.dashboard-chart-heading {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 26px;
+  font-style: Medium;
+  color: var(--color-heading);
+}
+.dashboard-treatment-success {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  font-style: SemiBold;
+  color: var(--color-radio-lable);
+}
+.dashboard-treatment-success-rate {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 20px;
+  font-style: SemiBold;
+  color: var(--dashboard-card-green);
+}
+.dashboard-treatment-success-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 10px;
+  font-style: SemiBold;
+  color: var(--color-radio-lable);
+}
+
+.dashboard-treatment-success-patients {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 16px;
+  font-style: Medium;
+  color: var(--color-sidebar-icon);
+}
+.treatment-success-rate-charts-patients {
+  background-color: rgb(222, 247, 236) !important;
+  border-radius: 8px !important;
+  margin-left: 20px !important;
+  padding: 5px !important;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--dashboard-chart-patients);
+}
+.emerygencyimg {
+  border: 1.5px solid #dde1e8;
+  width: fit-content;
+  padding: 2px 4px;
+  border-radius: 5px;
+}
+.requestarrow {
+  border: 1.5px solid #dde1e8;
+  width: fit-content;
+  padding: 1px 7px;
+  border-radius: 5px;
+}
+.eyecon {
+  border: 1.5px solid #dde1e8;
+  border-radius: 5px;
+
+  width: -moz-fit-content;
+  width: fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 0 5px;
+}
+.notification_card {
+  font-size: 17px;
+}
 @media screen and (max-width: 1024px) {
   .accordion-title {
     font-size: 20px;

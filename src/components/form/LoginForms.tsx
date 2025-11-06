@@ -418,8 +418,9 @@ export function VerifyOtp() {
         if (!formData.number) {
             errors.number = "Verification Code is required";
             isValid = false;
-        }else if (formData.number.length !== 123456) {
-            errors.number = "Please enter valid code";
+        }else if (formData.number.length === 123456) {
+            errors.number = "Welcome";
+            // errors.number = "Please enter valid code";
             isValid = false;
         }
         setFormError(errors);

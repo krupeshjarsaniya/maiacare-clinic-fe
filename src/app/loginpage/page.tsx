@@ -1,9 +1,10 @@
 import React from 'react'
+import LoginScreenContainer from '../../components/LoginScreenContainer'
 
 export default function page() {
   return (
     <div>
-      loginpage
+      <LoginScreenContainer/>
     </div>
   )
 }
