@@ -23,6 +23,7 @@ import { PiStethoscopeBold } from "react-icons/pi";
 import { FaBoxesStacked } from "react-icons/fa6";
 import { LuScrollText } from "react-icons/lu";
 
+
 interface Props {
   collapsed: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,6 +31,7 @@ interface Props {
 }
 
 const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
+
   const pathname = usePathname();
   const navRef = useRef<HTMLDivElement | null>(null);
 
@@ -134,7 +136,9 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
           >
             <FaChevronDown size={20} />
           </div>
-          <div className="sidebar__user">
+          <div className="sidebar__user"
+          
+           >
             <img
               src={UserProfileIcon.src}
               alt="User"

@@ -12,6 +12,7 @@ import DoctorBasicDetails from "./form/Doctor-Basic-Details";
 import DoctorManageLeave from "./form/Doctor-Manage-Leave";
 import DoctorAssignedPatients from "./form/Doctor-Assigned-Patients";
 import DoctorAppointment from "./form/Doctor-Appointment";
+import DoctorBookAppointment from "./form/DoctorBookAppointment";
 
 const ProfileTabes = () => {
   const [activeTab, setActiveTab] = useState<string>("basic");
@@ -47,7 +48,7 @@ const ProfileTabes = () => {
       label: "Appointments",
       content:  <>
           {
-            <DoctorAppointment />
+            <DoctorBookAppointment />
           }
         </>,
     },
@@ -64,16 +65,6 @@ const ProfileTabes = () => {
         />
 
         {activeTab === "basic" && <div></div>}
-
-        {/* {activeTab === 'leaves' && (
-          <div>
-            
-          </div>
-        )} */}
-
-        {/* {activeTab === 'Reviews' && (
-          <div>Reviews Content</div>
-        )} */}
       </div>
     </>
   );

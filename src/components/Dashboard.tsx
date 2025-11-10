@@ -40,6 +40,7 @@ import Image, { StaticImageData } from "next/image";
 import { InputSelect } from "./ui/InputSelect";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 
 const LineChart = dynamic(
   () => import("react-chartjs-2").then((mod) => mod.Line),
@@ -131,7 +132,6 @@ const AppoitmentWaveChart: React.FC<WaveChartProps> = ({
           label: "Month",
           data: Month,
           borderColor: "#3E5A91",
-        
           backgroundColor: "transparent",
           borderWidth: 2,
           fill: true,
@@ -156,10 +156,14 @@ const AppoitmentWaveChart: React.FC<WaveChartProps> = ({
         },
         y: {
           beginAtZero: true,
-          min:20,
+          min: 20,
           max: 80,
           ticks: { stepSize: 10, color: "#6c757d", font: { size: 13 } },
           grid: { color: "rgba(0,0,0,0.05)" },
+
+          border: {
+            display: false,
+          },
         },
       },
       animation: { duration: 1800, easing: "easeInOutQuart" },
@@ -178,7 +182,7 @@ const AppoitmentWaveChart: React.FC<WaveChartProps> = ({
   }, [width, height]);
 
   return (
-    <div className="card shadow-sm">
+    <div className="card h-100">
       <div className="px-3 pt-3 text-center">
         <div className="d-flex align-items-center justify-content-between px-2">
           <h6 className="mb-0 d-flex align-items-start justify-content-start dashboard-chart-heading">
@@ -198,17 +202,6 @@ const AppoitmentWaveChart: React.FC<WaveChartProps> = ({
               />
             </svg>
           </div>
-        </div>
-      </div>
-
-      <div className="d-flex px-3 gap-2">
-        <div className="d-flex align-items-center">
-          <GoDotFill fontSize={22} color="#70AAA4" />
-          <span className="ageDistribution">Male</span>
-        </div>
-        <div className="d-flex align-items-center">
-          <GoDotFill fontSize={22} color="#E29578" />
-          <span className="ageDistribution">Female</span>
         </div>
       </div>
 
@@ -235,8 +228,8 @@ const WaveChart: React.FC<WaveChartProps> = ({ width = 800, height = 400 }) => {
 
     if (chartInstanceRef.current) chartInstanceRef.current.destroy();
 
-    const maleData = [60, 5, 46, 32, 58, 46, 60];
-    const femaleData = [0, 35, 65, 20, 60, 35];
+    const maleData = [60, 5, 46, 32, 58, 45];
+    const femaleData = [0, 42, 18, 72, 16, 62];
 
     const chartData: ChartData<"line"> = {
       labels: age,
@@ -283,6 +276,9 @@ const WaveChart: React.FC<WaveChartProps> = ({ width = 800, height = 400 }) => {
           max: 105,
           ticks: { stepSize: 15, color: "#6c757d", font: { size: 13 } },
           grid: { color: "rgba(0,0,0,0.05)" },
+          border: {
+            display: false,
+          },
         },
       },
       animation: { duration: 1800, easing: "easeInOutQuart" },
@@ -346,6 +342,7 @@ const WaveChart: React.FC<WaveChartProps> = ({ width = 800, height = 400 }) => {
 
 // ---------- Dashboard Component ----------
 const Dashboard: React.FC = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>();
   const initialData = {
     appointments: 18,
@@ -409,38 +406,6 @@ const Dashboard: React.FC = () => {
       </span>
     );
   };
-
-  const appointmentChartData = {
-    labels: data.appointmentData.months,
-    datasets: [
-      {
-        label: "IVF Treatment",
-        data: data.appointmentData.ivfTreatment,
-        backgroundColor: "#D45F35",
-      },
-      {
-        label: "Kit Treatment",
-        data: data.appointmentData.kitTreatment,
-        backgroundColor: "#DB7A57",
-      },
-      {
-        label: "ICSI Treatment",
-        data: data.appointmentData.icsiTreatment,
-        backgroundColor: "#E29578",
-      },
-      {
-        label: "Gamete Freezing",
-        data: data.appointmentData.gametefreezing,
-        backgroundColor: "#EAAF9A",
-      },
-      {
-        label: "PGT Testing",
-        data: data.appointmentData.pgtTesting,
-        backgroundColor: "#F1CABB",
-      },
-    ],
-  };
-
   const options: ChartOptions<"bar"> = {
     responsive: true,
     plugins: {
@@ -600,6 +565,7 @@ const Dashboard: React.FC = () => {
       speciality: "Embryologist",
     },
   ];
+
   return (
     <>
       <div className="py-2">
@@ -721,20 +687,6 @@ const Dashboard: React.FC = () => {
                         <p className="mb-0 dashboard-chart-heading">
                           Treatment Success Rate
                         </p>
-                        {/* <div className="patient-journey-up-icon1">
-                      <svg
-                        width="20"
-                        height="21"
-                        viewBox="0 0 20 21"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M10 0.75C8.07164 0.75 6.18657 1.32183 4.58319 2.39317C2.97982 3.46451 1.73013 4.98726 0.992179 6.76884C0.254225 8.55042 0.061142 10.5108 0.437348 12.4021C0.813554 14.2934 1.74215 16.0307 3.10571 17.3943C4.46928 18.7579 6.20656 19.6865 8.09787 20.0627C9.98919 20.4389 11.9496 20.2458 13.7312 19.5078C15.5127 18.7699 17.0355 17.5202 18.1068 15.9168C19.1782 14.3134 19.75 12.4284 19.75 10.5C19.7473 7.91498 18.7192 5.43661 16.8913 3.60872C15.0634 1.78084 12.585 0.75273 10 0.75ZM10 18.75C8.36831 18.75 6.77326 18.2661 5.41655 17.3596C4.05984 16.4531 3.00242 15.1646 2.378 13.6571C1.75358 12.1496 1.5902 10.4908 1.90853 8.8905C2.22685 7.29016 3.01259 5.82015 4.16637 4.66637C5.32016 3.51259 6.79017 2.72685 8.39051 2.40852C9.99085 2.09019 11.6497 2.25357 13.1571 2.87799C14.6646 3.50242 15.9531 4.55984 16.8596 5.91655C17.7661 7.27325 18.25 8.8683 18.25 10.5C18.2475 12.6873 17.3775 14.7843 15.8309 16.3309C14.2843 17.8775 12.1873 18.7475 10 18.75ZM11.5 15C11.5 15.1989 11.421 15.3897 11.2803 15.5303C11.1397 15.671 10.9489 15.75 10.75 15.75C10.3522 15.75 9.97065 15.592 9.68934 15.3107C9.40804 15.0294 9.25 14.6478 9.25 14.25V10.5C9.05109 10.5 8.86033 10.421 8.71967 10.2803C8.57902 10.1397 8.5 9.94891 8.5 9.75C8.5 9.55109 8.57902 9.36032 8.71967 9.21967C8.86033 9.07902 9.05109 9 9.25 9C9.64783 9 10.0294 9.15804 10.3107 9.43934C10.592 9.72064 10.75 10.1022 10.75 10.5V14.25C10.9489 14.25 11.1397 14.329 11.2803 14.4697C11.421 14.6103 11.5 14.8011 11.5 15ZM8.5 6.375C8.5 6.1525 8.56598 5.93499 8.6896 5.74998C8.81322 5.56498 8.98892 5.42078 9.19449 5.33564C9.40005 5.25049 9.62625 5.22821 9.84448 5.27162C10.0627 5.31502 10.2632 5.42217 10.4205 5.5795C10.5778 5.73684 10.685 5.93729 10.7284 6.15552C10.7718 6.37375 10.7495 6.59995 10.6644 6.80552C10.5792 7.01109 10.435 7.18679 10.25 7.3104C10.065 7.43402 9.84751 7.5 9.625 7.5C9.32664 7.5 9.04049 7.38147 8.82951 7.1705C8.61853 6.95952 8.5 6.67337 8.5 6.375Z"
-                          fill="#2B4360"
-                        />
-                      </svg>
-                    </div> */}
                       </div>
 
                       {/* Total Count */}
@@ -865,30 +817,21 @@ const Dashboard: React.FC = () => {
               </Col>
               <Col lg={6}>
                 <AppoitmentWaveChart height={330} />
-                {/* <Card>
-                  <Card.Body>
-                    <div className="">
-                      <Card.Title className="dashboard-chart-heading">
-                        Appointment Overview
-                      </Card.Title>
-                    </div>
-                    <div className="appointment-overview-charts">
-                      <Bar data={appointmentChartData} options={options} />
-                    </div>
-                  </Card.Body>
-                </Card> */}
               </Col>
             </Row>
             {/* Charts & doctors*/}
             <Row className="mb-4 mt-4">
               <Col lg={6}>
-                <Card className="">
+                <Card className="h-100">
                   <Card.Body>
                     <div className="d-flex justify-content-between align-items-center">
                       <Card.Title className="dashboard-chart-heading">
                         Top Doctors
                       </Card.Title>
-                      <div className="patient-journey-up-icon1">
+                      <div
+                        className="patient-journey-up-icon1"
+                        onClick={() => router.push("/doctors")}
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="25"
@@ -942,7 +885,10 @@ const Dashboard: React.FC = () => {
                                 </div>
                               </div>
                             </div>
-                            <div className="requestarrow">
+                            <div
+                              className="requestarrow"
+                              onClick={() => router.push(`/doctors/${id}`)}
+                            >
                               <Image
                                 src={arrow}
                                 alt="arrow"
@@ -963,7 +909,7 @@ const Dashboard: React.FC = () => {
                 </Card>
               </Col>
               <Col lg={6}>
-                <WaveChart height={400} />
+                <WaveChart height={345} />
               </Col>
             </Row>
           </Col>

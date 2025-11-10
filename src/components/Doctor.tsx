@@ -133,6 +133,7 @@ export default function Doctor() {
         return (
           <Link
             href={`/doctors/${id}`}
+            
             className="text-decoration-none text-dark"
           >
             <div className="d-flex align-items-center gap-2">
@@ -192,14 +193,6 @@ export default function Doctor() {
       header: "Email",
       accessorKey: "email",
     },
-    // {
-    //   header: "Status",
-    //   cell: (info) => {
-    //     const status = info.row.original.status;
-    //     const statusClass = `status-${status.toLowerCase().replace(/\s/g, "")}`;
-    //     return <span className={`status-pill ${statusClass}`}>{status}</span>;
-    //   },
-    // },
     {
       header: "Status",
       cell: (info) => {
@@ -283,14 +276,6 @@ export default function Doctor() {
 
   const handleClose = () => setShowModal(false);
   const [showResultModal, setShowResultModal] = useState(false);
-  // handle active
-  // const handleActive = (doctor: any) => {
-  //   const newProfileState =
-  //     doctor.status === "Active" ? "deactivate" : "activate";
-
-  //   setFormData({ profile: newProfileState });
-  //   setShowModal(true);
-  // };
 
   const handleActive = (doctor: any) => {
     const newProfileState =

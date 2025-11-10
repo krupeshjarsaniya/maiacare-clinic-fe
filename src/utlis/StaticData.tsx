@@ -304,6 +304,11 @@ export interface appointement {
   time: string;
   date?: string;
   visit?: string[];
+  type?: string;
+  additionalNote?: string;
+  for?: string;
+  age?: string;
+  email?: string;
 }
 export const appointement: appointement[] = [
   {
@@ -575,38 +580,121 @@ export const invoice: invoice[] = [
   },
 ];
 
-// export const doctorsData: Doctor[] = [
-//   {
-//     id: 1,
-//     name: "Dr. Manan Gupta",
-//     image: Doctor1,
-//     slots: ["3:00 PM", "3:30 PM", "4:00 PM", "5:00 PM", "5:30 PM"],
-//   },
-//   {
-//     id: 2,
-//     name: "Dr. Manan Gupta",
-//     image: Doctor2,
-//     slots: ["3:00 PM", "3:30 PM", "4:00 PM", "5:00 PM"],
-//   },
-//   {
-//     id: 3,
-//     name: "Dr. Jaya Prakesh",
-//     image: Doctor3,
-//     slots: ["3:00 PM", "3:30 PM", "4:00 PM", "5:00 PM", "6:00 PM"],
-//   },
-//   {
-//     id: 4,
-//     name: "Dr. Megha Singh",
-//     image: doctor1,
-//     slots: ["3:00 PM", "3:30 PM", "4:00 PM", "5:00 PM"],
-//   },
-//   {
-//     id: 5,
-//     name: "Dr. Veena Raman",
-//     image: Doctor4,
-//     slots: ["3:00 PM", "3:30 PM", "4:00 PM", "5:00 PM", "5:30 PM"],
-//   },
-// ];
+// patient consultation data
+
+export interface ConsultationEntry {
+  id: number; // <-- ADD ID
+  name: string;
+  mobile: string;
+  treatment: string;
+  pin: string;
+  status: string;
+  image: string | StaticImageData;
+  date?: string; // ✅ optional date field
+}
+
+export const consultationData: ConsultationEntry[] = [
+  {
+    id: 1,
+    name: "Rani Desai",
+    mobile: "9092038491",
+    treatment: "Fertility Support +2",
+    pin: "400077",
+    status: "Completed",
+    image: Doctor1,
+    date: "2025-09-15",
+  },
+  {
+    id: 2,
+    name: "Nina Gupta",
+    mobile: "9092038491",
+    treatment: "IVF",
+    pin: "400077",
+    status: "Pending",
+    image: Doctor1,
+    date: "2025-11-07",
+  },
+  {
+    id: 3,
+    name: "Himari Roy",
+    mobile: "9092038491",
+    treatment: "Egg Freezing",
+    pin: "400077",
+    status: "Scheduled",
+    image: Doctor1,
+    date: "2025-09-15",
+  },
+  {
+    id: 4,
+    name: "Anjali Shinde",
+    mobile: "9092038491",
+    treatment: "IVF",
+    pin: "400077",
+    status: "No Response",
+    image: Doctor1,
+    date: "2025-09-15",
+  },
+  {
+    id: 5,
+    name: "Anjali Shinde",
+    mobile: "9092038491",
+    treatment: "Fertility Support +2",
+    pin: "400077",
+    status: "Cancelled",
+    image: Doctor1,
+    date: "2025-11-08",
+  },
+  {
+    id: 6,
+    name: "Aastha Patil",
+    mobile: "9092038491",
+    treatment: "IVF",
+    pin: "400077",
+    status: "Rescheduled",
+    image: Doctor1,
+    date: "2025-09-15",
+  },
+  {
+    id: 7,
+    name: "Anjali Shinde",
+    mobile: "9092038491",
+    treatment: "Fertility Support +2",
+    pin: "400077",
+    status: "No Response",
+    image: Doctor1,
+    date: "2025-09-15",
+  },
+  {
+    id: 8,
+    name: "Rani Desai",
+    mobile: "9092038491",
+    treatment: "Egg Freezing",
+    pin: "400077",
+    status: "Completed",
+    image: Doctor1,
+    date: "2025-09-15",
+  },
+  {
+    id: 9,
+    name: "Anjali Shinde",
+    mobile: "9092038491",
+    treatment: "Fertility Support +2",
+    pin: "400077",
+    status: "Cancelled",
+    image: Doctor1,
+    date: "2025-09-15",
+  },
+  {
+    id: 10,
+    name: "Rani Desai",
+    mobile: "9092038491",
+    treatment: "Egg Freezing",
+    pin: "400077",
+    status: "Completed",
+    image: Doctor1,
+    date: "2025-10-15",
+  },
+];
 
 import { ColumnDef } from "@tanstack/react-table";
 // import { LeaveEntry } from "../utils/types/interfaces";

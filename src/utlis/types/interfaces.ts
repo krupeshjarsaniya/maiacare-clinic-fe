@@ -10,25 +10,16 @@ export interface User {
 
 // interfaces.ts
 export interface BookAppointmentForm {
-  map(arg0: (item: any) => number): unknown;
-  length: number;
-  //Appointment Details
-
-  appointmentId: string;
-  type: string;
-  reasonForVisit: [];
-  appointmentDate: string;
-  appointmentTime: string;
-  forTime: string;
-  additionalNote: string;
-
-  //Patient Details
-  // patientName: SelectPatientType | null;
-  patientName: any;
-  phone: string;
-  email: string;
-  patientAge: string;
-  gender: string;
+  reasonForVisit: any;
+  type: any;
+   id: number; // <-- ADD ID
+  name: string;
+  mobile: string;
+  status: string;
+  image: string | StaticImageData;
+  time: string;
+  date?: string;
+  visit?: string[];
 }
 export interface AppointmentData {
   id: string;
