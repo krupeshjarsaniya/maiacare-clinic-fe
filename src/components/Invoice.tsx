@@ -108,7 +108,7 @@ export default function DoctorAppointment() {
         const id = info.row.original.id;
         return (
           <Link
-            href={`/doctors/${id}`}
+            href={`/invoice/${id}`}
             className="text-decoration-none text-dark"
           >
             <div className="d-flex align-items-center gap-2">
@@ -200,7 +200,10 @@ export default function DoctorAppointment() {
         const id = info.row.original.id; // <-- use id directly
         return (
           <div className="text-center d-flex">
-            <Button className="d-flex bg-white justify-content-center view-container   align-items-center border profile-card-boeder rounded Download-border me-2">
+            <Button
+              className="d-flex bg-white justify-content-center view-container   align-items-center border profile-card-boeder rounded Download-border me-2"
+              onClick={() => router.push(`/invoice/${id}`)}
+            >
               <IoEyeOutline />
             </Button>
             <Button

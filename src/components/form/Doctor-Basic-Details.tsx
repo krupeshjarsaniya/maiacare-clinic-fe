@@ -64,7 +64,7 @@ const DoctorBasicDetails = () => {
   };
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
- 
+
   const [qualifications, setQualifications] = useState<FormData[]>([
     { ...initialFormData },
   ]);
@@ -318,8 +318,9 @@ const DoctorBasicDetails = () => {
                   <div className="d-flex align-items-center justify-content-between">
                     <span className="clinic_card_title">Sunrise Fertility</span>
                     <Button
-                      className="maiacare-button-large  default-layout profile-card-boeder  bg-transparent btn btn-primary"
+                      className="maiacare-button-large  profile-card-boeder  bg-transparent btn "
                       onClick={() => setNavigateToEditClinic(true)}
+                      variant="dark"
                     >
                       <Image
                         src={editprofile}
@@ -388,8 +389,9 @@ const DoctorBasicDetails = () => {
                     </div>
                   </div>
                   <Button
-                    className="maiacare-button-large  default-layout profile-card-boeder  bg-transparent btn btn-primary"
+                    className="maiacare-button-large   profile-card-boeder  bg-transparent btn btn-primary"
                     onClick={() => router.push("/profile")}
+                    variant="dark"
                   >
                     <Image src={Arrowup} alt="Arrow" width={17} height={17} />
                   </Button>
@@ -430,6 +432,7 @@ const DoctorBasicDetails = () => {
                 <Button
                   onClick={handleOpen}
                   className="profile-card-boeder profile-card-button bg-transparent"
+                  variant="dark"
                 >
                   <svg
                     width="18"

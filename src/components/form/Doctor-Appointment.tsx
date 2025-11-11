@@ -51,6 +51,7 @@ export default function DoctorAppointment() {
   const [showSuccessModalBook, setShowSuccessModalBook] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editData, setEditData] = useState<any | null>(null);
+  const [appointments, setAppointments] = useState<AppointmentData[]>([]);
   const [editingAppointment, setEditingAppointment] = useState<any>(null);
   // delete function
   const handleDelete = (id: number) => {
@@ -244,11 +245,10 @@ export default function DoctorAppointment() {
   const handleClose = () => {
     setShowModal(false);
   };
-  const [appointments, setAppointments] = useState<AppointmentData[]>([]);
 
- const handleAddAppointment = (newAppointment: AppointmentData) => {
-  setAppointments((prev) => [...prev, newAppointment]); 
-};
+  const handleAddAppointment = (newAppointment: AppointmentData) => {
+    setAppointments((prev) => [...prev, newAppointment]);
+  };
   return (
     <div className="mt-4">
       {/* list */}
@@ -360,6 +360,8 @@ export default function DoctorAppointment() {
           header={editData ? "Edit Appointment" : "Book Appointment"}
           closeButton={true}
         >
+          
+
           <BookAppointment
             setBookAppointmentModal={setBookAppointmentModal}
             setShowSuccessModalBook={setShowSuccessModalBook}

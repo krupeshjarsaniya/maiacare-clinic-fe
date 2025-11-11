@@ -233,8 +233,8 @@
 }
 .total_text {
   color: #e29578;
-  font-weight: 600;
-  font-size: 17px;
+  font-size: 19px;
+  font-weight: 700;
 }
 /* ==================  Profile  / Edit Componet css  =============== */
 
@@ -928,7 +928,7 @@
 .dashboard-treatment-success-title {
   font-size: 16px;
   font-weight: 500;
-  line-height: 10px;
+  line-height: 17px;
   font-style: SemiBold;
   color: var(--color-radio-lable);
 }

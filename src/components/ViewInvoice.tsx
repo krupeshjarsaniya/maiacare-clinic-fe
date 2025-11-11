@@ -112,11 +112,11 @@ export default function ViewInvoice() {
                 <div className="mb-2">Commission(5%)</div>
                 <div className="total_text">Grand Total</div>
               </div>
-              <div className="service_card">
+              <div className="service_card" style={{ paddingRight: "2rem" }}>
                 <div className="mb-3">
                   <span style={{ color: "#8A8D93" }}>₹</span> 320
                 </div>
-                <div style={{fontSize:"20px",fontWeight:"600"}}>
+                <div style={{ fontSize: "20px", fontWeight: "600" }}>
                   <span style={{ color: "#3E4A57" }}>₹</span> 320
                 </div>
               </div>

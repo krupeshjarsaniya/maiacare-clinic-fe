@@ -44,14 +44,12 @@ export default function EditDoctorBasicDetails({
     Speciality: string;
     Experience: string;
     date: string;
-    gender: string; // default will be "female"
+    gender: string;
     Contact: string;
     Email: string;
     Fees: string;
     About: string;
-
-    services: [];
-
+    services: any[]; // ✅ FIXED
     degree: string;
     field: string;
     university: string;
@@ -108,6 +106,9 @@ export default function EditDoctorBasicDetails({
         Email: doctor.email || "",
         About: doctor.about || "",
         Fees: doctor.fees || "",
+        services: Array.isArray(doctor.services)
+          ? doctor.services.map((service: any) => service.value || service)
+          : [],
       }));
 
       //  Fix qualification prefill
