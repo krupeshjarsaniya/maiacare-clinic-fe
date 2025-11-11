@@ -600,7 +600,7 @@ export const consultationData: ConsultationEntry[] = [
     mobile: "9092038491",
     treatment: "Fertility Support +2",
     pin: "400077",
-    status: "Completed",
+    status: "Active",
     image: Doctor1,
     date: "2025-09-15",
   },
@@ -610,7 +610,7 @@ export const consultationData: ConsultationEntry[] = [
     mobile: "9092038491",
     treatment: "IVF",
     pin: "400077",
-    status: "Pending",
+    status: "Deactivated",
     image: Doctor1,
     date: "2025-11-07",
   },
@@ -620,7 +620,7 @@ export const consultationData: ConsultationEntry[] = [
     mobile: "9092038491",
     treatment: "Egg Freezing",
     pin: "400077",
-    status: "Scheduled",
+    status: "Discontinued",
     image: Doctor1,
     date: "2025-09-15",
   },
@@ -630,7 +630,7 @@ export const consultationData: ConsultationEntry[] = [
     mobile: "9092038491",
     treatment: "IVF",
     pin: "400077",
-    status: "No Response",
+    status: "Active",
     image: Doctor1,
     date: "2025-09-15",
   },
@@ -640,7 +640,7 @@ export const consultationData: ConsultationEntry[] = [
     mobile: "9092038491",
     treatment: "Fertility Support +2",
     pin: "400077",
-    status: "Cancelled",
+    status: "Deactivated",
     image: Doctor1,
     date: "2025-11-08",
   },
@@ -650,7 +650,7 @@ export const consultationData: ConsultationEntry[] = [
     mobile: "9092038491",
     treatment: "IVF",
     pin: "400077",
-    status: "Rescheduled",
+    status: "Active",
     image: Doctor1,
     date: "2025-09-15",
   },
@@ -660,7 +660,7 @@ export const consultationData: ConsultationEntry[] = [
     mobile: "9092038491",
     treatment: "Fertility Support +2",
     pin: "400077",
-    status: "No Response",
+    status: "Deactivated",
     image: Doctor1,
     date: "2025-09-15",
   },
@@ -670,7 +670,7 @@ export const consultationData: ConsultationEntry[] = [
     mobile: "9092038491",
     treatment: "Egg Freezing",
     pin: "400077",
-    status: "Completed",
+    status: "Active",
     image: Doctor1,
     date: "2025-09-15",
   },
@@ -680,7 +680,7 @@ export const consultationData: ConsultationEntry[] = [
     mobile: "9092038491",
     treatment: "Fertility Support +2",
     pin: "400077",
-    status: "Cancelled",
+    status: "Deactivated",
     image: Doctor1,
     date: "2025-09-15",
   },
@@ -690,17 +690,13 @@ export const consultationData: ConsultationEntry[] = [
     mobile: "9092038491",
     treatment: "Egg Freezing",
     pin: "400077",
-    status: "Completed",
+    status: "Active",
     image: Doctor1,
     date: "2025-10-15",
   },
 ];
 
 import { ColumnDef } from "@tanstack/react-table";
-// import { LeaveEntry } from "../utils/types/interfaces";
-import Trash from "../assets/images/Trash.png";
-import LightEditimg from "../assets/images/LightEditimg.png";
-import Image from "next/image";
 import { Patient, SelectPatientType } from "./types/interfaces";
 
 export type LeaveEntry = {

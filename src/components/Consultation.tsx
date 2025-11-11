@@ -1,7 +1,6 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
-import { Form, InputGroup, Pagination } from "react-bootstrap";
+import { Dropdown, Form, InputGroup, Pagination } from "react-bootstrap";
 import { consultationData } from "../utlis/StaticData";
 import Image from "next/image";
 import CommonTable from "@/components/ui/BaseTable";
@@ -10,20 +9,16 @@ import { useSearchParams } from "next/navigation";
 import { IoSearch } from "react-icons/io5";
 import { PiSlidersDuotone } from "react-icons/pi";
 import patient from "../assets/images/patientcomponent.png";
-import { LuTrash2, LuArrowDown } from "react-icons/lu";
-
+import eye from "../assets/images/eyenotification.png";
+import Reassign from "../assets/images/Reassigndoctor.png";
+import active_deactive from "../assets/images/Poweractivate.png";
+import edit from "../assets/images/edit.png";
 import Link from "next/link";
-
 import Button from "./ui/Button";
 import { useRouter } from "next/navigation";
+import { HiOutlineDotsVertical } from "react-icons/hi";
 
-export type ConsultationStatus =
-  | "Completed"
-  | "Pending"
-  | "Scheduled"
-  | "No Response"
-  | "Rescheduled"
-  | "Cancelled";
+export type ConsultationStatus = "Active" | "Deactivated" | "Discontinued";
 
 export default function Consultation() {
   const searchParams = useSearchParams();
@@ -54,16 +49,6 @@ export default function Consultation() {
     const updated = filteredData.filter((item) => item.id !== id);
     setFilteredData(updated);
   };
-
-  // useEffect(() => {
-  //     if (filter === "completed") {
-  //         setFilteredData(consultationData.filter(item => item.status === "Completed"));
-  //     } else if (filter === "cancelled") {
-  //         setFilteredData(consultationData.filter(item => item.status === "Cancelled"));
-  //     } else {
-  //         setFilteredData(consultationData);
-  //     }
-  // }, [filter]);
   useEffect(() => {
     let data = consultationData;
 
@@ -200,12 +185,6 @@ export default function Consultation() {
         </span>
       ),
     },
-
-    // {
-    //     header: "Pin Code",
-    //     accessorKey: "pin",
-    // },
-
     {
       header: "Doctor",
       cell: (info) => {
@@ -255,7 +234,6 @@ export default function Consultation() {
         );
       },
     },
-
     {
       header: "Status",
       cell: (info) => {
@@ -269,20 +247,66 @@ export default function Consultation() {
       cell: (info) => {
         const id = info.row.original.id; // <-- use id directly
         return (
-          <div className="dot-image rounded border p-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-            >
-              <path
-                d="M10.9375 10C10.9375 10.1854 10.8825 10.3667 10.7795 10.5208C10.6765 10.675 10.5301 10.7952 10.3588 10.8661C10.1875 10.9371 9.99896 10.9557 9.8171 10.9195C9.63525 10.8833 9.4682 10.794 9.33709 10.6629C9.20598 10.5318 9.11669 10.3648 9.08051 10.1829C9.04434 10.001 9.06291 9.81254 9.13386 9.64123C9.20482 9.46993 9.32498 9.32351 9.47915 9.2205C9.63332 9.11748 9.81458 9.0625 10 9.0625C10.2486 9.0625 10.4871 9.16127 10.6629 9.33709C10.8387 9.5129 10.9375 9.75136 10.9375 10ZM10 5.625C10.1854 5.625 10.3667 5.57002 10.5208 5.467C10.675 5.36399 10.7952 5.21757 10.8661 5.04627C10.9371 4.87496 10.9557 4.68646 10.9195 4.5046C10.8833 4.32275 10.794 4.1557 10.6629 4.02459C10.5318 3.89348 10.3648 3.80419 10.1829 3.76801C10.001 3.73184 9.81254 3.75041 9.64123 3.82136C9.46993 3.89232 9.32351 4.01248 9.2205 4.16665C9.11748 4.32082 9.0625 4.50208 9.0625 4.6875C9.0625 4.93614 9.16127 5.1746 9.33709 5.35041C9.5129 5.52623 9.75136 5.625 10 5.625ZM10 14.375C9.81458 14.375 9.63332 14.43 9.47915 14.533C9.32498 14.636 9.20482 14.7824 9.13386 14.9537C9.06291 15.125 9.04434 15.3135 9.08051 15.4954C9.11669 15.6773 9.20598 15.8443 9.33709 15.9754C9.4682 16.1065 9.63525 16.1958 9.8171 16.232C9.99896 16.2682 10.1875 16.2496 10.3588 16.1786C10.5301 16.1077 10.6765 15.9875 10.7795 15.8333C10.8825 15.6792 10.9375 15.4979 10.9375 15.3125C10.9375 15.0639 10.8387 14.8254 10.6629 14.6496C10.4871 14.4738 10.2486 14.375 10 14.375Z"
-                fill="#2B4360"
-              />
-            </svg>
+           <div>
+            <Dropdown align="end" className="d-flex align-items-center">
+              <Dropdown.Toggle
+                as="button"
+                id="dropdown-basic"
+                className="bg-transparent border-0 p-1 no-caret"
+              >
+                <div className="patient-profile-dot">
+                  <HiOutlineDotsVertical />
+                </div>
+              </Dropdown.Toggle>
+              <Dropdown.Menu className="dropdown-menu-end">
+                <Dropdown.Item onClick={() => router.push(`/doctors/${id}`)}>
+                  <img
+                    src={eye.src}
+                    alt="eye"
+                    width={18}
+                    height={18}
+                    className="me-2"
+                  />
+                  View Profile
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => router.push(`/doctors/${id}`)}>
+                  <Image
+                    src={edit}
+                    alt="edit"
+                    width={18}
+                    height={18}
+                    className="me-2"
+                  />
+                  Edit Profile
+                </Dropdown.Item>
+                <Dropdown.Item >
+                  <Image
+                    src={active_deactive}
+                    alt="Poweractivate"
+                    width={18}
+                    height={18}
+                    className="me-2"
+                  />
+                  Activate/Deactivate
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
+
+          // <div className="dot-image rounded border p-1 action_component">
+          //   <svg
+          //     xmlns="http://www.w3.org/2000/svg"
+          //     width="20"
+          //     height="20"
+          //     viewBox="0 0 20 20"
+          //     fill="none"
+          //   >
+          //     <path
+          //       d="M10.9375 10C10.9375 10.1854 10.8825 10.3667 10.7795 10.5208C10.6765 10.675 10.5301 10.7952 10.3588 10.8661C10.1875 10.9371 9.99896 10.9557 9.8171 10.9195C9.63525 10.8833 9.4682 10.794 9.33709 10.6629C9.20598 10.5318 9.11669 10.3648 9.08051 10.1829C9.04434 10.001 9.06291 9.81254 9.13386 9.64123C9.20482 9.46993 9.32498 9.32351 9.47915 9.2205C9.63332 9.11748 9.81458 9.0625 10 9.0625C10.2486 9.0625 10.4871 9.16127 10.6629 9.33709C10.8387 9.5129 10.9375 9.75136 10.9375 10ZM10 5.625C10.1854 5.625 10.3667 5.57002 10.5208 5.467C10.675 5.36399 10.7952 5.21757 10.8661 5.04627C10.9371 4.87496 10.9557 4.68646 10.9195 4.5046C10.8833 4.32275 10.794 4.1557 10.6629 4.02459C10.5318 3.89348 10.3648 3.80419 10.1829 3.76801C10.001 3.73184 9.81254 3.75041 9.64123 3.82136C9.46993 3.89232 9.32351 4.01248 9.2205 4.16665C9.11748 4.32082 9.0625 4.50208 9.0625 4.6875C9.0625 4.93614 9.16127 5.1746 9.33709 5.35041C9.5129 5.52623 9.75136 5.625 10 5.625ZM10 14.375C9.81458 14.375 9.63332 14.43 9.47915 14.533C9.32498 14.636 9.20482 14.7824 9.13386 14.9537C9.06291 15.125 9.04434 15.3135 9.08051 15.4954C9.11669 15.6773 9.20598 15.8443 9.33709 15.9754C9.4682 16.1065 9.63525 16.1958 9.8171 16.232C9.99896 16.2682 10.1875 16.2496 10.3588 16.1786C10.5301 16.1077 10.6765 15.9875 10.7795 15.8333C10.8825 15.6792 10.9375 15.4979 10.9375 15.3125C10.9375 15.0639 10.8387 14.8254 10.6629 14.6496C10.4871 14.4738 10.2486 14.375 10 14.375Z"
+          //       fill="#2B4360"
+          //     />
+          //   </svg>
+          // </div>
         );
       },
     },
@@ -296,7 +320,7 @@ export default function Consultation() {
       {/* Search and Filter */}
       <div className="d-flex justify-content-between align-items-center flex-wrap mb-3 searchbar-content">
         {/* Search Input */}
-        <div className="d-flex align-items-center  mb-1 Consultations-image w-50 justify-content-between">
+        <div className="d-flex align-items-center  mb-1 Consultations-image gap-3 justify-content-between">
           {/* Search Input */}
           <InputGroup
             className="custom-search-group"
@@ -318,8 +342,8 @@ export default function Consultation() {
           </InputGroup>
 
           <div
-            className="border custom-filter-button p-2 consultations-image-summary-cards"
-            style={{ width: "35%" }}
+            className="border custom-filter-button p-2 patient-card consultations-image-summary-cards"
+            style={{ width: "35%", height: "fit-content" }}
           >
             <div className="consultations-image-book d-flex align-items-center">
               <Image src={patient} alt="patients" width={40} height={40} />

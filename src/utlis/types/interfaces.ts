@@ -10,8 +10,8 @@ export interface User {
 
 // interfaces.ts
 export interface BookAppointmentForm {
-  reasonForVisit: any;
-  type: any;
+  reasonForVisit: string;
+  type: string;
    id: number; // <-- ADD ID
   name: string;
   mobile: string;
@@ -25,12 +25,12 @@ export interface AppointmentData {
   id: string;
   appointmentId: string;
   type: string;
-  reasonForVisit: any[];
+  reasonForVisit: string[];
   appointmentDate: string;
   appointmentTime: string;
   forTime: string;
   additionalNote: string;
-  patientName: any;
+  patientName: string;
   phone: string;
   email: string;
 }

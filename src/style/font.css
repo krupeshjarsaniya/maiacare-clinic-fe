@@ -236,6 +236,9 @@
   font-size: 19px;
   font-weight: 700;
 }
+.patient-card {
+  padding: 4px 10px !important;
+}
 /* ==================  Profile  / Edit Componet css  =============== */
 
 /* .profile-name {

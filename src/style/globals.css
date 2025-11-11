@@ -53,17 +53,13 @@ body {
   font-family: var(--font-popins) !important;
 }
 
-
-
-.view-container{
-  
-    color: #2B4360;
-    font-size: 25px;
+.view-container {
+  color: #2b4360;
+  font-size: 25px;
 }
-.view-container:hover{
-  
-    color: #2B4360 !important;
-    font-size: 25px !important;
+.view-container:hover {
+  color: #2b4360 !important;
+  font-size: 25px !important;
 }
 /* =====| Login-css |===== */
 
@@ -466,7 +462,14 @@ body {
   font-weight: 500;
   text-align: center;
 }
-
+.status-discontinued {
+  background: #fdf2f8;
+  color: #d61f69;
+}
+.status-deactivated {
+  background: #fdf2f2;
+  color: #f05252;
+}
 .status-active {
   background-color: #def7ec;
   color: #057a55;
@@ -478,6 +481,9 @@ body {
 .status-inactive {
   background: #fdf2f2;
   color: #f05252;
+}
+.action_component{
+  width: fit-content;
 }
 .verified-badge {
   position: absolute;
