@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ContentContainer from "./ui/ContentContainer";
 import cliniclogo from "../assets/images/clinic logo.png";
 import Image from "next/image";
@@ -15,7 +15,14 @@ import Location from "../assets/images/location.png";
 import star from "../assets/images/ratingstart.png";
 import ProfileBasicDetails from "./form/Profile-Basic-Details";
 import verified from "../assets/images/verified.png";
+import { setHeaderData } from "@/utlis/redux/slices/headerSlice";
+import { AppDispatch } from "@/utlis/redux/store";
+import { useDispatch } from "react-redux";
 const Profile: React.FC = () => {
+   const dispatch: AppDispatch = useDispatch();
+    useEffect(() => {
+      dispatch(setHeaderData({ title: "Profile", subtitle: "Profile" }));
+    }, []);
   const router = useRouter();
 
   const handleEditProfile = () => {

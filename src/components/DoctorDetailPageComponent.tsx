@@ -81,7 +81,7 @@ const DoctorDetailPageComponent = () => {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setFormError((prev: any) => ({ ...prev, [name]: "" }));
+    setFormError((prev: FormError) => ({ ...prev, [name]: "" }));
   };
   type Reason = {
     id: number;

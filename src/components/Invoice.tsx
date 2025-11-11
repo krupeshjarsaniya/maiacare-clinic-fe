@@ -19,8 +19,15 @@ import search from "../assets/images/searchlight.png";
 import add from "../assets/images/addlight.png";
 import { IoEyeOutline } from "react-icons/io5";
 import download from "../assets/images/invoicedownload.png";
+import { setHeaderData } from "@/utlis/redux/slices/headerSlice";
+import { AppDispatch } from "@/utlis/redux/store";
 
-export default function DoctorAppointment() {
+import { useDispatch } from "react-redux";
+export default function Invoice() {
+   const dispatch: AppDispatch = useDispatch();
+    useEffect(() => {
+      dispatch(setHeaderData({ title: "Invoice", subtitle: "Invoice" }));
+    }, []);
   const router = useRouter();
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
@@ -88,7 +95,7 @@ export default function DoctorAppointment() {
     link.click();
     document.body.removeChild(link);
   };
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<invoice>[] = [
     {
       header: "#",
       cell: (info) => {

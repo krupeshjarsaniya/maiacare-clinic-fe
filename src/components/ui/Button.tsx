@@ -15,9 +15,9 @@ export default function Button({
     className?: string;
     variant?: string;
     disabled?: boolean;
-    onClick?: (e: any) => void;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
     type?: "button" | "submit" | "reset";
-    [key: string]: any;
+    [key: string]: unknown;
     contentSize?: "small" | "medium" | "large";
 }) {
     return (

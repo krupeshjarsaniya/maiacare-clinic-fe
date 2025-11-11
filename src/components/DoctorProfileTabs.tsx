@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from "react";
 // import { Container} from 'react-bootstrap';
 // import ProfileManageLeave from "@/components/form/Profile-Manage-Leave";
@@ -11,10 +12,23 @@ import DoctorDetailPageComponent from "./DoctorDetailPageComponent";
 import DoctorBasicDetails from "./form/Doctor-Basic-Details";
 import DoctorManageLeave from "./form/Doctor-Manage-Leave";
 import DoctorAssignedPatients from "./form/Doctor-Assigned-Patients";
-import DoctorAppointment from "./form/Doctor-Appointment";
+
 import DoctorBookAppointment from "./form/DoctorBookAppointment";
+import { setHeaderData } from "@/utlis/redux/slices/headerSlice";
+import { AppDispatch } from "@/utlis/redux/store";
+import { useDispatch } from "react-redux";
 
 const ProfileTabes = () => {
+  const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(
+      setHeaderData({
+        title: "Dr. Riya Dharang",
+        subtitle: "Doctors > Dr. Riya Dharang ",
+      })
+    );
+  }, []);
   const [activeTab, setActiveTab] = useState<string>("basic");
 
   const tabOptions = [
@@ -35,22 +49,12 @@ const ProfileTabes = () => {
     {
       key: "assignedpatients",
       label: "Assigned Patients",
-      content: (
-        <>
-          {
-            <DoctorAssignedPatients />
-          }
-        </>
-      ),
+      content: <>{<DoctorAssignedPatients />}</>,
     },
     {
       key: "appointments",
       label: "Appointments",
-      content:  <>
-          {
-            <DoctorBookAppointment />
-          }
-        </>,
+      content: <>{<DoctorBookAppointment />}</>,
     },
   ];
 

@@ -4,8 +4,21 @@ import CustomTabs from "./ui/CustomTabs";
 import AddDoctorBasicDetails from "./form/Add-Doctor-Basic-Details";
 import EditKycDetails from "./form/Add-Doctor-Kyc-Details";
 import AddDoctorClinicdetails from "./form/Add-Doctor-Clinic-details";
+import { AppDispatch } from "@/utlis/redux/store";
+import { useDispatch } from "react-redux";
+import { setHeaderData } from "@/utlis/redux/slices/headerSlice";
 
 const AddDoctor = () => {
+  const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(
+      setHeaderData({
+        title: "Add New Doctor",
+        subtitle: "Doctors > Add New Doctor",
+      })
+    );
+  }, []);
   const [activeTab, setActiveTab] = useState<string>("basic");
 
   const handlebasicNextClick = () => {
@@ -37,9 +50,9 @@ const AddDoctor = () => {
       content: <></>,
     },
   ];
-  const [doctors, setDoctors] = useState<any[]>([]);
+  const [doctors, setDoctors] = useState<unknown[]>([]);
   const [currentStep, setCurrentStep] = useState("add"); // or 'list'
-  const handleAddDoctor = (newDoctor: any) => {
+  const handleAddDoctor = (newDoctor: unknown) => {
     setDoctors((prev) => [...prev, newDoctor]);
     setCurrentStep("list"); // go to list page after add
   };

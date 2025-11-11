@@ -465,7 +465,7 @@ export default function EditDoctorKycDetails({
   };
 
   const handleSave = () => {
-    let newErrors: { [key: number]: string } = {};
+    const newErrors: { [key: number]: string } = {};
 
     // ✅ Validation: Required + unique report names
     const reportNames: string[] = [];

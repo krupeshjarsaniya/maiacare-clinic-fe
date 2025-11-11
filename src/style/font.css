@@ -239,6 +239,16 @@
 .patient-card {
   padding: 4px 10px !important;
 }
+.delete_btn .btn-primary {
+  --bs-btn-bg: #fff !important;
+}
+.delete_btn {
+  border: 1.5px solid #dde1e8 !important;
+  border-radius: 6px;
+  background-color: white !important;
+  padding: 5.2px 9px !important;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+}
 /* ==================  Profile  / Edit Componet css  =============== */
 
 /* .profile-name {

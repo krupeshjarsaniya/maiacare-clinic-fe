@@ -19,11 +19,20 @@ import Button from "../ui/Button";
 import toast from "react-hot-toast";
 import cliniccard from "../../assets/images/cliniccard.png";
 import Arrowup from "../../assets/images/ArrowUpRight.png";
+
 const DoctorBasicDetails = () => {
   interface FormError {
     [key: string]: string;
   }
-
+  interface Qualification {
+    degree: string;
+    field: string;
+    university: string;
+    startYear: string;
+    endYear: string;
+    title?: string;
+    years?: string;
+  }
   const router = useRouter();
 
   const initialFormError: FormError = {};
@@ -34,7 +43,9 @@ const DoctorBasicDetails = () => {
   const [showModal, setShowModal] = useState(false);
   const [endTime, setEndTime] = useState("");
 
-  const [defaultQualifications, setDefaultQualifications] = useState<any[]>([]);
+  const [defaultQualifications, setDefaultQualifications] = useState<
+    Qualification[]
+  >([]);
   const [showQualificationModal, setShowQualificationModal] = useState(false);
 
   type FormData = {
@@ -209,14 +220,14 @@ const DoctorBasicDetails = () => {
   };
 
   // + add Qualification button diable data show after unable
-  const isQualificationComplete = (q: any) => {
+  const isQualificationComplete = (q: Qualification) => {
     return q.degree && q.field && q.university && q.startYear && q.endYear;
   };
 
   // ===== Edit button click in modal open ================
   const openQualificationModal = (index: number) => {
     setEditIndex(index);
-    setFormData(defaultQualifications[index]); // je data show thayu e prefill karo
+    setFormData(defaultQualifications[index] as unknown as FormData); // je data show thayu e prefill karo
     setShowQualificationModal(true); // modal open
   };
 
@@ -246,7 +257,7 @@ const DoctorBasicDetails = () => {
     const errors = EditValidtation(formData);
     setFormError(errors);
 
-    if (Object.keys(errors).length > 0) return; // ❌ don't save if errors
+    if (Object.keys(errors).length > 0) return; 
 
     if (editIndex !== null) {
       const updated = [...defaultQualifications];
@@ -635,7 +646,7 @@ const DoctorBasicDetails = () => {
 
               {defaultQualifications.length === 0 ? (
                 <div className="text-center text-muted p-4 border rounded-4">
-                  "Data not found. Please Add Data"
+                 Data not found. Please Add Data
                 </div>
               ) : (
                 defaultQualifications.map((item, idx) => (
@@ -818,7 +829,7 @@ const DoctorBasicDetails = () => {
             <ContentContainer className="mt-4">
               <h5 className="profile-card-main-titile">About</h5>
               <p className="mb-0 about-text">
-                I'm Dr. Riya Dharang, a fertility specialist with over 12 years
+                I{"'"}m Dr. Riya Dharang, a fertility specialist with over 12 years
                 of experience in reproductive medicine. I specialize in IVF,
                 IUI, and fertility preservation, providing personalized,
                 compassionate care to help individuals and couples achieve their

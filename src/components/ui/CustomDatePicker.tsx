@@ -39,7 +39,7 @@ export const DatePickerFieldGroup = ({
   className?: string;
   iconColor?: string; // custom prop
   icon?: React.ReactNode;
-  [key: string]: any;
+  [key: string]: unknown;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 

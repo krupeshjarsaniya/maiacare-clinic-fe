@@ -23,6 +23,11 @@ import {
 } from "../../components/ui/InputSelect";
 // import { useDoctorData } from "@/utlis/hooks/DoctorData";
 import { useDoctor } from "../DoctorContext";
+interface ServiceOption {
+  id?: string;
+  value: string;
+  label: string;
+}
 export default function EditDoctorBasicDetails({
   onNext,
 }: {
@@ -49,7 +54,7 @@ export default function EditDoctorBasicDetails({
     Email: string;
     Fees: string;
     About: string;
-    services: any[]; // ✅ FIXED
+    services: ServiceOption[];
     degree: string;
     field: string;
     university: string;
@@ -107,7 +112,11 @@ export default function EditDoctorBasicDetails({
         About: doctor.about || "",
         Fees: doctor.fees || "",
         services: Array.isArray(doctor.services)
-          ? doctor.services.map((service: any) => service.value || service)
+          ? doctor.services.map((service) =>
+              typeof service === "string"
+                ? { value: service, label: service }
+                : service
+            )
           : [],
       }));
 
@@ -590,10 +599,8 @@ export default function EditDoctorBasicDetails({
                 value={formData.Contact}
                 inputMode="numeric"
                 onChange={(phone: string) => {
-                  // ✅ Remove any non-digit character
                   let value = phone.replace(/\D/g, "");
 
-                  // ✅ Allow only max 10 digits
                   if (value.length > 10) {
                     value = value.slice(0, 10);
                   }
@@ -648,7 +655,7 @@ export default function EditDoctorBasicDetails({
                   }
                 }}
                 onBlur={(e: React.FocusEvent<HTMLTextAreaElement>) => {}}
-                placeholder="About"
+                // placeholder="About"
                 required={true}
                 disabled={false}
                 error={formError.About}
@@ -668,8 +675,8 @@ export default function EditDoctorBasicDetails({
             <InputSelectMultiSelect
               name="services"
               values={formData.services}
-              onChange={(values) => {
-                setFormData((prev: any) => ({
+              onChange={(values: ServiceOption[]) => {
+                setFormData((prev) => ({
                   ...prev,
                   services: values,
                 }));

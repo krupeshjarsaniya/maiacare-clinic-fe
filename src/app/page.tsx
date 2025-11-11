@@ -1,6 +1,6 @@
 "use client";
 
-import { Container, Row, Col } from "react-bootstrap";
+import { Container} from "react-bootstrap";
 import { setHeaderData } from "../utlis/redux/slices/headerSlice";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";

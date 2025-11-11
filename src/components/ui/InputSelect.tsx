@@ -22,7 +22,7 @@ interface InputSelectMultiSelectProps {
   className?: string;
   selectedOptionColor?: string;
   selectedOptionBorderColor?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export function InputSelect({
@@ -56,7 +56,7 @@ export function InputSelect({
   className?: string;
   options?: { id: string, value: string, label: string }[];
   placeholder?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }) {
   return (
     <div className={`maiacare-input-field-container ${className}`}>

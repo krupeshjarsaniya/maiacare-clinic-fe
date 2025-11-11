@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ContentContainer from "./ui/ContentContainer";
 import Maiacarelogo from "../assets/images/maiacarelogo.png";
 import Image from "next/image";
 import { Col, Row } from "react-bootstrap";
 import call from "../assets/images/Phone.png";
 import location from "../assets/images/location.png";
+import { setHeaderData } from "@/utlis/redux/slices/headerSlice";
+import { AppDispatch } from "@/utlis/redux/store";
+import { useDispatch } from "react-redux";
 export default function ViewInvoice() {
+   const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(
+      setHeaderData({
+        title: "IN123",
+        subtitle: "Patients > Rani Desai > IN123",
+      })
+    );
+  }, []);
   return (
     <div>
       <ContentContainer>

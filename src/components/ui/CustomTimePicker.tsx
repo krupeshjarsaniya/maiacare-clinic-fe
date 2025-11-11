@@ -35,7 +35,7 @@ export const TimePickerFieldGroup = ({
   error?: string;
   helperText?: string;
   className?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 

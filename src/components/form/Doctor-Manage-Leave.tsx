@@ -301,7 +301,7 @@ const DoctorManageLeave = () => {
     ...defaultLeaveColumns,
     {
       header: "Action",
-      cell: ({ row }: any) => (
+      cell: ({ row }: { row: { original: LeaveEntry } }) => (
         <div className="d-flex gap-2">
           <button
             className="btn  profile-card-boeder rounded-2"

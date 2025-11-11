@@ -34,14 +34,14 @@ export const InputFieldGroup = ({
     helperText?: string;
     className?: string;
     children?: React.ReactNode;
-    [key: string]: any;
+    [key: string]: unknown;
 }) => {
     return (
   <div className={`maiacare-input-field-container ${className}`}>
     {label && (
     <InputFieldLabel label={label} required={required} />
     )}
-    <InputField name={name} type={type} value={value} onChange={onChange} onBlur={onBlur} onClick={onClick} placeholder={placeholder} disabled={disabled} readOnly={readOnly} children={children} {...rest} />
+    <InputField name={name} type={type} value={value} onChange={onChange} onBlur={onBlur} onClick={onClick} placeholder={placeholder} disabled={disabled} readOnly={readOnly}  {...rest} >{children}</InputField>
     {error && <InputFieldError error={error} />}
     {helperText && <InputFieldHelperText helperText={helperText} />}
   </div> 
@@ -81,7 +81,7 @@ export const InputField = ({
     readOnly?: boolean;
     className?: string;
     children?: React.ReactNode;
-    [key: string]: any;
+    [key: string]: unknown;
 }) => {
     return (
         <>

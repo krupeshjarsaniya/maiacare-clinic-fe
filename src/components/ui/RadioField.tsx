@@ -28,7 +28,7 @@ export const RadioButtonGroup = ({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
   className?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }) => {
   return (
     <div className={`maiacare-input-field-container ${className}`}>

@@ -12,7 +12,7 @@ interface PhoneNumberInputProps {
   helperText?: string;
   className?: string;
   placeholder?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const PhoneNumberInput = ({

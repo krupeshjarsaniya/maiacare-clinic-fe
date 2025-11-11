@@ -4,6 +4,7 @@ import { Accordion, Col, Row } from "react-bootstrap";
 import ContentContainer from "./ui/ContentContainer";
 import headphoneImg from "@/assets/images/headphone.png";
 import { MdOutlineMail } from "react-icons/md";
+import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 const supportFaqs = [
   {
     title: "How do I know which fertility treatment is right for me?",
@@ -27,12 +28,11 @@ const SettingsSupport = () => {
   const [activeKey, setActiveKey] = useState<string | null>("0");
 
   const handleSelect = (
-    eventKey: string | null | undefined,
-    _e?: React.SyntheticEvent
+    eventKey: AccordionEventKey,
+     _e?: React.SyntheticEvent<unknown>
   ) => {
-    setActiveKey(eventKey ?? null);
+    setActiveKey(eventKey?.toString() ?? null);
   };
-
   return (
     <>
       <ContentContainer>
@@ -92,7 +92,7 @@ const SettingsSupport = () => {
             <Accordion
               defaultActiveKey="0"
               activeKey={activeKey}
-              onSelect={(e: any) => handleSelect(e)}
+              onSelect={(eventKey, e) => handleSelect(eventKey, e)}
             >
               {supportFaqs.map((item, index) => {
                 const currentKey = index.toString();

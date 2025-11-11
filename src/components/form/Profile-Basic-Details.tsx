@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import "../../style/basetable.css";
 
@@ -28,7 +28,7 @@ import reviewimg from "../../assets/images/reviewimg.png";
 
 import verifiedreviewcard from "../../assets/images/verifiedreview.png";
 import reviewcardimg from "../../assets/images/reviewcardimg.png";
-import Button from "../ui/Button";
+// import Button from "../ui/Button";
 const ProfileBasicDetails = () => {
   type Service = {
     id: number;

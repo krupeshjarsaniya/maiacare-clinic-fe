@@ -38,7 +38,9 @@ import {
 
 import Image, { StaticImageData } from "next/image";
 import { InputSelect } from "./ui/InputSelect";
-
+import { useDispatch } from 'react-redux';
+import { setHeaderData } from '@/utlis/redux/slices/headerSlice';
+import { AppDispatch } from '@/utlis/redux/store';
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 
@@ -343,6 +345,10 @@ const WaveChart: React.FC<WaveChartProps> = ({ width = 800, height = 400 }) => {
 // ---------- Dashboard Component ----------
 const Dashboard: React.FC = () => {
   const router = useRouter();
+   const dispatch: AppDispatch = useDispatch();
+        useEffect(() => {
+          dispatch(setHeaderData({ title: "Dashboard", subtitle: "Dashboard" }));
+        }, []);
   const [formData, setFormData] = useState<FormData>();
   const initialData = {
     appointments: 18,
@@ -377,10 +383,10 @@ const Dashboard: React.FC = () => {
     },
   };
 
-  const [data, setData] = useState<DashboardData | any>(initialData);
+  const [data, setData] = useState<DashboardData>(initialData);
   useEffect(() => {
     const interval = setInterval(() => {
-      setData((prev: DashboardData | any) => ({
+      setData((prev: DashboardData) => ({
         ...prev,
         appointments: Math.floor(Math.random() * 50) + 10,
         Patients: Math.floor(Math.random() * 200) + 100,

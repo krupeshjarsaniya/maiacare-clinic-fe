@@ -34,7 +34,7 @@ export default function Textarea({
   helperText?: string;
   className?: string;
   maxLength?: number;
-  [key: string]: any;
+  // [key: string]: any;
 }) {
   return (
     <div className={`${className}`}>

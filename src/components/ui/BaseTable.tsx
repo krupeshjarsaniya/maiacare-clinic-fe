@@ -11,7 +11,7 @@ import "../../style/basetable.css";
 
 type CommonTableProps<TData> = {
   data: TData[];
-  columns: ColumnDef<TData, any>[];
+  columns: ColumnDef<TData>[];
 };
 
 export default function CommonTable<TData>({ data, columns }: CommonTableProps<TData>) {

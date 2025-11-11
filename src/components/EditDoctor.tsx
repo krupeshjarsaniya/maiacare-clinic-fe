@@ -5,8 +5,20 @@ import CustomTabs from "./ui/CustomTabs";
 import EditDoctorClinicdetails from "./form/Edit-Doctor-Clinic-Details";
 import EditDoctorKycDetails from "./form/Edit-Doctor-Kyc-Details";
 import EditDoctorBasicDetails from "./form/Edit-Doctor-Basic-Details";
-
+import { useDispatch } from "react-redux";
+import { setHeaderData } from "@/utlis/redux/slices/headerSlice";
+import { AppDispatch } from "@/utlis/redux/store";
 const EditDoctor = () => {
+    const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(
+      setHeaderData({
+        title: "Edit Doctor",
+        subtitle: "Doctors > Edit Doctor",
+      })
+    );
+  }, []);
   const searchParams = useSearchParams();
   const tabFromQuery = searchParams.get("tab");
 

@@ -1,3 +1,4 @@
+import {  ConsultationStatus, MedicationPrescriptionType, Patient, PatientJourneyItem, PhysicalAssessmentData, SelectPatientType } from "./types/interfaces";
 import doctor1 from "@/assets/images/doctor1.png";
 import doctor2 from "@/assets/images/doctor2.png";
 import doctor3 from "@/assets/images/doctor3.png";
@@ -15,19 +16,10 @@ import patient4 from "../assets/images/patient4.png";
 import patient5 from "../assets/images/patient5.png";
 import patient6 from "../assets/images/patient6.png";
 import clinicimg from "../assets/images/clinic logo.png";
+import patient from "../assets/images/patient_com.png";
+// export type ConsultationStatus = "Active" | "Inactive" | "On Leave";
 
-export interface DoctorEntry {
-  id: number; // <-- ADD ID
-  name: string;
-  mobile: string;
-  email: string;
-  pin: string;
-  status: string;
-  image: string | StaticImageData;
-  date?: string; // ✅ optional date field
-  specialisation: string;
-  verified: boolean;
-}
+
 
 export interface AssignedPatients {
   id: number; // <-- ADD ID
@@ -48,7 +40,18 @@ export type Doctor = {
   image: string | StaticImageData;
   slots: string[];
 };
-
+export type DoctorEntry = {
+  id: number;
+  name: string;
+  email: string;
+  mobile: string;
+  image: string | StaticImageData;  // ✅ handles both local and URL images
+  date: string;
+  specialisation: string;
+  pin:string;
+  status: ConsultationStatus;
+  verified?: boolean;
+};
 export const DoctorData: DoctorEntry[] = [
   {
     id: 1,
@@ -601,7 +604,7 @@ export const consultationData: ConsultationEntry[] = [
     treatment: "Fertility Support +2",
     pin: "400077",
     status: "Active",
-    image: Doctor1,
+    image: patient,
     date: "2025-09-15",
   },
   {
@@ -611,7 +614,7 @@ export const consultationData: ConsultationEntry[] = [
     treatment: "IVF",
     pin: "400077",
     status: "Deactivated",
-    image: Doctor1,
+    image: patient,
     date: "2025-11-07",
   },
   {
@@ -621,7 +624,7 @@ export const consultationData: ConsultationEntry[] = [
     treatment: "Egg Freezing",
     pin: "400077",
     status: "Discontinued",
-    image: Doctor1,
+    image: patient,
     date: "2025-09-15",
   },
   {
@@ -631,7 +634,7 @@ export const consultationData: ConsultationEntry[] = [
     treatment: "IVF",
     pin: "400077",
     status: "Active",
-    image: Doctor1,
+    image: patient,
     date: "2025-09-15",
   },
   {
@@ -641,7 +644,7 @@ export const consultationData: ConsultationEntry[] = [
     treatment: "Fertility Support +2",
     pin: "400077",
     status: "Deactivated",
-    image: Doctor1,
+    image: patient,
     date: "2025-11-08",
   },
   {
@@ -651,7 +654,7 @@ export const consultationData: ConsultationEntry[] = [
     treatment: "IVF",
     pin: "400077",
     status: "Active",
-    image: Doctor1,
+    image: patient,
     date: "2025-09-15",
   },
   {
@@ -661,7 +664,7 @@ export const consultationData: ConsultationEntry[] = [
     treatment: "Fertility Support +2",
     pin: "400077",
     status: "Deactivated",
-    image: Doctor1,
+    image: patient,
     date: "2025-09-15",
   },
   {
@@ -671,7 +674,7 @@ export const consultationData: ConsultationEntry[] = [
     treatment: "Egg Freezing",
     pin: "400077",
     status: "Active",
-    image: Doctor1,
+    image: patient,
     date: "2025-09-15",
   },
   {
@@ -681,7 +684,7 @@ export const consultationData: ConsultationEntry[] = [
     treatment: "Fertility Support +2",
     pin: "400077",
     status: "Deactivated",
-    image: Doctor1,
+    image: patient,
     date: "2025-09-15",
   },
   {
@@ -691,13 +694,13 @@ export const consultationData: ConsultationEntry[] = [
     treatment: "Egg Freezing",
     pin: "400077",
     status: "Active",
-    image: Doctor1,
+    image: patient,
     date: "2025-10-15",
   },
 ];
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Patient, SelectPatientType } from "./types/interfaces";
+// import { Patient, SelectPatientType } from "./types/interfaces";
 
 export type LeaveEntry = {
   id: string;

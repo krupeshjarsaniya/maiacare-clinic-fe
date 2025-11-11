@@ -3,15 +3,22 @@
 import { Accordion, Col, Nav, Row, Tab } from "react-bootstrap";
 import ContentContainer from "@/components/ui/ContentContainer";
 
-
 import PasswordSettings from "../components/form/PasswordSetting";
 import SettingsDevices from "../components/SettingsDevices";
 
 import SettingsNotification from "../components/SettingsNotification";
 import SettingsSupport from "../components/SettingsSupport";
 
+import { AppDispatch } from "../utlis/redux/store";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { setHeaderData } from "@/utlis/redux/slices/headerSlice";
 
 function SettingChangePassword() {
+  const dispatch: AppDispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setHeaderData({ title: "Settings", subtitle: "Settings" }));
+  }, []);
   return (
     <>
       <Tab.Container id="left-tabs-example" defaultActiveKey="first">

@@ -664,7 +664,7 @@ export default function AddDoctorClinicdetails({
                   label="Monday"
                   name="M"
                   value={formData.M}
-                  onChange={(e: { target: { value: any } }) => {
+                  onChange={(e: { target: { value: string } }) => {
                     setFormData({ ...formData, M: e.target.value });
                   }}
                   style={{ margintop: "8px" }}
@@ -692,7 +692,7 @@ export default function AddDoctorClinicdetails({
                   label="Tuesday"
                   name="T"
                   value={formData.T}
-                  onChange={(e: { target: { value: any } }) => {
+                  onChange={(e: { target: { value: string } }) => {
                     setFormData({ ...formData, T: e.target.value });
                   }}
                 />
@@ -719,7 +719,7 @@ export default function AddDoctorClinicdetails({
                   label="Wednesday"
                   name="W"
                   value={formData.W}
-                  onChange={(e: { target: { value: any } }) => {
+                  onChange={(e: { target: { value: string } }) => {
                     setFormData({ ...formData, W: e.target.value });
                   }}
                 />
@@ -746,7 +746,7 @@ export default function AddDoctorClinicdetails({
                   label="Thursday"
                   name="Th"
                   value={formData.Th}
-                  onChange={(e: { target: { value: any } }) => {
+                  onChange={(e: { target: { value: string } }) => {
                     setFormData({ ...formData, Th: e.target.value });
                   }}
                 />
@@ -773,7 +773,7 @@ export default function AddDoctorClinicdetails({
                   label="Friday"
                   name="F"
                   value={formData.F}
-                  onChange={(e: { target: { value: any } }) => {
+                  onChange={(e: { target: { value: string } }) => {
                     setFormData({ ...formData, F: e.target.value });
                   }}
                 />
@@ -800,7 +800,7 @@ export default function AddDoctorClinicdetails({
                   label="Saturday"
                   name="S"
                   value={formData.S}
-                  onChange={(e: { target: { value: any } }) => {
+                  onChange={(e: { target: { value: string } }) => {
                     setFormData({ ...formData, S: e.target.value });
                   }}
                 />
@@ -827,7 +827,7 @@ export default function AddDoctorClinicdetails({
                   label="Sunday"
                   name="Sun"
                   value={formData.Sun}
-                  onChange={(e: { target: { value: any } }) => {
+                  onChange={(e: { target: { value: string } }) => {
                     setFormData({ ...formData, Sun: e.target.value });
                   }}
                 />

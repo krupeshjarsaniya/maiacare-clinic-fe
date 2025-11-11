@@ -9,7 +9,7 @@ import deviceMobileImg from "@/assets/images/device-mobile.png";
 const SettingsDevices = () => {
     return (
         <>
-            <p className="settings-accordion-subtitle my-4">Where you're signed in</p>
+            <p className="settings-accordion-subtitle my-4">Where {"you're"} signed in</p>
             <div className="d-flex flex-column gap-4 ">
                 <div className="your-device-box d-flex flex-column flex-lg-row flex-md-column flex-sm-row justify-content-between gap-3 align-items-start align-items-lg-center ">
                     <div className="d-flex justify-content-center align-items-center gap-xl-3 gap-2 ">

@@ -1,11 +1,5 @@
 'use client';
-import { FaEnvelope, FaLock, FaFacebookF, FaGoogle } from 'react-icons/fa';
 import Image from 'next/image';
-import { MdMailOutline } from "react-icons/md";
-import { BiHide, BiLockAlt, BiShow } from "react-icons/bi";
-
-import Logo from "../assets/images/Maia Logo.png";
-import FacebookIcon from "../assets/images/Facebook_Icon.png";
 import GoogleIcon from "../assets/images/Google_Icon.png";
 import PregnecyWomanLogin from "../assets/images/Pregnecy_Woman_Login1.png";
 import "../style/login.css"
@@ -50,7 +44,7 @@ export default function LoginScreenContainer() {
                             <LoginForms />
 
                             <div className="text-center mt-3">
-                                <span className='login-dont'>Don't have an account? </span>
+                                <span className='login-dont'>Don{"'"}t have an account? </span>
                                 <a href="#" className="input-forrgot-password">Sign Up</a>
                             </div>
 

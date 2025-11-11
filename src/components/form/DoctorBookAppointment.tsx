@@ -19,6 +19,7 @@ import {
   ToggleButtonGroup,
   ToggleButton,
 } from "react-bootstrap";
+import SuccessImageBookAppointment from "../../assets/images/doctor-success.png";
 import { useRouter } from "next/navigation";
 import { appointement, PatientsDetails } from "../../utlis/StaticData";
 import Image, { StaticImageData } from "next/image";
@@ -41,11 +42,6 @@ import {
   InputFieldLabel,
 } from "../ui/InputField";
 import { appointement as defaultAppointmentData } from "../../utlis/StaticData";
-
-import {
-  //   BookAppointment,
-  SuccessModalBookAppointment,
-} from "./BookAppointment";
 import { InputSelect, InputSelectMultiSelect } from "../ui/InputSelect";
 import { DatePickerFieldGroup } from "../ui/CustomDatePicker";
 import { TimePickerFieldGroup } from "../ui/CustomTimePicker";
@@ -63,7 +59,38 @@ export type ConsultationStatus =
   | "Cancelled"
   | "Rescheduled"
   | "Engaged";
-
+type AppointmentRow = {
+  ProfilePhoto: { src: string } | undefined;
+  id: number; // <-- ADD ID
+  name: string;
+  mobile: string;
+  status: string;
+  image: string | StaticImageData;
+  time: string;
+  date?: string;
+  visit?: string[];
+  type?: string;
+  additionalNote?: string;
+  for?: string;
+  age?: string;
+  email?: string;
+};
+interface Appointment extends FormData {
+   ProfilePhoto: { src: string } | undefined;
+  id: number; // <-- ADD ID
+  name: string;
+  mobile: string;
+  status: string;
+  image: string | StaticImageData;
+  time: string;
+  date?: string;
+  visit?: string[];
+  type?: string;
+  additionalNote?: string;
+  for?: string;
+  age?: string;
+  email?: string;
+}
 export default function DoctorBookAppointment() {
   const [appointmentData, setAppointmentData] = useState<appointement[]>(
     defaultAppointmentData
@@ -74,17 +101,17 @@ export default function DoctorBookAppointment() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
-  const [filteredData, setFilteredData] = useState(appointement);
+  const [filteredData, setFilteredData] =
+    useState<AppointmentRow[]>(appointement);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("All Time");
   const [BookAppointmentModal, setBookAppointmentModal] = useState(false);
   const [showSuccessModalBook, setShowSuccessModalBook] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [editData, setEditData] = useState<any | null>(null);
+  const [editData, setEditData] = useState<AppointmentRow | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   //   const [appointments, setAppointments] = useState<AppointmentData[]>([]);
-  const [editingAppointment, setEditingAppointment] = useState<any>(null);
   // delete function
   interface FormError {
     [key: string]: string;
@@ -155,7 +182,7 @@ export default function DoctorBookAppointment() {
     setFilteredData(data);
   }, [filter, searchQuery, timeFilter]);
 
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<AppointmentRow>[] = [
     {
       header: "#",
       cell: (info) => {
@@ -282,7 +309,7 @@ export default function DoctorBookAppointment() {
     setShowModal(false);
   };
   type FormData = {
-    patientName(patientName: any): unknown;
+    patientName(patientName: string): unknown;
     id: string; // <-- ADD ID
     name: string | { name: string; ProfilePhoto?: { src: string } };
     // name: string;
@@ -315,7 +342,7 @@ export default function DoctorBookAppointment() {
     email: "",
     age: "",
     gender: "",
-    patientName: function (patientName: any): unknown {
+    patientName: function (patientName: string): unknown {
       throw new Error("Function not implemented.");
     },
   };
@@ -387,8 +414,8 @@ export default function DoctorBookAppointment() {
 
   const [highlightIndex, setHighlightIndex] = useState<number>(-1);
 
-  const selectItem = (item: any) => {
-    setFormData((prev) => ({
+  const selectItem = (item: AppointmentRow) => {
+    setFormData((prev: FormData) => ({
       ...prev,
       name: { name: item.name, ProfilePhoto: item.ProfilePhoto },
     }));
@@ -421,125 +448,6 @@ export default function DoctorBookAppointment() {
     }
   };
 
-  // handle submit
-  //   const handelSubmit = (event: React.FormEvent) => {
-  //     event.preventDefault();
-
-  //     const errors = validateForm2(formData);
-  //     setFormError(errors);
-
-  //     if (Object.keys(errors).length === 0) {
-
-  //       if (editData) {
-  //         const updatedList = appointmentData.map((item) =>
-  //           item.id === editData.id ? { ...item, ...formData } : item
-  //         );
-
-  //         console.log("✏️ Appointment Updated:", formData);
-  //       }
-
-  //       else {
-  //         const nextNumericId =
-  //           appointmentData.length > 0
-  //             ? Math.max(...appointmentData.map((item) => Number(item.id))) + 1
-  //             : 1;
-
-  //         const nextId = nextNumericId.toString().padStart(2, "0");
-
-  //         const newAppointment = {
-  //           id: nextId,
-  //           appointmentId: nextId,
-  //           type: formData.type,
-  //           reasonForVisit: formData.visit,
-  //           appointmentDate: formData.date,
-  //           appointmentTime: formData.time,
-  //           forTime: formData.for,
-  //           additionalNote: formData.additionalNote,
-  //           patientName: formData.name,
-  //           phone: formData.mobile,
-  //           email: formData.email,
-  //           patientAge: formData.age,
-  //           gender: formData.age,
-  //           status: "Confirmed",
-  //           image: temppatientImg1,
-  //         };
-  //         alert("by");
-
-  //         console.log("✅ New Appointment Added:", newAppointment);
-  //       }
-
-  //       setFormData(initialFormData);
-  //       setShowSuccessModalBook(true);
-  //       setBookAppointmentModal(false);
-  //       setStep(1);
-  //       setStepper(1);
-  //     } else {
-  //       console.log("Form has errors:", errors);
-  //     }
-  //   };
-  //   const handelSubmit = (event: React.FormEvent) => {
-  //     event.preventDefault();
-
-  //     const errors = validateForm2(formData);
-  //     setFormError(errors);
-
-  //     if (Object.keys(errors).length === 0) {
-  //       if (editData) {
-
-  //         const updatedList = appointmentData.map((item) =>
-  //           item.id === editData.id ? { ...item, ...formData } : item
-  //         );
-  //         setAppointmentData(updatedList);
-  //         setFilteredData(updatedList);
-  //         console.log("Appointment Updated:", formData);
-  //       } else {
-
-  //         const nextNumericId =
-  //           appointmentData.length > 0
-  //             ? Math.max(...appointmentData.map((item) => Number(item.id))) + 1
-  //             : 1;
-
-  //         const nextId = nextNumericId.toString().padStart(2, "0");
-
-  //         const newAppointment = {
-  //           id: nextId,
-  //           name:
-  //             typeof formData.name === "object"
-  //               ? formData.name.label || formData.name.value
-  //               : formData.name,
-  //           mobile: formData.mobile,
-  //           date: formData.date,
-  //           time: formData.time,
-  //           visit: formData.visit,
-  //           type: formData.type,
-  //           for: formData.for,
-  //           additionalNote: formData.additionalNote,
-  //           email: formData.email,
-  //           age: formData.age,
-  //           gender: formData.gender,
-  //           status: "Confirmed",
-  //           image:
-  //             typeof formData.name === "object" && formData.name.ProfilePhoto
-  //               ? formData.name.ProfilePhoto.src
-  //               : temppatientImg1,
-  //         };
-
-  //         console.log("New Appointment Added:", newAppointment);
-  //         const updatedList: any = [...appointmentData, newAppointment];
-  //         setAppointmentData(updatedList);
-  //         setFilteredData(updatedList);
-  //       }
-
-  //       setFormData(initialFormData);
-  //       setEditData(null);
-  //       setShowSuccessModalBook(true);
-  //       setBookAppointmentModal(false);
-  //       setStep(1);
-  //       setStepper(1);
-  //     } else {
-  //       console.warn(" Form validation failed:", errors);
-  //     }
-  //   };
   const handelSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -548,7 +456,7 @@ export default function DoctorBookAppointment() {
 
     if (Object.keys(errors).length === 0) {
       if (editData) {
-        const updatedList: any = appointmentData.map((item) =>
+        const updatedList: Appointment[] = appointmentData.map((item) =>
           item.id === editData.id ? { ...item, ...formData } : item
         );
         setAppointmentData(updatedList);
@@ -583,7 +491,7 @@ export default function DoctorBookAppointment() {
           gender: formData.gender,
         };
 
-        const updatedList: any = [...appointmentData, newAppointment];
+        const updatedList: Appointment[] = [...appointmentData, newAppointment];
         setAppointmentData(updatedList);
         setFilteredData(updatedList);
         console.log("✅ New Appointment Added:", newAppointment);
@@ -779,11 +687,11 @@ export default function DoctorBookAppointment() {
                       name="visit"
                       values={formData.visit || []}
                       onChange={(values) => {
-                        setFormData((prev: any) => ({
+                        setFormData((prev: FormData) => ({
                           ...prev,
                           visit: values,
                         }));
-                        setFormError((prev: any) => ({
+                        setFormError((prev: FormError) => ({
                           ...prev,
                           visit: "",
                         }));
@@ -889,21 +797,15 @@ export default function DoctorBookAppointment() {
                     Patient’s Details
                   </h6>
                   <Col md={12}>
-                    {typeof formData.name === "string" &&
-                    Object.keys(formData.name).length > 0 ? (
+                    {formData.name && typeof formData.name === "object" ? (
                       <div className="show-patient-box d-flex align-items-center justify-content-between">
                         <div className="d-flex align-items-center gap-2">
                           <Image
                             className="show-patient-img"
                             src={
-                              (typeof formData.name === "string" &&
-                                formData.name.ProfilePhoto?.src) ||
+                              formData.name?.ProfilePhoto?.src ||
                               temppatientImg1
                             }
-                            // src={
-                            //   formData.patientName?.ProfilePhoto?.src ||
-                            //   temppatientImg1
-                            // }
                             alt="doctor"
                             width={48}
                             height={48}
@@ -917,7 +819,7 @@ export default function DoctorBookAppointment() {
                         <div
                           className="cursor-pointer-custom"
                           onClick={() => {
-                            setFormData({ ...formData, patientName: {} });
+                            setFormData({ ...formData, name: {} });
                             setTxtPatinetName("");
                           }}
                         >
@@ -950,7 +852,7 @@ export default function DoctorBookAppointment() {
                           onChange={(e) => {
                             setTxtPatinetName(e.target.value);
                             setOpen(true);
-                            setFormError((prev: any) => ({
+                            setFormError((prev: FormError) => ({
                               ...prev,
                               patientName: "",
                             }));
@@ -1141,11 +1043,47 @@ export default function DoctorBookAppointment() {
             )}
           </>
         </Modal>
+        <Modal
+          show={showSuccessModalBook}
+          onHide={() => setShowSuccessModalBook(false)}
+          closeButton={true}
+        >
+          <div className="text-center">
+            <Image
+              src={SuccessImageBookAppointment}
+              alt="successImg"
+              width={200}
+              height={240}
+            />
+            <h3 className="modal-custom-header mt-2">
+              Appointment Request Submitted!
+            </h3>
+            <p className="modal-custom-content">
+              Maicare will contact you shortly to confirm your request
+            </p>
+          </div>
 
-        <SuccessModalBookAppointment
+          <div className="d-flex justify-content-center gap-3">
+            <Button
+              variant="outline"
+              className="w-100"
+              onClick={() => setShowSuccessModalBook(false)}
+            >
+              Okay
+            </Button>
+            <Button
+              variant="default"
+              className="w-100"
+              onClick={() => setShowSuccessModalBook(false)}
+            >
+              View Details
+            </Button>
+          </div>
+        </Modal>
+        {/* <SuccessModalBookAppointment
           showSuccessModalBook={showSuccessModalBook}
           setShowSuccessModalBook={setShowSuccessModalBook}
-        />
+        /> */}
       </>
     </div>
   );

@@ -96,7 +96,7 @@ export default function DoctorAssignedPatients() {
     setFilteredData(data);
   }, [filter, searchQuery, timeFilter]);
 
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<AssignedPatients>[] = [
     {
       header: "#",
       cell: (info) => {

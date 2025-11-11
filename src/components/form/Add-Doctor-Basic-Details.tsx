@@ -22,7 +22,7 @@ export default function AddDoctorBasicDetails({
   onSaveDoctor,
 }: {
   onNext: () => void;
-  onSaveDoctor: (doctorData: any) => void;
+  onSaveDoctor: (doctorData: unknown) => void;
 }) {
   // Personal Details
   interface FormError {

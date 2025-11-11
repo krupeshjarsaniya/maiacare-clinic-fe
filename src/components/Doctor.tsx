@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import {
   Form,
@@ -12,7 +11,7 @@ import {
 } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import { DoctorData } from "../utlis/StaticData";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import CommonTable from "@/components/ui/BaseTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
@@ -27,7 +26,6 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import VerifiedIcon from "../assets/images/verifiedreview.png";
 import edit from "../assets/images/edit.png";
 import DoctorAddedModal from "./DoctorAddedModel";
-export type ConsultationStatus = "Active" | "Inactive" | "On Leave";
 import eye from "../assets/images/Eye.png";
 import Poweractivate from "../assets/images/Poweractivate.png";
 import DoctorImg from "../assets/images/doctor1.png";
@@ -39,15 +37,36 @@ import sthetoscope from "../assets/images/Stethoscope.png";
 import patient from "../assets/images/patient.png";
 import { RadioButtonGroup } from "./ui/RadioField";
 import { InputFieldGroup } from "./ui/InputField";
+import { setHeaderData } from "@/utlis/redux/slices/headerSlice";
+import { AppDispatch } from "@/utlis/redux/store";
 
+import { useDispatch } from "react-redux";
+export type ConsultationStatus = "Active" | "Inactive" | "On Leave";
+
+export type Doctor = {
+  id: number;
+  name: string;
+  email: string;
+  mobile: string;
+  image: string | StaticImageData;
+  date: string;
+  specialisation: string;
+  pin: string;
+  status: ConsultationStatus;
+  verified?: boolean;
+};
 export default function Doctor() {
   const router = useRouter();
+  const dispatch: AppDispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setHeaderData({ title: "Doctors", subtitle: "Doctors" }));
+  }, []);
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
   const [filteredData, setFilteredData] = useState(DoctorData);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("All Time");
-  const [selectedDoctor, setSelectedDoctor] = useState<any | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
 
   // delete function
   const handleDelete = (id: number) => {
@@ -114,7 +133,7 @@ export default function Doctor() {
     setFilteredData(data);
   }, [filter, searchQuery, timeFilter]);
 
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<Doctor>[] = [
     {
       header: "#",
       cell: (info) => {
@@ -133,7 +152,6 @@ export default function Doctor() {
         return (
           <Link
             href={`/doctors/${id}`}
-            
             className="text-decoration-none text-dark"
           >
             <div className="d-flex align-items-center gap-2">
@@ -277,7 +295,7 @@ export default function Doctor() {
   const handleClose = () => setShowModal(false);
   const [showResultModal, setShowResultModal] = useState(false);
 
-  const handleActive = (doctor: any) => {
+  const handleActive = (doctor: Doctor) => {
     const newProfileState =
       doctor.status === "Active" ? "deactivate" : "activate";
 
@@ -313,28 +331,24 @@ export default function Doctor() {
 
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setShowModal(false);
-  //   setShowResultModal(true);
-  // };
 
   // handle submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!selectedDoctor) return;
-
     const updatedData = filteredData.map((doc) =>
       doc.id === selectedDoctor.id
         ? {
             ...doc,
-            status: formData.profile === "activate" ? "Active" : "Inactive",
+            status: (formData.profile === "activate"
+              ? "Active"
+              : "Inactive") as ConsultationStatus,
           }
         : doc
     );
 
-    setFilteredData(updatedData); // update state (table refreshes)
+    setFilteredData(updatedData);
     setShowModal(false);
     setShowResultModal(true);
   };
