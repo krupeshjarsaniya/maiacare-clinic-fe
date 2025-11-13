@@ -40,8 +40,10 @@ import sthetoscope from "../assets/images/Stethoscope.png";
 import email from "../assets/images/Email.png";
 import activation from "../assets/images/restricted-access.png";
 import deactivation from "../assets/images/restricted-access.png";
-import RescheduleAppointment from "./form/RescheduleAppointmentRequest";
-import RescheduleAppointmentRequest from "./form/RescheduleAppointmentRequest";
+import {
+  ReassignRequest,
+  SuccessModalReassignAppointment,
+} from "./form/ReassignRequest";
 export interface ConsultationInfo {
   id: number; // <-- ADD ID
   name: string;
@@ -82,8 +84,10 @@ export default function Consultation() {
   const [formError, setFormError] = useState<FormError>(initialFormError);
   const [showResultModal, setShowResultModal] = useState(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [showSuccessModalBook, setShowSuccessModalBook] = useState(false);
+
   const handleAddPatient = () => {
-    router.push("/addpatient"); // 👈 navigate to /addpatient page
+    router.push("/addpatient"); // Route to your Add Patient screen
   };
   const [selectedPatient, setSelectedPatient] =
     useState<ConsultationInfo | null>(null);
@@ -160,7 +164,6 @@ export default function Consultation() {
       ConsultationInfo.status === "Active" ? "deactivate" : "activate";
     setSelectedPatient(ConsultationInfo); // store doctor
     setFormData({ profile: newProfileState }); // set initial radio button
-    setShowModal(true);
   };
   const handleCancel = () => {
     setShowModal(false);
@@ -412,7 +415,6 @@ export default function Consultation() {
     );
     setFilteredData(updatedData);
     setShowModal(false);
-    setShowResultModal(true);
   };
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -426,8 +428,9 @@ export default function Consultation() {
     time: string;
     reason: string;
   }) => {
+    setShowRescheduleModal(false); // close reschedule modal
+    setShowSuccessModalBook(true); // open success modal
     console.log("Doctor reschedule data:", data);
-    // API call for doctor rescheduling
   };
   return (
     <div className="">
@@ -691,16 +694,17 @@ export default function Consultation() {
       </Modal>
 
       {/* reschedule modal */}
-
-      <RescheduleAppointmentRequest
+      <ReassignRequest
         show={showRescheduleModal}
-        onClose={handleRescheduleClose}
-        onSubmit={handleReschedule}
-        title="Reassign Request"
-       
+        onClose={() => setShowRescheduleModal(false)}
+        onSubmit={(data) => console.log(data)}
+        setShowSuccessModalBook={setShowSuccessModalBook}
       />
-     
+
+      <SuccessModalReassignAppointment
+        showSuccessModalBook={showSuccessModalBook}
+        setShowSuccessModalBook={setShowSuccessModalBook}
+      />
     </div>
   );
 }
- 

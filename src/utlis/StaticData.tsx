@@ -1,14 +1,21 @@
-import {  ConsultationStatus, MedicationPrescriptionType, Patient, PatientJourneyItem, PhysicalAssessmentData, SelectPatientType } from "./types/interfaces";
+import {
+  ConsultationStatus,
+  MedicationPrescriptionType,
+  Patient,
+  PatientJourneyItem,
+  PhysicalAssessmentData,
+  SelectPatientType,
+} from "./types/interfaces";
 import doctor1 from "@/assets/images/doctor1.png";
 import doctor2 from "@/assets/images/doctor2.png";
 import doctor3 from "@/assets/images/doctor3.png";
 import doctor4 from "@/assets/images/doctor4.png";
 import doctor5 from "@/assets/images/doctor5.png";
 import { StaticImageData } from "next/image";
-import Doctor1 from "@/assets/images/doctor1.png";
-import Doctor2 from "@/assets/images/doctor2.png";
-import Doctor3 from "@/assets/images/doctor3.png";
-import Doctor4 from "@/assets/images/doctor4.png";
+import appointmentProfile from "@/assets/images/doctor1.png";
+import RiyaSharma from "@/assets/images/doctor2.png";
+import NishaRao from "@/assets/images/doctor3.png";
+import AarushiPatel from "@/assets/images/doctor4.png";
 import patient1 from "../assets/images/patient1.png";
 import patient2 from "../assets/images/patient2.png";
 import patient3 from "../assets/images/patient3.png";
@@ -18,8 +25,6 @@ import patient6 from "../assets/images/patient6.png";
 import clinicimg from "../assets/images/clinic logo.png";
 import patient from "../assets/images/patient_com.png";
 // export type ConsultationStatus = "Active" | "Inactive" | "On Leave";
-
-
 
 export interface AssignedPatients {
   id: number; // <-- ADD ID
@@ -45,10 +50,10 @@ export type DoctorEntry = {
   name: string;
   email: string;
   mobile: string;
-  image: string | StaticImageData;  // ✅ handles both local and URL images
+  image: string | StaticImageData; // ✅ handles both local and URL images
   date: string;
   specialisation: string;
-  pin:string;
+  pin: string;
   status: ConsultationStatus;
   verified?: boolean;
 };
@@ -890,14 +895,14 @@ export const journeyData: PatientJourneyItem[] = [
     title: "Online Consultation",
     date: "on 09 Jul 2024",
     time: "12:11 PM",
-    status: "Success"
+    status: "Success",
   },
   {
     id: "2",
     title: "Appointment Booked",
     date: "on 09 Jul 2024",
     time: "12:11 PM",
-    status: "Success"
+    status: "Success",
   },
   {
     id: "3",
@@ -911,28 +916,34 @@ export const journeyData: PatientJourneyItem[] = [
     title: "Treatment Started",
     date: "on 09 Jul 2024",
     time: "10:30 AM",
-    status: "Pending"
+    status: "Pending",
   },
   {
     id: "5",
     title: "Pregnancy Confirmed",
     date: "on 09 Jul 2024",
     time: "12:11 PM",
-    status: "Pending"
+    status: "Pending",
   },
-
 ];
 export const MedicalHistoryData = {
   id_medical_history: 1,
   medical_medications: "true",
   medical_surgeries: "false",
-  medical_medical_condition: ["PCOS", "Thyroid Disorder", "Peanut Allergy", "Lactose Intolerant"],
-  medical_family_medical_history: ["Mother had endometriosis", "Father had thyroid"],
+  medical_medical_condition: [
+    "PCOS",
+    "Thyroid Disorder",
+    "Peanut Allergy",
+    "Lactose Intolerant",
+  ],
+  medical_family_medical_history: [
+    "Mother had endometriosis",
+    "Father had thyroid",
+  ],
   medical_lifestyle: ["Non-smoker", "Occasional alcohol", "Vegetarian diet"],
   medical_exercise: "never",
   medical_stress_level: "low",
-
-}
+};
 export const physicalAssessmentData: PhysicalAssessmentData[] = [
   {
     date: "Wed, 19 Feb 2024",
@@ -960,8 +971,7 @@ export const patientTreatmentData = [
     startDate: "7 Feb 2025",
     endDate: "1:30 PM",
     fees: "₹12000",
-    amountStatus: "Half Paid"
-
+    amountStatus: "Half Paid",
   },
   {
     title: "IVF Cycle 2",
@@ -969,8 +979,7 @@ export const patientTreatmentData = [
     startDate: "7 Feb 2025",
     endDate: "1:30 PM",
     fees: "₹12000",
-    amountStatus: "Half Paid"
-
+    amountStatus: "Half Paid",
   },
   {
     title: "IUI",
@@ -978,8 +987,7 @@ export const patientTreatmentData = [
     startDate: "7 Feb 2025",
     endDate: "1:30 PM",
     fees: "₹12000",
-    amountStatus: "Paid"
-
+    amountStatus: "Paid",
   },
   {
     title: "Egg Freezing",
@@ -987,11 +995,9 @@ export const patientTreatmentData = [
     startDate: "7 Feb 2025",
     endDate: "1:30 PM",
     fees: "₹12000",
-    amountStatus: "Paid"
-
-  }
-
-]
+    amountStatus: "Paid",
+  },
+];
 
 export const TempTreatmentSteps = [
   {
@@ -1034,7 +1040,6 @@ export const TempTreatmentSteps = [
     id: 10,
     step: "Pregnancy Test",
   },
-
 ];
 export const PaymentHistoryData = [
   {
@@ -1045,7 +1050,7 @@ export const PaymentHistoryData = [
     paymentMode: "UPI",
     amount: "₹1,200",
     status: "Pending",
-    actions: "View"
+    actions: "View",
   },
   {
     transactionId: "TXN1234567891",
@@ -1055,7 +1060,7 @@ export const PaymentHistoryData = [
     paymentMode: "UPI",
     amount: "₹1,200",
     status: "Paid",
-    actions: "View"
+    actions: "View",
   },
   {
     transactionId: "TXN1234567892",
@@ -1065,7 +1070,7 @@ export const PaymentHistoryData = [
     paymentMode: "UPI",
     amount: "₹1,200",
     status: "Paid",
-    actions: "View"
+    actions: "View",
   },
   {
     transactionId: "TXN1234567893",
@@ -1075,9 +1080,9 @@ export const PaymentHistoryData = [
     paymentMode: "UPI",
     amount: "₹1,200",
     status: "Refunded",
-    actions: "View"
+    actions: "View",
   },
-]
+];
 export const partnerDetailData = {
   profile: {
     basic_detail_name: "Raj Desai",
@@ -1085,7 +1090,6 @@ export const partnerDetailData = {
     basic_detail_age: "31",
     basic_detail_phone: "12345 67890",
     basic_detail_email: "riyadharang@miacare.com",
-
   },
   medicalHistory: {
     medication: "yes",
@@ -1093,7 +1097,12 @@ export const partnerDetailData = {
     surgeriesContent: "This is Medical Condition",
     currentMedication: "CureAll 5000, HealMax Plus",
     surgeries: "no",
-    MedicalconditionAllergies: ["PCOS", "Thyroid Disorder", "Peanut Allergy", "Lactose Intolerant"],
+    MedicalconditionAllergies: [
+      "PCOS",
+      "Thyroid Disorder",
+      "Peanut Allergy",
+      "Lactose Intolerant",
+    ],
     familyMedicalHistory: ["Mother had endometriosis", "Father had thyroid"],
     lifestyle: ["Non-smoker", "Occasional alcohol", "Vegetarian diet"],
     exercise: "rarely",
@@ -1108,7 +1117,6 @@ export const partnerDetailData = {
     //   bloodGroup: "O+",
     //   systolic: "120",
     //   diastolic: "80",
-
     //   heartRate: "72",
     // },
     // {
@@ -1130,9 +1138,9 @@ export const partnerDetailData = {
     fertilityTreatment: "No",
     fertilityTreatmentContent: "This Is fertilityTreatmentContent Contet",
     surgeries: "No",
-    surgeriesContent: "This Is surgeriesContent Content"
-  }
-}
+    surgeriesContent: "This Is surgeriesContent Content",
+  },
+};
 export const AppointmentData = [
   {
     id: 1,
@@ -1143,7 +1151,7 @@ export const AppointmentData = [
     status: "Upcoming",
     prescription: "N/A",
     invoice: "N/A",
-    actions: "View"
+    actions: "View",
   },
   {
     id: 2,
@@ -1154,7 +1162,7 @@ export const AppointmentData = [
     status: "Completed",
     prescription: "file",
     invoice: "file",
-    actions: "View"
+    actions: "View",
   },
   {
     id: 3,
@@ -1165,7 +1173,7 @@ export const AppointmentData = [
     status: "Completed",
     prescription: "viewfile",
     invoice: "viewfile",
-    actions: "View"
+    actions: "View",
   },
   {
     id: 4,
@@ -1176,7 +1184,456 @@ export const AppointmentData = [
     status: "Completed",
     prescription: "viewfile",
     invoice: "viewfile",
-    actions: "View"
+    actions: "View",
+  },
+];
+
+export const tempAppointmentProfileData = {
+  profilePhoto: appointmentProfile,
+  name: "Radhika More",
+  id: "PTS-874562",
+  gender: "Female",
+  year: "31 Years",
+  date: "15 Jun 2025",
+  time: "3:15 PM",
+  FertilityAssessment: "Fertility assessment",
+};
+
+export interface tempAppointmentProfileData {
+  appointment_id: string;
+  patient_profile: string | any;
+  patient_name: string;
+  patient_status: string;
+  patient_contactnumber: string;
+  patient_email: string;
+  patient_appointment_date: string;
+  patient_appointment_time: string;
+  patient_treatment: string[];
+  patient_payment: string;
+  patient_additional_commet: string;
+  patient_time: string;
+}
+
+export const doctorlistingModalData: tempAppointmentProfileData[] = [
+  {
+    appointment_id: "1",
+    patient_profile: RiyaSharma,
+    patient_name: "Priya Gupta",
+    patient_status: "Follow Up",
+    patient_contactnumber: "12345 67890",
+    patient_email: "riya@gmail.com",
+    patient_appointment_date: "12 May 2024",
+    patient_appointment_time: "10:00 AM - 10:30 AM",
+    patient_treatment: ["Fertility Support", "IVF", "IUI"],
+    patient_payment: "Unpaid",
+    patient_additional_commet:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    patient_time: "11:00 AM",
+  },
+  {
+    appointment_id: "2",
+    patient_profile: AarushiPatel,
+    patient_name: "Aarushi Patel",
+    patient_status: "Follow Up",
+    patient_contactnumber: "09876 54321",
+    patient_email: "aarushi@gmail.com",
+    patient_appointment_date: "15 April 2024",
+    patient_appointment_time: "12:00 AM - 12:30 AM",
+    patient_treatment: ["Fertility Support", "IVF", "IUI"],
+    patient_payment: "Unpaid",
+    patient_additional_commet:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    patient_time: "12:00 AM",
+  },
+  {
+    appointment_id: "3",
+    patient_profile: NishaRao,
+    patient_name: "Nisha Rao",
+    patient_status: "Follow Up",
+    patient_contactnumber: "98562 98758",
+    patient_email: "nisha@gmail.com",
+    patient_appointment_date: "20 January 2024",
+    patient_appointment_time: "01:00 AM - 01:30 AM",
+    patient_treatment: ["Fertility Support", "IVF", "IUI"],
+    patient_payment: "Unpaid",
+    patient_additional_commet:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    patient_time: "1:00 PM",
+  },
+  {
+    appointment_id: "4",
+    patient_profile: RiyaSharma,
+    patient_name: "Riya Sharma",
+    patient_status: "Follow Up",
+    patient_contactnumber: "78545 69855",
+    patient_email: "priya@gmail.com",
+    patient_appointment_date: "28 February 2024",
+    patient_appointment_time: "02:00 AM - 02:30 AM",
+    patient_treatment: ["Fertility Support", "IVF", "IUI"],
+    patient_payment: "Unpaid",
+    patient_additional_commet:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    patient_time: "2:00 PM",
+  },
+];
+export const Appointments = [
+  {
+    id: "1",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah 1",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "10:00",
+    reason: ["reason  to appointment"],
+    title: "smriti shah - reason  to appointment1",
+    date: "11 Nov 2025",
+    time: "9:01",
+  },
+  {
+    id: "2",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah 2",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "10:15",
+    reason: ["reason  to appointment"],
+    title: "smriti shah - reason  to appointment",
+    date: "11 Nov 2025",
+    time: "9:02",
+  },
+  {
+    id: "3",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah 3",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "10:00",
+    reason: ["reason  to appointment"],
+    title: "smriti shah - reason  to appointment",
+    date: "11 Nov 2025",
+    time: "9:10",
+  },
+  {
+    id: "3",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah 4",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "10:00",
+    reason: ["reason  to appointment"],
+    title: "smriti shah - reason  to appointment",
+    date: "11 Nov 2025",
+    time: "9:15",
+  },
+  {
+    id: "3",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah 5",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "10:00",
+    reason: ["reason  to appointment"],
+    title: "smriti shah - reason  to appointment",
+    date: "11 Nov 2025",
+    time: "9:17",
+  },
+  {
+    id: "4",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah 6",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "10:15",
+    reason: ["reason  to appointment"],
+    title: "smriti shah - reason  to appointment",
+    date: "11 Nov 2025",
+    time: "9:17",
+  },
+  {
+    id: "3",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "10:00",
+    reason: ["reason  to appointment"],
+    title: "smriti shah - reason  to appointment",
+    date: "11 Nov 2025",
+    time: "9:30",
+  },
+
+  {
+    id: "5",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "10:15",
+    reason: ["reason  to appointment"],
+    title: "smriti shah - reason  to appointment",
+    date: "11 Nov 2025",
+    time: "9:40",
+  },
+  {
+    id: "6",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "10:20",
+    reason: [
+      "Fertility Support",
+      "Egg Freezing",
+      "IVF",
+      "IUI",
+      "Fertility Support 2",
+      "other",
+    ],
+    title: "smriti shah - reason  to appointment",
+    date: "11 Nov 2025",
+    time: "10:07",
+  },
+  {
+    id: "7",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "10:30",
+    reason: [
+      "Fertility Support",
+      "Egg Freezing",
+      "IVF",
+      "IUI",
+      "Fertility Support 2",
+      "other",
+    ],
+    title: "smriti shah - reason  to appointment",
+    date: "11 Nov 2025",
+    time: "11:30",
+  },
+  {
+    id: "8",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "11:15",
+    reason: ["reason  to appointment"],
+    title: "smriti shah - reason  to appointment",
+    date: "11 Nov 2025",
+    time: "6:15",
+  },
+  {
+    id: "9",
+    status: 1,
+    doctor: {
+      _id: "68b5723f5e662f13011c00ff",
+      name: "Dr. Priya Sharma",
+    },
+    patient: {
+      _id: "69005c207162eaf97429433c",
+      name: "smriti shah",
+      profileImage: RiyaSharma,
+      contactNumber: "9898765432",
+    },
+    appointmentDate: "11 Nov 2025",
+    appointmentTime: "1:30",
+    reason: ["reason  to appointment"],
+    title: "smriti shah - reason  to appointment",
+    date: "11 Nov 2025",
+    time: "1:30",
+  },
+];
+export interface InventoryEntry {
+  id: number; // <-- ADD ID
+  name: string;
+  mobile: string;
+  treatment: string;
+  Date: string;
+  Time: string;
+  status: string;
+  image: string | StaticImageData;
+  date?: string;  // ✅ optional date field
+}
+
+export const inventoryData: InventoryEntry[] = [
+  {
+    id: 1,
+    name: "Rani Desai",
+    mobile: "9092038491",
+    treatment: "Fertility Support +2",
+    Date: "7 Jan 2024",
+    Time: "2:30 PM",
+    status: "Completed",
+    image: RiyaSharma,
+    date: "2025-11-7"
+  },
+  {
+    id: 2,
+    name: "Nina Gupta",
+    mobile: "9092038491",
+    treatment: "Egg Freezing +1",
+    Date: "7 Jan 2024",
+    Time: "2:30 PM",
+    status: "Pending",
+    image: AarushiPatel,
+    date: "2025-09-15"
+  },
+  {
+    id: 3,
+    name: "Himari Roy",
+    mobile: "9092038491",
+    treatment: "Egg Freezing +1",
+    Date: "7 Jan 2024",
+    Time: "2:30 PM",
+    status: "",
+    image: NishaRao,
+    date: "2025-09-15"
+  },
+  {
+    id: 4,
+    name: "Anjali Shinde",
+    mobile: "9092038491",
+    treatment: "IVF",
+    Date: "7 Jan 2024",
+    Time: "2:30 PM",
+    status: "No Response",
+    image: RiyaSharma,
+    date: "2025-11-8"
+  },
+  {
+    id: 5,
+    name: "Anjali Shinde",
+    mobile: "9092038491",
+    treatment: "Fertility Support +2",
+    Date: "7 Jan 2024",
+    Time: "2:30 PM",
+    status: "Cancelled",
+    image: AarushiPatel,
+    date: "2025-10-15"
+  },
+
+  {
+    id: 6,
+    name: "Aastha Patil",
+    mobile: "9092038491",
+    treatment: "Egg Freezing +1",
+    Date: "7 Jan 2024",
+    Time: "2:30 PM",
+    status: "Scheduled",
+    image: NishaRao,
+    date: "2025-09-15"
+  },
+  {
+    id: 7,
+    name: "Nina Gupta",
+    mobile: "9092038491",
+    treatment: "IVF",
+    Date: "7 Jan 2024",
+    Time: "2:30 PM",
+    status: "No Response",
+    image: RiyaSharma,
+    date: "2025-09-25"
+  },
+  {
+    id: 8,
+    name: "Anjali Shinde",
+    mobile: "9092038491",
+    treatment: "Fertility Support +2",
+    Date: "7 Jan 2024",
+    Time: "2:30 PM",
+    status: "Cancelled",
+    image: RiyaSharma,
+    date: "2025-10-15"
   },
 
 ];

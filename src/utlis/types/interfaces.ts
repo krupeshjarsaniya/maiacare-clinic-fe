@@ -63,6 +63,10 @@ export interface PhysicalAssessmentDataModel {
   diastolic: string;
   heartRate: string;
 };
+export interface CancelAppointmentForm {
+  reasonForCancel: string;
+  additionalNote: string;
+}
 
 
 export interface PhysicalAssessmentData {
@@ -99,6 +103,7 @@ export interface FertilityAssessmentHistory {
 }
 
 export interface AddPatientFormData {
+  bloodGroup: any;
   // Personal details
 
   name: string;

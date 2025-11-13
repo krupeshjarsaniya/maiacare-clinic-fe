@@ -33,6 +33,7 @@ export default function Textarea({
   error?: string;
   helperText?: string;
   className?: string;
+  placeholder?: string;
   maxLength?: number;
   // [key: string]: any;
 }) {

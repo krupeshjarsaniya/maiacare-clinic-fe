@@ -34,7 +34,7 @@ const initialFormData: AddPatientFormData = {
   pincode: "",
   city: "",
   state: "",
-
+  bloodGroup: "",
   emergencyContactName: "",
   emergencyContactPhone: "",
   emergencyContactRelation: "",
@@ -406,9 +406,9 @@ function AddPatientForm() {
               />
             </Col>
 
-            <Col md={6}>
+            <Col md={3}>
               <DatePickerFieldGroup
-                label="Select Date"
+                label="DOB"
                 name="date"
                 placeholder="Enter DOB"
                 value={formData.date}
@@ -421,7 +421,7 @@ function AddPatientForm() {
                 error={formError.date}
               />
             </Col>
-            <Col md={6}>
+            <Col md={3}>
               <InputSelect
                 label="Age"
                 name="age"
@@ -438,6 +438,36 @@ function AddPatientForm() {
                   { id: "1", value: "1", label: "1" },
                   { id: "2", value: "2", label: "2" },
                   { id: "3", value: "3", label: "3" },
+                ]}
+              />
+            </Col>
+            <Col md={6}>
+              <InputSelect
+                label="Blood Group"
+                name="bloodGroup"
+                value={formData.bloodGroup.bloodGroup}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                  handleChange(e);
+                }}
+                onBlur={(e: React.FocusEvent<HTMLSelectElement>) => {}}
+                required={true}
+                // disabled={
+                //     modalFormPhisicalData.includes(editPhysicalAssessment)
+                //     ? false : modalFormPhisicalData.length == 0 ? false : true
+                //     }
+
+                // disabled={modalFormPhisicalData?.length == 0 ? false : true}
+                error={formError.bloodGroup}
+                placeholder="Select Blood Group"
+                options={[
+                  { id: "1", value: "A+", label: "A+" },
+                  { id: "2", value: "A-", label: "A-" },
+                  { id: "3", value: "B+", label: "B+" },
+                  { id: "4", value: "B-", label: "B-" },
+                  { id: "5", value: "AB+", label: "AB+" },
+                  { id: "6", value: "AB-", label: "AB-" },
+                  { id: "7", value: "O+", label: "O+" },
+                  { id: "8", value: "O-", label: "O-" },
                 ]}
               />
             </Col>
@@ -610,8 +640,6 @@ function AddPatientForm() {
           <Button variant="default" disabled={false} type="submit">
             Add Patient
           </Button>
-
-         
         </div>
       </form>
     </>
