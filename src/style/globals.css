@@ -482,7 +482,7 @@ body {
   background: #fdf2f2;
   color: #f05252;
 }
-.action_component{
+.action_component {
   width: fit-content;
 }
 .verified-badge {
@@ -495,6 +495,7 @@ body {
   border: 1.5px solid #dde1e8;
   padding: 8px 11px;
   border-radius: 6px;
+  color: #2b4360;
 }
 .status-onleave {
   background-color: #fffac9;
@@ -505,8 +506,8 @@ body {
 }
 .trash {
   color: #e85966;
-  height: 15px;
-  width: 15px;
+  height: 24px;
+  width: 24px;
 }
 .clinic_card {
   background: #f5f7fa;
@@ -1743,12 +1744,6 @@ body {
   align-items: center;
   justify-content: center;
   border: none;
-}
-
-.trash {
-  color: #e85966;
-  height: 15px;
-  width: 15px;
 }
 
 .arrow-down {

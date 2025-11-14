@@ -175,7 +175,7 @@ export default function AppointmentsWeek({ selectedDate }: AppointmentsWeekProps
                               </div>
                             </Tooltip>
                           ) : (
-                            <></>
+                            <> hy </>
                           )
                         }
                       >

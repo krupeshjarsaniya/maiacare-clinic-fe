@@ -1164,6 +1164,7 @@ export function CalendarView() {
               CancelModal={CancelModal}
             />
             {/* calender */}
+
             <Col md={8}>
               {selectedView === "day" && (
                 <>
@@ -1721,7 +1722,7 @@ export function CalendarView() {
                           </div>
                           <Button
                             variant="default"
-                            className="doctor-listing-modal-button"
+                            className="doctor-listing-modal-button check_in_btn"
                             onClick={() => {
                               setDoctorListingModal(true);
                               setSelectedPatient(item);

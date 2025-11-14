@@ -38,7 +38,7 @@ const initialFormError: FormError = {};
 export function RescheduleAppointment({
     setRescheduleModal,
     setShowSuccessModal,
-
+    
 }: RescheduleAppointmentProps) {
     const [formData, setFormData] = useState<RescheduleAppointmentForm>(initialFormData);
     const [formError, setFormError] = useState<FormError>(initialFormError);

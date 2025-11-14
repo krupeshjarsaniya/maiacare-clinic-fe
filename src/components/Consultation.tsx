@@ -512,7 +512,7 @@ export default function Consultation() {
       {/* Table */}
       <CommonTable data={filteredData} columns={columns} />
       <PatientAddedModal />
-
+      {/* activate_deactivate_modal */}
       <Modal
         show={showModal}
         onHide={handleClose}

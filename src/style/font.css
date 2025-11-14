@@ -2781,6 +2781,10 @@
   font-size: 18px;
   font-weight: 600;
 }
+.check_in_btn {
+  padding: 9px 11px !important;
+  font-size: 13px;
+}
 @media screen and (max-width: 575px) {
   .patient-profile-dot {
     width: 45px;

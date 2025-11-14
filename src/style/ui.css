@@ -559,3 +559,7 @@ input[type="number"] {
   padding: 10px 16px;
   background-color: var(--color-white);
 }
+.action_btn{
+      border-radius: 8px;
+    padding: 9px 11px !important;
+}
