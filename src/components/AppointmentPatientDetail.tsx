@@ -11,6 +11,7 @@ import phone from "../assets/images/Phone.png";
 import Button from "./ui/Button";
 import { useRouter } from "next/navigation";
 import AppointmentDoctorProfileDetails from "./form/AppointmentDoctorProfileDetails";
+import TreatmentPatientProfileDetails from "./form/TreatmentPatientProfileDetails";
 export default function AppointmentPatientDetail() {
   const dispatch = useDispatch();
 
@@ -127,8 +128,11 @@ export default function AppointmentPatientDetail() {
           <Col md={7}>
             <AppointmentDoctorProfileDetails />
           </Col>
-          <Col md={5}>
-            hy
+          <Col md={5}>hy</Col>
+        </Row>
+        <Row className="mt-4">
+          <Col md={7}>
+            <TreatmentPatientProfileDetails />
           </Col>
         </Row>
       </div>
