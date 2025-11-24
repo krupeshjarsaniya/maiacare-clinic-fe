@@ -23,7 +23,7 @@ export default function PaymentPatientProfileDetails() {
     mode: "",
   });
   const validateForm = () => {
-    let errors: any = {};
+    const errors: any = {};
 
     if (!paymentData.amount) errors.amount = "Amount is required";
     if (!paymentData.status) errors.status = "Status is required";

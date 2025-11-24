@@ -14,7 +14,7 @@ import { InputSelect } from './ui/InputSelect';
 import { BookAppointment, SuccessModalBookAppointment } from './form/BookAppointment';
 import ScheduleTimeOff from './ScheduleTimeOff';
 import { AppointmentsMonth } from './AppointmentsMonth';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+
 import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -1440,7 +1440,7 @@ export function CalendarView() {
                     <div key={index}>
                       <div className='docotor-listing-today-schedule-datas'>
                         <Card className="d-flex flex-row align-items-center p-2 shadow-sm rounded-3 border-0 selected-calender-data" >
-                          <Image src={item.patient_profile} alt="Profile" width={50} height={50} className="me-2 rounded-circle" />
+                          <Image src={item.patient_profile} alt="Profile" width={50} height={50} className="me-2 rounded-3" />
                           <div className="flex-grow-1">
                             <p className="doctor-listing-modal-patient-name m-0">{item.patient_name}</p>
                             <div className="d-flex align-items-center doctor-listing-modal-label ">
@@ -1449,7 +1449,7 @@ export function CalendarView() {
                           </div>
                           <Button
                             variant="default"
-                            className="doctor-listing-modal-button"
+                            className="doctor-listing-modal-button check_in_btn"
                             onClick={() => { setDoctorListingModal(true); setSelectedPatient(item); }}
                           >
                             Check-In

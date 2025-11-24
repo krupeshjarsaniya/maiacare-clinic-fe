@@ -471,19 +471,18 @@
   font-size: 14px;
   font-weight: 500;
 }
-.amount .maiacare-input-field{
+.amount .maiacare-input-field {
   padding-left: 3.5rem !important;
-  
 }
 .custom-Rupee-icon {
   width: 12%;
- 
+
   position: absolute;
   top: 39%;
-     padding: 12px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: 2px solid #dee2e6;
+  padding: 12px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 2px solid #dee2e6;
 }
 .Rupee-icon {
   color: #2b4360;
@@ -1297,11 +1296,11 @@
 }
 
 .appointments-total-box-item {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 21px;
-    font-style: medium;
-    color: var(--color-heading);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 21px;
+  font-style: medium;
+  color: var(--color-heading);
 }
 
 .patient-treatment-box {
@@ -2173,43 +2172,52 @@
 }
 
 .setting-password-item-name {
-    color: var(--color-sidebar-icon);
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 18px;
+  color: var(--color-sidebar-icon);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
 }
 .medication-prescription-accordion-subtitle {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 18px;
-    font-style: Regular;
-    color: var(--color-radio);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  font-style: Regular;
+  color: var(--color-radio);
 }
 .treatment-steps-box-item {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 20px;
-    font-style: Medium;
-    color: var(--color-heading);
-}.medication-prescription-accordion-item-main .accordion-button:after {
-    width: var(--bs-accordion-btn-icon-width) !important;
-    height: var(--bs-accordion-btn-icon-width) !important;
-    content: "" !important;
-     background-image: url("../assets/images/medication-accordion-arrow.png") !important;
-    background-repeat: no-repeat !important;
-    background-size: var(--bs-accordion-btn-icon-width) !important;
-    transition: var(--bs-accordion-btn-icon-transition) !important;
-    flex-shrink: 0 !important;
-    margin-left: auto !important;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  font-style: Medium;
+  color: var(--color-heading);
+}
+.medication-prescription-accordion-item-main .accordion-button:after {
+  width: var(--bs-accordion-btn-icon-width) !important;
+  height: var(--bs-accordion-btn-icon-width) !important;
+  content: "" !important;
+  background-image: url("../assets/images/medication-accordion-arrow.png") !important;
+  background-repeat: no-repeat !important;
+  background-size: var(--bs-accordion-btn-icon-width) !important;
+  transition: var(--bs-accordion-btn-icon-transition) !important;
+  flex-shrink: 0 !important;
+  margin-left: auto !important;
 }
 .medication-prescription-accordion-item {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 18px;
-    font-style: Regular;
-    color: var(--color-radio-labl);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  font-style: Regular;
+  color: var(--color-radio-labl);
 }
-
+.report_text {
+  text-wrap: wrap;
+  width: 36%;
+  display: inline-block;
+  width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
 /* Responsive Design */
 @media (max-width: 768px) {
   .aw-time-header-cell {
