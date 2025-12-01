@@ -38,10 +38,11 @@ interface Doctor {
 
 interface FormData {
   additionalNote: string;
-  name: string | Doctor | Record<string, any>;
+  name: "" | Doctor;
   type: string;
   reason: string;
 }
+
 
 interface FormError {
   name?: string;

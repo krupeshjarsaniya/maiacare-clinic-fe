@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Dropdown, Form, InputGroup, Pagination } from "react-bootstrap";
 import { inventoryData } from "../utlis/StaticData";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import CommonTable from "@/components/ui/BaseTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
@@ -53,7 +53,16 @@ export type ConsultationStatus =
   | "No Response"
   | "Rescheduled"
   | "Cancelled";
-
+export interface AppointmentRow {
+  id:  number;
+  name: string;
+  image: string | StaticImageData;
+  mobile: string;
+  Date: string;
+  Time: string;
+  treatment: string;
+  status: string;
+}
 export default function ListView() {
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
@@ -153,7 +162,7 @@ export default function ListView() {
     setFilteredData(data);
   }, [filter, searchQuery, timeFilter]);
 
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<AppointmentRow>[] = [
     {
       header: "#",
       cell: (info) => {

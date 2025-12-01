@@ -8,22 +8,25 @@ import { Col, InputGroup, Row } from "react-bootstrap";
 import { LiaRupeeSignSolid } from "react-icons/lia";
 import { InputSelect } from "../ui/InputSelect";
 
+type PaymentFormType = {
+  amount: string;
+  status: string;
+  mode: string;
+};
+
+type PaymentFormError = Partial<Record<keyof PaymentFormType, string>>;
+
 export default function PaymentPatientProfileDetails() {
   const [step, setStep] = useState(0);
-
-  const [formError, setFormError] = useState({
-    amount: "",
-    status: "",
-    mode: "",
-  });
+  const [formError, setFormError] = useState<PaymentFormError>({});
   // Saved payment data
-  const [paymentData, setPaymentData] = useState({
+  const [paymentData, setPaymentData] = useState<PaymentFormType>({
     amount: "",
     status: "",
     mode: "",
   });
   const validateForm = () => {
-    const errors: any = {};
+    const errors: PaymentFormError = {};
 
     if (!paymentData.amount) errors.amount = "Amount is required";
     if (!paymentData.status) errors.status = "Status is required";

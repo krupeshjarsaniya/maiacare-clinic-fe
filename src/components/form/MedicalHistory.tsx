@@ -12,9 +12,11 @@ import { BsInfoCircle } from "react-icons/bs";
 import { MedicalHistoryType } from "../../utlis/types/interfaces";
 
 interface MedicalHistoryProps {
-  setMedicalHistoryFormData: any;
+  setMedicalHistoryFormData: React.Dispatch<
+    React.SetStateAction<MedicalHistoryType>
+  >;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  initialData?: any;
+  initialData?: MedicalHistoryType | null;
   onClose?: () => void;
 }
 
@@ -28,14 +30,13 @@ export default function MedicalHistory({
   const initialFormData: MedicalHistoryType = {
     medication: initialData?.medication || "no",
     surgeries: initialData?.surgeries || "yes",
-    surgeriesContent: initialData?.surgeriescontent || "",
-    medicalCondition: initialData?.medicalCondition || [],
+    surgeriesContent: initialData?.surgeriesContent || "",
+    MedicalconditionAllergies: initialData?.MedicalconditionAllergies || [],
     familyMedicalHistory: initialData?.familyMedicalHistory || "",
     lifestyle: initialData?.lifestyle || [],
     stress: initialData?.stress || "high",
     exercise: initialData?.exercise || "rarely",
     medicationcontent: initialData?.medicationcontent || "",
-    surgeriescontent: initialData?.surgeriescontent || "",
   };
 
   const initialFormError: FormError = {};
@@ -47,12 +48,12 @@ export default function MedicalHistory({
     const errors: FormError = {};
     if (data.medication === "yes" && !data.medicationcontent.trim())
       errors.medicationcontent = "Medication Content is required";
-    if (data.surgeries === "yes" && !data.surgeriescontent.trim())
-      errors.surgeriescontent = "Surgeries Content is required";
+    if (data.surgeries === "yes" && !data.surgeriesContent.trim())
+      errors.surgeriesContent = "Surgeries Content is required";
     if (!data.surgeries.trim()) errors.surgeries = "Surgeries is required";
 
-    if (!data.medicalCondition?.length)
-      errors.medicalCondition = "Medical Condition is required";
+    if (!data.MedicalconditionAllergies?.length)
+      errors.MedicalconditionAllergies = "Medical Condition is required";
     if (!data.lifestyle?.length) errors.lifestyle = "Lifestyle is required";
 
     if (!data.stress.trim()) errors.stress = "Stress Level is required";
@@ -87,7 +88,7 @@ export default function MedicalHistory({
         // If creating new, add to the arrayd
 
         setMedicalHistoryFormData(formData);
-        // setMedicalHistoryFormData((prev: any) => [...prev, formData]);
+
         toast.success("Medical history added successfully", {
           icon: <BsInfoCircle size={22} color="white" />,
         });
@@ -142,10 +143,10 @@ export default function MedicalHistory({
             {formData.surgeries === "yes" && (
               <InputFieldGroup
                 type="text"
-                value={formData.surgeriescontent}
-                name="surgeriescontent"
+                value={formData.surgeriesContent}
+                name="surgeriesContent"
                 onChange={handleChange}
-                error={formError.surgeriescontent}
+                error={formError.surgeriesContent}
                 placeholder="Enter surgeries"
                 className="mt-md-3 mt-2"
               ></InputFieldGroup>
@@ -155,10 +156,16 @@ export default function MedicalHistory({
             <InputSelectMultiSelect
               label="Do you have any medical condition?"
               name="medicalCondition"
-              values={formData.medicalCondition}
+              values={formData.MedicalconditionAllergies}
               onChange={(values) => {
-                setFormData((prev) => ({ ...prev, medicalCondition: values }));
-                setFormError((prev) => ({ ...prev, medicalCondition: "" }));
+                setFormData((prev) => ({
+                  ...prev,
+                  MedicalconditionAllergies: values,
+                }));
+                setFormError((prev) => ({
+                  ...prev,
+                  MedicalconditionAllergies: "",
+                }));
               }}
               options={[
                 { id: "1", value: "PCOS", label: "PCOS" },
@@ -176,7 +183,7 @@ export default function MedicalHistory({
               dropdownHandle={false} // open close arrow icon show hide
               selectedOptionColor="var(--border-box)"
               selectedOptionBorderColor="var(--border-box)"
-              error={formError.medicalCondition}
+              error={formError.MedicalconditionAllergies}
             />
           </Col>
           <Col md={12} className="mt-md-3 mt-2">

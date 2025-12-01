@@ -230,37 +230,36 @@ export function ProgressUpdatesEditForm({
   };
 
   const handleSave = () => {
-    const newErrors: { [key: number]: string } = {};
+  const newErrors: { [key: number]: string } = {};
 
-    // ✅ Validation: Required + unique report names
-    const reportNames: string[] = [];
-    uploadedFiles.forEach((file, index) => {
-      if (!file.reportName.trim()) {
-        newErrors[index] = "Report Name is required";
-      } else if (reportNames.includes(file.reportName.trim())) {
-        newErrors[index] = "Report Name must be unique";
-      } else {
-        reportNames.push(file.reportName.trim());
-      }
-    });
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length > 0) {
-      return; // stop saving
+  // Validate report names
+  const reportNames: string[] = [];
+  uploadedFiles.forEach((file, index) => {
+    if (!file.reportName.trim()) {
+      newErrors[index] = "Report Name is required";
+    } else if (reportNames.includes(file.reportName.trim())) {
+      newErrors[index] = "Report Name must be unique";
+    } else {
+      reportNames.push(file.reportName.trim());
     }
+  });
 
-    // ✅ Move completed files
-    const completed = uploadedFiles.filter((f) => f.status === "completed");
-    setModalFormFertilityData((prev: any) => ({
-      ...prev,
-      report: [...(prev.report ?? []), ...completed],
-    }));
-    setUploadedFiles([]);
-    setShowModal(false);
-    setStep?.((prev: number | undefined) => (prev ?? 0) + 1);
-    setStepper?.((prev: number | undefined) => (prev ?? 0) + 1);
-  };
+  setErrors(newErrors);
+
+  if (Object.keys(newErrors).length > 0) return;
+
+  const completedFiles = uploadedFiles.filter(f => f.status === "completed");
+
+  setModalFormFertilityData((prev: ProgressUpdatesType) => ({
+    ...prev,
+    report: [...(prev.report ?? []), ...completedFiles],
+  }));
+
+  setUploadedFiles([]);
+  setShowModal(false);
+  setStep?.((prev) => (prev ?? 0) + 1);
+  setStepper?.((prev) => (prev ?? 0) + 1);
+};
   const handleClose = () => {
     setShowModal(false);
     setFileError(""); // file upload error reset (jo use karto hoy to)

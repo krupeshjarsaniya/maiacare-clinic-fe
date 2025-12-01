@@ -34,8 +34,8 @@ import { BsInfoCircle } from "react-icons/bs";
 import Textarea from "../ui/Textarea";
 
 interface TreatmentPatientFormProps {
-  setStep: React.Dispatch<React.SetStateAction<number | undefined>>;
-  setStepper: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+  setStepper: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface FertilityAssessmentFormProps {
@@ -90,9 +90,6 @@ export function TreatmentPatientForm({
   const validateForm = (data: TreatmentForm): FormError => {
     const errors: FormError = {};
 
-    // if (!data.patientName) {
-    //     errors.patientName = "Patient Name is required";
-    // }
     if (Object.keys(formData?.patientName).length == 0) {
       errors.patientName = "Patient is required";
     }
@@ -105,7 +102,13 @@ export function TreatmentPatientForm({
     }
     return errors;
   };
-
+  const handlePatientNameSelect = (item: PatientType) => {
+    setFormData((prev) => ({
+      ...prev,
+      patientName: item,
+    }));
+    setFormError((prev) => ({ ...prev, patientName: "" }));
+  };
   const handelNext = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -114,8 +117,8 @@ export function TreatmentPatientForm({
     // console.log("errors", errors);
 
     if (Object.keys(errors).length === 0) {
-      setStep((prev: any) => prev + 1);
-      setStepper((prev: any) => prev + 1);
+      setStep((prev: number) => prev + 1);
+      setStepper((prev: number) => prev + 1);
       setFormError(initialFormError);
     }
   };
@@ -197,9 +200,7 @@ export function TreatmentPatientForm({
                           setOpen(false);
 
                           // update formData using handleChange
-                          handleChange({
-                            target: { name: "patientName", value: item },
-                          } as React.ChangeEvent<HTMLInputElement | any>);
+                          handlePatientNameSelect(item);
                         }}
                         className="d-flex align-items-center gap-2"
                       >
@@ -359,10 +360,43 @@ export function TreatmentFertilityAssessmentPatient({
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev: any) => ({ ...prev, [name]: value }));
-    setFormError((prev: any) => ({ ...prev, [name]: "" }));
+    setFormData((prev: FertilityAssessmentFormType) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setFormError((prev: FormError) => ({ ...prev, [name]: "" }));
   };
-
+  const defaultProgressUpdate: ProgressUpdatesType = {
+    patient: {
+      ageAtFirstMenstruation: "",
+      cycleLength: "",
+      periodLength: "",
+      date: "",
+      isCycleRegular: "Regular",
+      menstrualIssues: "yes",
+      pregnancy: "yes",
+      timeduration: "",
+      ectopicpregnancy: "yes",
+    },
+    partner: {
+      semenAnalysis: "no",
+      semenAnalysisContent: "",
+      fertilityIssues: "no",
+      fertilityIssuesContent: "",
+      fertilityTreatment: "no",
+      fertilityTreatmentContent: "",
+      surgeries: "no",
+      surgeriesContent: "",
+    },
+    medicalPrescription: [],
+    report: [],
+    StatusAndUpdates: {
+      status: "", // fill these with whatever fields your type requires
+      updates: "",
+      stepName: "",
+      notes: "",
+    },
+  };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -370,10 +404,13 @@ export function TreatmentFertilityAssessmentPatient({
     setFormError(errors);
 
     if (Object.keys(errors).length === 0) {
-      setModalFormFertilityData?.((prev: any) => ({
-        ...prev,
-        patient: formData,
-      }));
+      setModalFormFertilityData?.((prev) => {
+        const safePrev = prev ?? defaultProgressUpdate;
+        return {
+          ...safePrev,
+          patient: formData,
+        };
+      });
       setFormError(initialFormError);
       setActiveTab?.("partner");
     }
@@ -619,8 +656,10 @@ export function TreatmentFertilityAssessmentPartner({
     React.SetStateAction<ProgressUpdatesType>
   >;
   editProgressUpdatesData?: ProgressUpdatesType;
-  setStep?: React.Dispatch<React.SetStateAction<number | undefined>>;
-  setStepper?: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setStep?: React.Dispatch<React.SetStateAction<number>>;
+  setStepper?: React.Dispatch<React.SetStateAction<number>>;
+  // setStep?: React.Dispatch<React.SetStateAction<number | undefined>>;
+  // setStepper?: React.Dispatch<React.SetStateAction<number | undefined>>;
 }) {
   type FormError = Partial<Record<keyof FertilityAssessmentHistory, string>>;
   const initialFormError: FormError = {};
@@ -639,7 +678,16 @@ export function TreatmentFertilityAssessmentPartner({
     surgeries: editProgressUpdatesData?.partner?.surgeries || "no",
     surgeriesContent: editProgressUpdatesData?.partner?.surgeriesContent || "",
   };
-
+  const defaultPartnerValue: FertilityAssessmentHistory = {
+    semenAnalysis: "no",
+    semenAnalysisContent: "",
+    fertilityIssues: "no",
+    fertilityIssuesContent: "",
+    fertilityTreatment: "no",
+    fertilityTreatmentContent: "",
+    surgeries: "no",
+    surgeriesContent: "",
+  };
   const [formData, setFormData] =
     useState<FertilityAssessmentHistory>(initialFormData);
   const [formError, setFormError] = useState<FormError>(initialFormError);
@@ -682,16 +730,26 @@ export function TreatmentFertilityAssessmentPartner({
     const errors = validateForm(formData);
     setFormError(errors);
     if (Object.keys(errors).length === 0) {
-      setModalFormFertilityData?.((prev: any) => ({
-        ...prev,
-        partner: formData,
-      }));
+      setModalFormFertilityData?.((prev) => {
+        const safePrev: ProgressUpdatesType = prev ?? {
+          patient: {} as FertilityAssessmentFormType, // or provide default patient if needed
+          partner: defaultPartnerValue,
+          medicalPrescription: [],
+          report: [],
+          StatusAndUpdates: {} as TreatmentProgressStatusType,
+        };
+
+        return {
+          ...safePrev,
+          partner: formData,
+        };
+      });
       setFormError(initialFormError);
       setShowFertilityAssessment?.(false);
 
       if (editProgressUpdatesData) {
-        setStep?.((prev: any) => prev + 1);
-        setStepper?.((prev: any) => prev + 1);
+        setStep?.((prev) => (prev !== undefined ? prev + 1 : 1));
+        setStepper?.((prev) => (prev !== undefined ? prev + 1 : 1));
       } else {
         toast.success("Fertility assessment saved", {
           icon: <BsInfoCircle size={22} color="white" />,
@@ -901,13 +959,9 @@ export function TreatmentPlanEditForm({
     setFormError(errors);
 
     if (Object.keys(errors).length === 0) {
-      // setEditTreatmentData?.((prev) => ({
-      //     ...prev,
-      //     treatmentplan: formData,
-      // })) // setEditTreatmentData
+      setStep?.((prev: number | undefined) => (prev ?? 0) + 1);
+      setStepper?.((prev: number | undefined) => (prev ?? 0) + 1);
 
-      setStep((prev: any) => prev + 1);
-      setStepper((prev: any) => prev + 1);
       setFormError(initialFormError);
     }
   };
@@ -1047,6 +1101,7 @@ export function TreatmentProgressStatus({
     stepName: editProgressUpdatesData.StatusAndUpdates.stepName || "",
     status: editProgressUpdatesData.StatusAndUpdates.status || "",
     notes: editProgressUpdatesData.StatusAndUpdates.notes || "",
+    updates: editProgressUpdatesData.StatusAndUpdates.updates || "",
   };
 
   type FormError = Partial<Record<keyof TreatmentProgressStatusType, string>>;
@@ -1183,8 +1238,8 @@ export function TreatmentProgressStatus({
             <Button
               variant="outline"
               onClick={() => {
-                setStep?.((prev: any) => prev - 1);
-                setStepper?.((prev: any) => prev - 1);
+                setStep?.((prev) => (prev !== undefined ? prev + 1 : 1));
+                setStepper?.((prev) => (prev !== undefined ? prev + 1 : 1));
               }}
               className="w-100"
             >

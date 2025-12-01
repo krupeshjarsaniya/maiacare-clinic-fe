@@ -26,7 +26,7 @@ export interface BookAppointmentForm {
     // Appointment Details
     appointmentId: string;
     type: string;
-    reasonForVisit: string[];      // multi-select = array
+    reasonForVisit: OptionType[];      // multi-select = array
     appointmentDate: string;
     appointmentTime: string;
     forTime: string;
@@ -84,12 +84,21 @@ export interface CancelAppointmentForm {
 
 
 export interface PhysicalAssessmentData {
+  // date: string;
+  // height: string;
+  // weight: string;
+  // bmi: string;
+  // bloodGroup: string;
+  // bloodPressure: string;
+  // heartRate: string;
+   id: string;
   date: string;
   height: string;
   weight: string;
   bmi: string;
   bloodGroup: string;
-  bloodPressure: string;
+  systolic: string;
+  diastolic: string;
   heartRate: string;
 }
 
@@ -153,25 +162,6 @@ export interface CancelAppointmentForm {
   additionalNote: string;
 }
 
-// export interface BookAppointmentForm {
-//   //Appointment Details
-
-//   appointmentId: string;
-//   type: string;
-//   reasonForVisit: string[];
-//   appointmentDate: string;
-//   appointmentTime: string;
-//   forTime: string;
-//   additionalNote: string;
-
-//   //Patient Details
-//   // patientName: SelectPatientType | null;
-//   patientName: any;
-//   phone: string;
-//   email: string;
-//   patientAge: string;
-//   gender: string;
-// }
 export interface SelectPatientType {
   id: string;
   ProfilePhoto: StaticImageData;
@@ -226,7 +216,7 @@ export interface MedicalHistoryType {
 
   MedicalconditionAllergies: OptionType[] ;
 
-  familyMedicalHistory: string | string[] ;
+  familyMedicalHistory: string;
 
   lifestyle: OptionType[];
 
@@ -255,6 +245,8 @@ export interface TreatmentProgressStatusType {
   stepName: string;
   status: string;
   notes: string;
+  updates: string;
+  
 }
 
 export interface TreatmentTerminationType {
@@ -270,10 +262,10 @@ export interface EditTreatmentPlanType {
 }
 
 export interface ProgressUpdatesType {
-  patient: FertilityAssessmentFormType;
-  partner: FertilityAssessmentHistory;
+  patient?: FertilityAssessmentFormType;
+  partner?: FertilityAssessmentHistory;
   medicalPrescription: MedicationPrescriptionType[];
-  report : PatientReportType[]
+  report: (UploadedFile | PatientReportType)[];
   StatusAndUpdates: TreatmentProgressStatusType;
 }
 
@@ -359,4 +351,51 @@ export interface PatientReportType {
   name: string;
   size: string;
   uploadedAt: number;
+}
+interface PatientDatareport {
+  ageAtFirstMenstruation: string;
+  cycleLength: string;
+  periodLength: string;
+  date: string;
+  isCycleRegular: string;
+  menstrualIssues: string;
+  pregnancy: string;
+  timeduration: string;
+  ectopicpregnancy: string;
+}
+
+interface PartnerData {
+  semenAnalysis: string;
+  semenAnalysisContent: string;
+  fertilityIssues: string;
+  fertilityIssuesContent: string;
+  fertilityTreatment: string;
+  fertilityTreatmentContent: string;
+  surgeries: string;
+  surgeriesContent: string;
+}
+
+interface StatusAndUpdates {
+  stepName: string;
+  status: string;
+  notes: string;
+}
+
+interface UploadedFile {
+  name: string;
+  size: string;
+  progress?: number;
+  status: "uploading" | "completed";
+  reportName: string;
+  uploadedAt?: number;
+  date?: string;
+  preview?: string;
+  actualSize?: string;
+}
+interface ProgressUpdatesData {
+  patient: PatientDatareport;
+  partner: PartnerData;
+  medicalPrescription: OptionType[]; // If you have a proper type for this, replace any[]
+  report: UploadedFile[];
+  StatusAndUpdates?: StatusAndUpdates | StatusAndUpdates[]; // Because your static data has an array
 }

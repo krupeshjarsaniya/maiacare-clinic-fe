@@ -445,7 +445,7 @@ function AddPatientForm() {
               <InputSelect
                 label="Blood Group"
                 name="bloodGroup"
-                value={formData.bloodGroup.bloodGroup}
+                value={formData.bloodGroup}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                   handleChange(e);
                 }}
@@ -477,7 +477,7 @@ function AddPatientForm() {
                 label="Contact Number"
                 name="phone"
                 value={formData.phone}
-                onChange={(phone: any) => {
+                onChange={(phone: string) => {
                   handleChange({
                     target: { name: "phone", value: phone },
                   } as React.ChangeEvent<HTMLInputElement>);
@@ -603,7 +603,7 @@ function AddPatientForm() {
               <PhoneNumberInput
                 label="Contact Number"
                 value={formData.emergencyContactPhone}
-                onChange={(phone: any) => {
+                onChange={(phone: string) => {
                   handleChange({
                     target: { name: "emergencyContactPhone", value: phone },
                   } as React.ChangeEvent<HTMLInputElement>);

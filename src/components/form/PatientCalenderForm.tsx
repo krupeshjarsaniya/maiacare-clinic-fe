@@ -5,7 +5,7 @@ import { Col, Row } from "react-bootstrap"
 import { InputFieldGroup } from "../ui/InputField";
 import { MultiSelectWithCheckbox } from "../ui/InputSelect";
 import Button from "../ui/Button";
-import { PatientCalenderFormType } from "@/utils/types/interfaces";
+import { PatientCalenderFormType } from "@/utlis/types/interfaces";
 
 function PatientCalenderForm({
     setPatientCalendarModel
@@ -115,7 +115,7 @@ function PatientCalenderForm({
                             ]}
                             required={false}
 
-                            onChange={(tests: any) => {
+                            onChange={(tests: unknown) => {
                                 handleChange({
                                     target: { name: "tests", value: tests },
                                 } as React.ChangeEvent<HTMLInputElement>);
@@ -143,7 +143,7 @@ function PatientCalenderForm({
                             ]}
                             required={false}
 
-                            onChange={(status: any) => {
+                            onChange={(status: unknown) => {
                                 handleChange({
                                     target: { name: "status", value: status },
                                 } as React.ChangeEvent<HTMLInputElement>);
@@ -171,7 +171,7 @@ function PatientCalenderForm({
                             ]}
                             required={false}
 
-                            onChange={(symptoms: any) => {
+                            onChange={(symptoms: unknown) => {
                                 handleChange({
                                     target: { name: "symptoms", value: symptoms },
                                 } as React.ChangeEvent<HTMLInputElement>);

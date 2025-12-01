@@ -732,6 +732,15 @@ export interface PartnerDetailData {
   medicalHistory: MedicalHistoryType;
 
   PhysicalAssessmentData: {
+    // date: string;
+    // height: string;
+    // weight: string;
+    // bmi: string;
+    // bloodGroup: string;
+    // systolic: string;
+    // diastolic: string;
+    // heartRate: string;
+    id: string;
     date: string;
     height: string;
     weight: string;
@@ -753,7 +762,6 @@ export interface PartnerDetailData {
     surgeriesContent: string;
   };
 }
-
 
 export const leaveData: LeaveEntry[] = [
   {
@@ -985,22 +993,26 @@ export const MedicalHistoryData = {
 };
 export const physicalAssessmentData: PhysicalAssessmentData[] = [
   {
+    id: "123",
     date: "Wed, 19 Feb 2024",
-    height: "5'4''(162cm)",
-    weight: "58 kg",
-    bmi: "22.1(Normal)",
-    bloodGroup: "O+",
-    bloodPressure: "120/80 mmHg",
-    heartRate: "72 bpm",
+    height: "string",
+    weight: "string",
+    bmi: "string",
+    bloodGroup: "string",
+    systolic: "string;",
+    diastolic: "string;",
+    heartRate: "string;",
   },
   {
-    date: "Mon, 22 Feb 2024",
-    height: "5'4''(162cm)",
-    weight: "58 kg",
-    bmi: "22.1(Normal)",
-    bloodGroup: "O+",
-    bloodPressure: "120/80 mmHg",
-    heartRate: "72 bpm",
+    id: "123",
+    date: "Wed, 19 Feb 2024",
+    height: "string",
+    weight: "string",
+    bmi: "string",
+    bloodGroup: "string",
+    systolic: "string;",
+    diastolic: "string;",
+    heartRate: "string;",
   },
 ];
 export const patientTreatmentData = [
@@ -1080,7 +1092,17 @@ export const TempTreatmentSteps = [
     step: "Pregnancy Test",
   },
 ];
-export const PaymentHistoryData = [
+export interface PatientPaymentData {
+   transactionId: string;
+    serviceType: string;
+    date:string;
+    time: string;
+    paymentMode: string;
+    amount: string;
+    status: "Refunded" | "Pending" | "Paid";
+    actions: string;
+}
+export const PaymentHistoryData:PatientPaymentData[]  = [
   {
     transactionId: "TXN1234567890",
     serviceType: "Treatment",
@@ -1090,6 +1112,7 @@ export const PaymentHistoryData = [
     amount: "₹1,200",
     status: "Pending",
     actions: "View",
+ 
   },
   {
     transactionId: "TXN1234567891",
@@ -1137,10 +1160,10 @@ export const partnerDetailData = {
     currentMedication: "CureAll 5000, HealMax Plus",
     surgeries: "no",
     MedicalconditionAllergies: [
-      "PCOS",
-      "Thyroid Disorder",
-      "Peanut Allergy",
-      "Lactose Intolerant",
+      { value: "PCOS", label: "PCOS" },
+      { value: "Thyroid Disorder", label: "Thyroid Disorder" },
+      { value: "Peanut Allergy", label: "Peanut Allergy" },
+      { value: "Lactose Intolerant", label: "Lactose Intolerant" },
     ],
     familyMedicalHistory: ["Mother had endometriosis", "Father had thyroid"],
     lifestyle: ["Non-smoker", "Occasional alcohol", "Vegetarian diet"],
@@ -1230,7 +1253,7 @@ export const AppointmentData = [
 export const tempAppointmentProfileData = {
   profilePhoto: appointmentProfile,
   name: "Dr. Riya Dharang",
-  id: "PTS-874562",
+  id: 1,
   gender: "Female",
 
   date: "15 Jun 2025",
@@ -1259,7 +1282,7 @@ export interface tempAppointmentProfileData {
 
 export interface AppointmentsType {
   id: string;
-  status: string | number;   // <-- FIX HERE
+  status: string | number; // <-- FIX HERE
   doctor: {
     _id: string;
     name: string;
@@ -1277,8 +1300,6 @@ export interface AppointmentsType {
   date: string;
   time: string;
 }
-
-
 
 export const doctorlistingModalData: tempAppointmentProfileData[] = [
   {

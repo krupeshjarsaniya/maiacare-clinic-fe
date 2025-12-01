@@ -17,7 +17,7 @@ const PatientTreatment = () => {
     const [TreatmentPlanModel, setTreatmentPlanModel] = useState(false);
     const [showEditFormShowModel, setShowEditFormShowModel] = useState<boolean>(false);
     const [medicalPrescription, setMedicalPrescription] = useState<MedicationPrescriptionType[]>([]);
-    const [TreatmentDetailsTempShow, setTreatmentDetailsTempShow] = useState<any[]>([]);
+    const [TreatmentDetailsTempShow, setTreatmentDetailsTempShow] = useState<unknown[]>([]);
     const [medicalPrescriptionDataShowHide, setMedicalPrescriptionDataShowHide] = useState<boolean>(false);
 
     const [step, setStep] = useState<number | undefined>(1);

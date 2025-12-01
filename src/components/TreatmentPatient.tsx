@@ -241,15 +241,14 @@ function TreatmentPatient() {
   const isFertilityDataEmpty = (data: TreatmentFertilityAssessmentFormType) => {
     const defaultValues = ["", "yes", "no", "Regular"];
 
-    // Helper to check if one section (patient or partner) is still default
-    const isSectionEmpty = (section: Record<string, string>) =>
-      Object.values(section).every((value) => defaultValues.includes(value));
+    const isSectionEmpty = (section: object) =>
+      Object.values(section as Record<string, unknown>).every((value) =>
+        defaultValues.includes(String(value ?? ""))
+      );
 
-    // Both must be non-empty to consider data filled
-    const isPatientFilled = !isSectionEmpty(data.patient as any);
-    const isPartnerFilled = !isSectionEmpty(data.partner as any);
+    const isPatientFilled = !isSectionEmpty(data.patient);
+    const isPartnerFilled = !isSectionEmpty(data.partner);
 
-    // Show data only when both are filled
     return !(isPatientFilled && isPartnerFilled);
   };
 
@@ -308,7 +307,6 @@ function TreatmentPatient() {
     status: "uploading" | "completed";
     reportName: string;
     uploadedAt?: number; // timestamp (new Date().getTime())
-    // KYC ADHAR,PAN,LICEN CARD
     date?: string; // For uploaded date
     preview?: string; // For preview URL or icon
     actualSize?: string; // For original file size
@@ -429,7 +427,6 @@ function TreatmentPatient() {
   const handleSave = () => {
     const newErrors: { [key: number]: string } = {};
 
-    // ✅ Validation: Required + unique report names
     const reportNames: string[] = [];
     uploadedFiles.forEach((file, index) => {
       if (!file.reportName.trim()) {
@@ -443,13 +440,11 @@ function TreatmentPatient() {
 
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length > 0) {
-      return; // stop saving
-    }
+    if (Object.keys(newErrors).length > 0) return;
 
-    // ✅ Move completed files
     const completed = uploadedFiles.filter((f) => f.status === "completed");
-    setProgressUpdatesData((prev:any) => ({
+
+    setProgressUpdatesData((prev: ProgressUpdatesDataType) => ({
       ...prev,
       report: [...prev.report, ...completed],
     }));
@@ -457,6 +452,7 @@ function TreatmentPatient() {
     setUploadedFiles([]);
     setShowModal(false);
   };
+
   const handleClose = () => {
     setShowModal(false);
     setFileError(""); // file upload error reset (jo use karto hoy to)
@@ -1603,7 +1599,7 @@ function TreatmentPatient() {
                 </Accordion>
               </div>
 
-            <div>
+              <div>
                 <h6 className="patient-treatment-box-subtitle my-2">
                   Test Reports
                 </h6>
@@ -1925,7 +1921,7 @@ function TreatmentPatient() {
                     </Button>
                   </div>
                 </Modal>
-            </div>
+              </div>
 
               <div>
                 <h6 className="patient-treatment-box-subtitle mt-3 mb-2">

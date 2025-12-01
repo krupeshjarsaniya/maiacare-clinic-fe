@@ -1,6 +1,9 @@
 "use client";
 
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import {
+  StaticImageData,
+  StaticImport,
+} from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 
 interface AppointmentProfileProps {
@@ -10,8 +13,8 @@ interface AppointmentProfileProps {
     date: string;
     id: number;
     name: string;
-    profilePhoto: string | StaticImport;
-    patientProfile: string;
+    profilePhoto: string | StaticImport | StaticImageData;
+    patientProfile: string | StaticImageData;
     patientName: string;
     patientId: string;
     gender: string;

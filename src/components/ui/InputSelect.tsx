@@ -9,7 +9,7 @@ import {
 import Select from "react-dropdown-select";
 import { MultiSelect } from "react-multi-select-component";
 
-type OptionType = { value: string; label: string };
+export type OptionType = { value: string; label: string };
 interface MultiSelectWithCheckboxProps {
   values: OptionType[];
   onChange: (values: OptionType[]) => void; // expose as full objects for flexibility

@@ -92,20 +92,20 @@ export function BookAppointment({
 
   const patientData = PatientsDetails;
   const filtered = (() => {
-      if (txtPatinetName.trim().length === 0) return [];
-      const matches = patientData.filter((item) =>
-          item.name.toLowerCase().includes(txtPatinetName.toLowerCase())
-      );
-      return matches.length > 0 ? matches : patientData;
+    if (txtPatinetName.trim().length === 0) return [];
+    const matches = patientData.filter((item) =>
+      item.name.toLowerCase().includes(txtPatinetName.toLowerCase())
+    );
+    return matches.length > 0 ? matches : patientData;
   })();
   const [search, setSearch] = useState("");
   const [patients, setPatients] = useState<PatientData[]>([]);
 
-//   const filtered: PatientData[] = useMemo(() => {
-//     return patients.filter((p) =>
-//       p.name.toLowerCase().includes(search.toLowerCase())
-//     );
-//   }, [patients, search]);
+  //   const filtered: PatientData[] = useMemo(() => {
+  //     return patients.filter((p) =>
+  //       p.name.toLowerCase().includes(search.toLowerCase())
+  //     );
+  //   }, [patients, search]);
 
   const handleChange = (
     e:
@@ -130,32 +130,31 @@ export function BookAppointment({
 
     return errors;
   };
- const validateForm2 = (data: BookAppointmentForm): FormError => {
-  const errors: FormError = {};
-  const emailRegex = /^[^\s@]+@[^\s@]+\.(com|in)$/;
+  const validateForm2 = (data: BookAppointmentForm): FormError => {
+    const errors: FormError = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(com|in)$/;
 
-  // FIXED PATIENT CHECK
-  if (
-    !data.patientName ||
-    typeof data.patientName !== "object" ||
-    Object.keys(data.patientName).length === 0
-  ) {
-    errors.patientName = "Patient is required";
-  }
+    // FIXED PATIENT CHECK
+    if (
+      !data.patientName ||
+      typeof data.patientName !== "object" ||
+      Object.keys(data.patientName).length === 0
+    ) {
+      errors.patientName = "Patient is required";
+    }
 
-  if (!data.phone.trim()) errors.phone = "Phone is required";
+    if (!data.phone.trim()) errors.phone = "Phone is required";
 
-  if (data.email.trim() === "") {
-    errors.email = "Email is required";
-  } else if (!emailRegex.test(data.email)) {
-    errors.email = "Invalid email format";
-  }
+    if (data.email.trim() === "") {
+      errors.email = "Email is required";
+    } else if (!emailRegex.test(data.email)) {
+      errors.email = "Invalid email format";
+    }
 
-  if (!data.patientAge.trim()) errors.patientAge = "Patient Age is required";
+    if (!data.patientAge.trim()) errors.patientAge = "Patient Age is required";
 
-  return errors;
-};
-
+    return errors;
+  };
 
   const handelNext = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -290,7 +289,7 @@ export function BookAppointment({
                 name="reasonForVisit"
                 values={formData.reasonForVisit}
                 onChange={(values) => {
-                  setFormData((prev: any) => ({
+                  setFormData((prev: BookAppointmentForm) => ({
                     ...prev,
                     reasonForVisit: values,
                   }));
@@ -422,7 +421,7 @@ export function BookAppointment({
                   <div
                     className="cursor-pointer-custom"
                     onClick={() => {
-                      setFormData({ ...formData, patientName:null  });
+                      setFormData({ ...formData, patientName: null });
                       setTxtPatinetName("");
                     }}
                   >
@@ -441,67 +440,6 @@ export function BookAppointment({
                   </div>
                 </div>
               ) : (
-                // <div className={`maiacare-input-field-container`}>
-                //     <InputFieldLabel label="Name" required={true} />
-                //     <Form.Control
-                //         type="text"
-                //         name="patientName"
-                //         className="maiacare-input-field w-100"
-                //         placeholder="Type patient name"
-                //         value={txtPatinetName}
-
-                //         onChange={(e) => {
-                //             setTxtPatinetName(e.target.value);
-                //             setOpen(true);
-                //             // onChange?.(null);
-                //             setFormError((prev) => ({ ...prev, patientName: "" }));
-                //         }}
-
-                //         onFocus={() => {
-                //             if (txtPatinetName.trim().length > 0) setOpen(true);
-                //         }}
-                //         onBlur={() => setTimeout(() => setOpen(false), 150)}
-
-                //     />
-                //     <InputFieldError error={formError.patientName} />
-
-                //     <Dropdown className="custome-patient-dropdown" show={open}>
-                //         <Dropdown.Menu className="w-100 mt-1 shadow">
-                //             {filtered.length > 0 ? (
-                //                 filtered.map((item) => (
-                //                     <Dropdown.Item
-                //                         key={item.id}
-                //                         onClick={() => {
-                //                             setTxtPatinetName(item.name);
-                //                             setOpen(false);
-                //                             handleChange({
-                //                                 target: { name: "patientName", value: item },
-                //                             } as React.ChangeEvent<HTMLInputElement | any>);
-                //                         }}
-                //                         className="d-flex align-items-center gap-2"
-                //                     >
-                //                         {item.ProfilePhoto?.src && (
-                //                             <Image
-                //                                 className="show-patient-img"
-                //                                 src={item.ProfilePhoto.src}
-                //                                 alt={item.name}
-                //                                 width={48}
-                //                                 height={48}
-                //                             />
-                //                         )}
-                //                         <span className="settings-accordion-subtitle">{item.name}</span>
-                //                     </Dropdown.Item>
-                //                 ))
-                //             ) : (
-                //                 <Dropdown.Item disabled className="text-center settings-accordion-subtitle">
-                //                     No records found
-                //                 </Dropdown.Item>
-                //             )}
-                //         </Dropdown.Menu>
-                //     </Dropdown>
-
-                // </div>
-
                 <div
                   className="maiacare-input-field-container"
                   ref={dropdownRef}
@@ -516,7 +454,7 @@ export function BookAppointment({
                     onChange={(e) => {
                       setTxtPatinetName(e.target.value);
                       setOpen(true);
-                      setFormError((prev: any) => ({
+                      setFormError((prev: FormError) => ({
                         ...prev,
                         patientName: "",
                       }));
@@ -571,7 +509,7 @@ export function BookAppointment({
               <PhoneNumberInput
                 label="Phone"
                 value={formData.phone}
-                onChange={(phone: any) => {
+                onChange={(phone: string) => {
                   // setFormData((prev) => ({ ...prev, phone }));
                   setFormError((prev) => ({ ...prev, phone: "" }));
                   handleChange({

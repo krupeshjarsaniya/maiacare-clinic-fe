@@ -7,8 +7,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import ContentContainer from "../ui/ContentContainer";
-import CustomTabs from "../ui/CustomTabs";
 import Image from "next/image";
 import Modal from "../ui/Modal";
 import { InputFieldGroup } from "../ui/InputField";
@@ -30,12 +28,51 @@ import {
 import toast from "react-hot-toast";
 import { BsInfoCircle } from "react-icons/bs";
 import { PartnerDetailData } from "@/utlis/StaticData";
-// import '../../style/PartnerDetails.css'
 
 type AssessmentFormType =
   | FertilityAssessmentType
   | EditFertilityAssessment
   | PhysicalAssessmentDataModel;
+type PhysicalAssessmentProps = {
+  formError?: Partial<Record<keyof PhysicalAssessmentDataModel, string>>;
+  setFormError?: React.Dispatch<
+    React.SetStateAction<
+      Partial<Record<keyof PhysicalAssessmentDataModel, string>>
+    >
+  >;
+  formData: PhysicalAssessmentDataModel;
+  setFormData: React.Dispatch<
+    React.SetStateAction<PhysicalAssessmentDataModel>
+  >;
+  setShowContent?: (value: boolean) => void;
+  setShowPartnerDetail?: (value: boolean) => void;
+  setShowData: React.Dispatch<React.SetStateAction<PartnerDetailData>>;
+  showData: PartnerDetailData | null;
+};
+type MedicalHistoryFormProps = {
+  setAddPartner: (value: boolean) => void;
+  setActiveTab: (tab: string) => void;
+  setShowData: React.Dispatch<SetStateAction<PartnerDetailData>>;
+  showData: PartnerDetailData;
+  initialData?: MedicalHistoryType | null;
+  setEditMedicalHistory?: React.Dispatch<React.SetStateAction<boolean>>;
+  formDataMedicalHistory?: MedicalHistoryType;
+};
+type FormError = Partial<Record<keyof FertilityAssessmentType, string>>;
+
+type FertilityAssessmentProps = {
+  setShowContent?: (value: boolean) => void;
+  setShowPartnerDetail?: (value: boolean) => void;
+  setShowData?: React.Dispatch<React.SetStateAction<PartnerDetailData>>;
+  showData?: PartnerDetailData | null;
+  initialData?: FertilityAssessmentType | EditFertilityAssessment | null;
+  formData: FertilityAssessmentType | EditFertilityAssessment;
+  formError?: FormError;
+  setFormData: React.Dispatch<
+    React.SetStateAction<FertilityAssessmentType | EditFertilityAssessment>
+  >;
+  setFormError: React.Dispatch<React.SetStateAction<FormError>>;
+};
 export function BasicDetailsForm({
   setAddPartner,
   setActiveTab,
@@ -372,22 +409,15 @@ export function MedicalHistoryForm({
   initialData,
   setEditMedicalHistory,
   formDataMedicalHistory,
-}: {
-  setAddPartner: (value: boolean) => void;
-  setActiveTab: (tab: string) => void;
-  setShowData: React.Dispatch<SetStateAction<PartnerDetailData>>;
-  initialData?: unknown;
-  showData?: any;
-  setEditMedicalHistory?: React.Dispatch<React.SetStateAction<boolean>> | any;
-  formDataMedicalHistory?: MedicalHistoryType;
-}) {
+}: MedicalHistoryFormProps) {
   type FormError = Partial<Record<keyof MedicalHistoryType, string>>;
 
   const initialFormData: MedicalHistoryType = {
     medication: formDataMedicalHistory?.medication || "yes",
     surgeries: formDataMedicalHistory?.surgeries || "yes",
     surgeriesContent: formDataMedicalHistory?.surgeriesContent || "",
-    MedicalconditionAllergies: formDataMedicalHistory?.MedicalconditionAllergies || [],
+    MedicalconditionAllergies:
+      formDataMedicalHistory?.MedicalconditionAllergies || [],
     familyMedicalHistory: formDataMedicalHistory?.familyMedicalHistory || "",
 
     lifestyle: formDataMedicalHistory?.lifestyle || [],
@@ -446,11 +476,12 @@ export function MedicalHistoryForm({
         };
 
         setShowData(updatedData);
-        setEditMedicalHistory(false);
+        setEditMedicalHistory?.(false);
       } else {
         setActiveTab("physical & fertility assessment");
         // console.log("FormData55", FormData);
-        setShowData((prev: any) => ({ ...prev, medicalHistory: FormData }));
+        // setShowData((prev: any) => ({ ...prev, medicalHistory: FormData }));
+        setShowData((prev) => ({ ...prev, medicalHistory: FormData }));
       }
     }
   };
@@ -503,7 +534,7 @@ export function MedicalHistoryForm({
               <InputFieldGroup
                 type="text"
                 value={FormData.surgeriesContent}
-                name="surgeriescontent"
+                name="surgeriesContent"
                 onChange={handleChange}
                 error={medicalHistoryFormError.surgeriesContent}
                 placeholder="Enter surgeries"
@@ -625,7 +656,7 @@ export function MedicalHistoryForm({
               disabled={false}
               onClick={() => {
                 setAddPartner(false);
-                setEditMedicalHistory(false);
+                setEditMedicalHistory?.(false);
               }}
             >
               Cancel
@@ -659,16 +690,7 @@ export function PhysicalAssessment({
   setShowPartnerDetail,
   setShowData,
   showData,
-}: {
-  formError?: any;
-  setFormError?: any;
-  formData: FertilityAssessmentType | PhysicalAssessmentDataModel;
-  setFormData: React.Dispatch<SetStateAction<PhysicalAssessmentDataModel>>;
-  setShowContent?: (value: boolean) => void;
-  setShowPartnerDetail?: (value: boolean) => void;
-  setShowData: React.Dispatch<SetStateAction<PartnerDetailData>>;
-  showData: PartnerDetailData | null;
-}) {
+}: PhysicalAssessmentProps) {
   type FormError = Partial<Record<keyof FertilityAssessmentType, string>>;
 
   const initialFormError: FormError = {};
@@ -678,8 +700,8 @@ export function PhysicalAssessment({
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev: any) => ({ ...prev, [name]: value }));
-    setFormError((prev: any) => ({ ...prev, [name]: "" }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormError?.((prev) => ({ ...prev, [name]: "" }));
   };
 
   return (
@@ -706,7 +728,7 @@ export function PhysicalAssessment({
               required={true}
               disabled={false}
               readOnly={false}
-              error={formError.height}
+              error={formError?.height}
             />
           </Col>
           <Col md={6}>
@@ -723,7 +745,7 @@ export function PhysicalAssessment({
               required={true}
               disabled={false}
               readOnly={false}
-              error={formError.weight}
+              error={formError?.weight}
             />
           </Col>
 
@@ -741,7 +763,7 @@ export function PhysicalAssessment({
               required={true}
               disabled={false}
               readOnly={false}
-              error={formError.bmi}
+              error={formError?.bmi}
             />
           </Col>
           <Col md={6}>
@@ -755,7 +777,7 @@ export function PhysicalAssessment({
               onBlur={(e: React.FocusEvent<HTMLSelectElement>) => {}}
               required={true}
               disabled={false}
-              error={formError.bloodGroup}
+              error={formError?.bloodGroup}
               placeholder="Select Blood Group"
               // helperText="Select doctor"
               options={[
@@ -784,14 +806,14 @@ export function PhysicalAssessment({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 handleChange(e);
               }}
-              error={formError.systolic}
+              error={formError?.systolic}
             />
           </Col>
 
           <Col
             md={1}
             className={
-              formError.systolic
+              formError?.systolic
                 ? "or-custom-width d-flex justify-content-center align-items-center mt-4"
                 : "or-custom-width d-flex justify-content-center align-items-center mt-5 "
             }
@@ -824,7 +846,7 @@ export function PhysicalAssessment({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 handleChange(e);
               }}
-              error={formError.diastolic}
+              error={formError?.diastolic}
             />
           </Col>
 
@@ -842,7 +864,7 @@ export function PhysicalAssessment({
               required={true}
               disabled={false}
               readOnly={false}
-              error={formError.heartRate}
+              error={formError?.heartRate}
             />
           </Col>
         </Row>
@@ -861,27 +883,13 @@ export function FertilityAssessment({
   setFormData,
   setFormError,
   formError,
-}: {
-  setShowContent?: (value: boolean) => void;
-  setShowPartnerDetail?: (value: boolean) => void;
-  setShowData?: (value: any) => void;
-  showData?: any;
-  initialData?: any;
-  formData: FertilityAssessmentType | EditFertilityAssessment;
-  setFormData: React.Dispatch<
-    React.SetStateAction<
-      FertilityAssessmentType | EditFertilityAssessment | any
-    >
-  >;
-  setFormError: React.Dispatch<React.SetStateAction<any>>;
-  formError?: any;
-}) {
+}: FertilityAssessmentProps) {
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev: any) => ({ ...prev, [name]: value }));
-    setFormError((prev: any) => ({ ...prev, [name]: "" }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormError((prev) => ({ ...prev, [name]: "" }));
   };
   const handleSubmitData = (e: React.FormEvent) => {
     console.log(formData);
@@ -898,7 +906,7 @@ export function FertilityAssessment({
               value={formData.semenAnalysis || "yes"}
               onChange={(e) => handleChange(e)}
               required={true}
-              error={formError.semenAnalysis}
+              error={formError?.semenAnalysis}
               options={[
                 { label: "Yes", value: "yes" },
                 { label: "No", value: "no" },
@@ -911,7 +919,7 @@ export function FertilityAssessment({
                 value={formData.semenAnalysisContent}
                 name="semenAnalysisContent"
                 onChange={handleChange}
-                error={formError.semenAnalysisContent}
+                error={formError?.semenAnalysisContent}
                 placeholder="If yes, provide details if available"
                 className={`mt-2`}
               ></InputFieldGroup>
@@ -924,7 +932,7 @@ export function FertilityAssessment({
               value={formData.fertilityIssues || "yes"}
               onChange={(e) => handleChange(e)}
               required={true}
-              error={formError.fertilityIssues}
+              error={formError?.fertilityIssues}
               options={[
                 { label: "Yes", value: "yes" },
                 { label: "No", value: "no" },
@@ -937,7 +945,7 @@ export function FertilityAssessment({
                 value={formData.fertilityIssuesContent}
                 name="fertilityIssuesContent"
                 onChange={handleChange}
-                error={formError.semenAnalysisContent}
+                error={formError?.semenAnalysisContent}
                 placeholder="If yes, provide details if available"
                 className={`mt-2`}
               ></InputFieldGroup>
@@ -950,7 +958,7 @@ export function FertilityAssessment({
               value={formData.fertilityTreatment || "yes"}
               onChange={(e) => handleChange(e)}
               required={true}
-              error={formError.fertilityTreatment}
+              error={formError?.fertilityTreatment}
               options={[
                 { label: "Yes", value: "yes" },
                 { label: "No", value: "no" },
@@ -963,7 +971,7 @@ export function FertilityAssessment({
                 value={formData.fertilityTreatmentContent}
                 name="fertilityTreatmentContent"
                 onChange={handleChange}
-                error={formError.fertilityTreatmentContent}
+                error={formError?.fertilityTreatmentContent}
                 placeholder="If yes, provide details if available"
                 className={`mt-2`}
               ></InputFieldGroup>
@@ -976,7 +984,7 @@ export function FertilityAssessment({
               value={formData.surgeries || "yes"}
               onChange={(e) => handleChange(e)}
               required={true}
-              error={formError.surgeries}
+              error={formError?.surgeries}
               options={[
                 { label: "Yes", value: "yes" },
                 { label: "No", value: "no" },
@@ -989,7 +997,7 @@ export function FertilityAssessment({
                 value={formData.surgeriesContent}
                 name="surgeriesContent"
                 onChange={handleChange}
-                error={formError.surgeriesContent}
+                error={formError?.surgeriesContent}
                 placeholder="If yes, provide details if available"
                 className={`mt-2`}
               ></InputFieldGroup>

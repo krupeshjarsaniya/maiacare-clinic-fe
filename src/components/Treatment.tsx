@@ -239,20 +239,20 @@ function Treatment() {
   const [editProgressUpdatesData, setEditProgressUpdatesData] =
     useState<ProgressUpdatesType>(initialProgressUpdatesData);
 
-  const isFertilityDataEmpty = (data: TreatmentFertilityAssessmentFormType) => {
-    const defaultValues = ["", "yes", "no", "Regular"];
+  // const isFertilityDataEmpty = (data: TreatmentFertilityAssessmentFormType) => {
+  //   const defaultValues = ["", "yes", "no", "Regular"];
 
-    // Helper to check if one section (patient or partner) is still default
-    const isSectionEmpty = (section: Record<string, string>) =>
-      Object.values(section).every((value) => defaultValues.includes(value));
+    
+  //   const isSectionEmpty = (section: Record<string, string>) =>
+  //     Object.values(section).every((value) => defaultValues.includes(value));
 
-    // Both must be non-empty to consider data filled
-    const isPatientFilled = !isSectionEmpty(data.patient as any);
-    const isPartnerFilled = !isSectionEmpty(data.partner as any);
+  
+  //   const isPatientFilled = !isSectionEmpty(data.patient as any);
+  //   const isPartnerFilled = !isSectionEmpty(data.partner as any);
 
-    // Show data only when both are filled
-    return !(isPatientFilled && isPartnerFilled);
-  };
+
+  //   return !(isPatientFilled && isPartnerFilled);
+  // };
 
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
@@ -451,10 +451,10 @@ function Treatment() {
     // ✅ Move completed files
     const completed = uploadedFiles.filter((f) => f.status === "completed");
 
-    setProgressUpdatesData((prev: any) => ({
-      ...prev,
-      report: [...prev.report, ...completed],
-    }));
+    // setProgressUpdatesData((prev: any) => ({
+    //   ...prev,
+    //   report: [...prev.report, ...completed],
+    // }));
 
     setUploadedFiles([]);
     setShowModal(false);

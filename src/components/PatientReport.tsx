@@ -15,32 +15,28 @@ import Jpgimg from "@/assets/images/Jpgimg.png";
 import PDFAddhar from "@/assets/images/Pdfimg.png";
 import pdfimg from "@/assets/images/Pdfimg.png";
 import uplodimg from "@/assets/images/Uploadimg.png";
-import EditProfile from "@/assets/images/EditProfile.png";
 import GreenRight from "@/assets/images/GreenRight.png";
 import Trash from "@/assets/images/Trash.png";
 import Cross from "@/assets/images/Cross.png";
 import Delete from "@/assets/images/Delete.png";
-import Pluslight from "@/assets/images/Pluslight.png";
-import Add from "@/assets/images/Add.png";
 import Loading from "@/assets/images/Loading.png";
 import Completed from "@/assets/images/Completed.png";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import { PatientReportType } from "../utlis/types/interfaces";
+interface UploadedFile {
+  reportName: string;
+  file: File;
+}
 
 const PatientReport = () => {
   const [patientReportData, setPatientReportData] =
     useState<PatientReportType[]>(patientReport);
+  const [errors, setErrors] = useState<Record<number, string>>({});
+  const [fileError, setFileError] = useState<string>("");
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-
-    // setFormData((prev) => ({
-    //     ...prev,
-    //     [name]: value,
-    // }));
-    // setFormError((prev) => ({ ...prev, [name]: "" }));
   };
 
   interface FormError {
@@ -55,8 +51,8 @@ const PatientReport = () => {
   const [aadharFile, setAadharFile] = useState<UploadedFile | null>(null);
   const [panFile, setPanFile] = useState<UploadedFile | null>(null);
   const [licenceFile, setLicenceFile] = useState<UploadedFile | null>(null);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [fileError, setFileError] = useState<string>("");
+  // const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  // const [fileError, setFileError] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const panFileRef = useRef<HTMLInputElement | null>(null);
@@ -187,43 +183,61 @@ const PatientReport = () => {
       if (progress >= 100) clearInterval(interval);
     }, 300);
   };
-
   const handleSave = () => {
     const newErrors: { [key: number]: string } = {};
-
-    // ✅ Validation: Required + unique report names
     const reportNames: string[] = [];
+
     uploadedFiles.forEach((file, index) => {
-      if (!file.reportName.trim()) {
+      const trimmedName = file.reportName.trim();
+
+      if (!trimmedName) {
         newErrors[index] = "Report Name is required";
-      } else if (reportNames.includes(file.reportName.trim())) {
+      } else if (reportNames.includes(trimmedName)) {
         newErrors[index] = "Report Name must be unique";
       } else {
-        reportNames.push(file.reportName.trim());
+        reportNames.push(trimmedName);
       }
     });
 
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length > 0) {
-      return; // stop saving
+    // If there are no errors, proceed
+    if (Object.keys(newErrors).length === 0) {
+      console.log("All files are valid, proceed with save:", uploadedFiles);
+       return; 
+      // Do your save/upload logic here
     }
-
-    // ✅ Move completed files
-    const completed = uploadedFiles.filter((f) => f.status === "completed");
-
-    // setCompletedFiles((prev) => [...prev, ...completed]);
-    setPatientReportData((prev: any) => [...prev, ...completed]);
-
-    console.log("test", completed);
-
-    setUploadedFiles([]);
-    setShowModal(false);
   };
+  // const handleSave = () => {
+  //   const newErrors: { [key: number]: string } = {};
+
+  //   // ✅ Validation: Required + unique report names
+  //   const reportNames: string[] = [];
+  //   uploadedFiles.forEach((file, index) => {
+  //     if (!file.reportName.trim()) {
+  //       newErrors[index] = "Report Name is required";
+  //     } else if (reportNames.includes(file.reportName.trim())) {
+  //       newErrors[index] = "Report Name must be unique";
+  //     } else {
+  //       reportNames.push(file.reportName.trim());
+  //     }
+  //   });
+
+  //   setErrors(newErrors);
+
+  //   if (Object.keys(newErrors).length > 0) {
+  //     return; // stop saving
+  //   }
+
+  //   const completed = uploadedFiles.filter((f) => f.status === "completed");
+  //   setPatientReportData((prev:any) => [...prev, ...completed]);
+  //   setUploadedFiles([]);
+  //   setShowModal(false);
+  // };
 
   const handleClose = () => {
     setShowModal(false);
-    setFileError(""); // file upload error reset (jo use karto hoy to)
+    setFileError("");
   };
 
   return (

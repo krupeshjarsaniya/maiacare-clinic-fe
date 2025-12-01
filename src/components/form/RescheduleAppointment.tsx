@@ -6,7 +6,7 @@ import Button from "../ui/Button";
 import { Col, ProgressBar, Row } from "react-bootstrap";
 import { DatePickerFieldGroup } from "../ui/CustomDatePicker";
 import { TimePickerFieldGroup } from "../ui/CustomTimePicker";
-import { RescheduleAppointmentForm } from "../../utlis/types/interfaces";
+import { OptionType } from "../../components/ui/InputSelect"; // adjust path if needed
 import AppointmentProfile from "../ui/custom/AppointmentProfile";
 import { tempAppointmentProfileData } from "../../utlis/StaticData";
 import Modal from "../ui/Modal";
@@ -23,7 +23,19 @@ interface RescheduleAppointmentProps {
 
 type FormError = Partial<Record<keyof RescheduleAppointmentForm, string>>;
 
+const initialFormError: FormError = {};
+interface RescheduleAppointmentForm {
+  id: string;
+  reason: string;
+  type: string;
+  reasonForVisit: OptionType[];
+  appointmentDate: string;
+  appointmentTime: string;
+  forTime: string;
+  additionalNote: string;
+}
 const initialFormData: RescheduleAppointmentForm = {
+  id: "",
   reason: "",
   type: "",
   reasonForVisit: [],
@@ -32,8 +44,6 @@ const initialFormData: RescheduleAppointmentForm = {
   forTime: "",
   additionalNote: "",
 };
-
-const initialFormError: FormError = {};
 
 export function RescheduleAppointment({
   setRescheduleModal,
@@ -131,7 +141,12 @@ export function RescheduleAppointment({
       </div>
 
       {/* Appointment Info */}
-      <AppointmentProfile tempProfileData={tempAppointmentProfileData} />
+      <AppointmentProfile
+        tempProfileData={{
+          ...tempAppointmentProfileData,
+          id: Number(tempAppointmentProfileData.id),
+        }}
+      />
 
       {/* Step 1 */}
       {step === 1 && (
@@ -205,7 +220,7 @@ export function RescheduleAppointment({
                   name="reasonForVisit"
                   values={formData.reasonForVisit}
                   onChange={(values) => {
-                    setFormData((prev: any) => ({
+                    setFormData((prev: RescheduleAppointmentForm) => ({
                       ...prev,
                       reasonForVisit: values,
                     }));

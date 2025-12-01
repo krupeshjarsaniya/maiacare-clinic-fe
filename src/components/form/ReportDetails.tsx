@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import ContentContainer from "../ui/ContentContainer";
 import Image from "next/image";
-import report from "../../assets/images/medical-reports.png";
+
 import Button from "../ui/Button";
 import uplodimg from "../../assets/images/Uploadimg.png";
 import Modal from "../ui/Modal";
@@ -14,13 +14,14 @@ import Delete from "@/assets/images/Delete.png";
 import Loading from "@/assets/images/Loading.png";
 import { Col, Row } from "react-bootstrap";
 import GreenRight from "@/assets/images/GreenRight.png";
-import { ProgressUpdatesType } from "@/utlis/types/interfaces";
 import {
   IVFProgressData,
   medicationPrescriptionData,
   StatusAndUpdatesData,
 } from "@/utlis/StaticData";
 import { InputFieldGroup } from "../ui/InputField";
+import { ProgressUpdatesType } from "@/utlis/types/interfaces";
+
 const ProgressUpdatesStaticData = {
   patient: {
     ageAtFirstMenstruation: "",
@@ -216,8 +217,8 @@ export default function ReportDetails() {
     setShowModal(false);
     setFileError(""); // file upload error reset (jo use karto hoy to)
   };
-const handleSave = () => {
-    let newErrors: { [key: number]: string } = {};
+  const handleSave = () => {
+    const newErrors: { [key: number]: string } = {};
 
     // ✅ Validation: Required + unique report names
     const reportNames: string[] = [];
@@ -240,14 +241,10 @@ const handleSave = () => {
     // ✅ Move completed files
     const completed = uploadedFiles.filter((f) => f.status === "completed");
 
-    // setCompletedFiles((prev) => [...prev, ...completed]);
-    // setPatientReportData((prev: any) => [...prev, ...completed]);
-    // setPatientReport((prev: any) => [...prev, ...completed]);
-    setProgressUpdatesData((prev: any) => ({
+    setProgressUpdatesData((prev) => ({
       ...prev,
       report: [...prev.report, ...completed],
     }));
-
     setUploadedFiles([]);
     setShowModal(false);
   };
@@ -261,7 +258,7 @@ const handleSave = () => {
             <Row className="mt-3">
               {progressUpdatesData.report.map((item, index) => {
                 return (
-                  <Col key={index} >
+                  <Col key={index}>
                     <div className="d-flex justify-content-between align-items-center report-box mb-3">
                       <div className="d-flex gap-2">
                         <Image
@@ -340,7 +337,7 @@ const handleSave = () => {
                   fill="#2B4360"
                 />
               </svg>
-             Upload Reports
+              Upload Reports
             </div>
           </Button>
         )}

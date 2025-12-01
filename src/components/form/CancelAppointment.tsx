@@ -68,7 +68,6 @@ export function CancelAppointment({
             Are you sure you want to cancel the appointment?
           </h6>
           <AppointmentProfile tempProfileData={tempAppointmentProfileData} />
-
           <InputSelect
             label="Reason for Cancelling Appointment "
             name="reasonForCancel"
