@@ -168,15 +168,33 @@ export interface SelectPatientType {
   name: string;
 }
 
-export interface FertilityAssessmentType {
-  id:string;
-  height: string;
-  weight: string;
-  bmi: string;
-  bloodGroup: string;
-  systolic: string;
-  diastolic: string;
-  heartRate: string;
+// export interface FertilityAssessmentType {
+//   id:string;
+//   height: string;
+//   weight: string;
+//   bmi: string;
+//   bloodGroup: string;
+//   systolic: string;
+//   diastolic: string;
+//   heartRate: string;
+//   semenAnalysis: string;
+//   semenAnalysisContent: string;
+//   fertilityIssues: string;
+//   fertilityIssuesContent: string;
+//   fertilityTreatment: string;
+//   fertilityTreatmentContent: string;
+//   surgeries: string;
+//   surgeriesContent: string;
+// }
+export type FertilityAssessmentType = {
+  id?: string;
+  height?: string;
+  weight?: string;
+  bmi?: string;
+    bloodGroup?: string;
+ systolic?:string;
+    diastolic?: string;
+    heartRate?:string;
   semenAnalysis: string;
   semenAnalysisContent: string;
   fertilityIssues: string;
@@ -185,7 +203,7 @@ export interface FertilityAssessmentType {
   fertilityTreatmentContent: string;
   surgeries: string;
   surgeriesContent: string;
-}
+};
 
 export interface EditFertilityAssessment {
   semenAnalysis: string;

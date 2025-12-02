@@ -20,11 +20,26 @@ import toast from "react-hot-toast";
 import { BsInfoCircle } from "react-icons/bs";
 import { PartnerDetailData } from "@/utlis/StaticData";
 import { StaticImageData } from "next/image";
+interface ProfileType {
+  // define the fields, for example:
+  name?: string;
+  age?: number;
+  avatar?: string | StaticImageData;
+  // etc...
+}
+export interface ProfileDetails {
+  basic_detail_name: string;
+  basic_detail_gender: string;
+  basic_detail_age: string;
+  basic_detail_phone: string;
+  basic_detail_email: string;
+  profileImage?: string;
+}
 export interface PartnerDetailsData {
-  profile?: string | StaticImageData;
+  profile?: string | StaticImageData | ProfileType | ProfileDetails;
   medicalHistory?: MedicalHistoryType;
   fertilityAssessment?: FertilityAssessmentType;
-  PhysicalAssessmentData: FertilityAssessmentType[];
+  PhysicalAssessmentData: PhysicalAssessmentDataModel[];
 }
 // interface AddPartnerDetailsProps {
 //   setAddPartner: (value: boolean) => void;
@@ -184,13 +199,13 @@ export function PhysicalFertilityAssessmentAccordion({
   const validateForm = (data: FertilityAssessmentType): FormError => {
     const errors: FormError = {};
 
-    if (!data.height.trim()) errors.height = "Height is required";
-    if (!data.weight.trim()) errors.weight = "Weight is required";
-    if (!data.bmi.trim()) errors.bmi = "BMI is required";
-    if (!data.bloodGroup.trim()) errors.bloodGroup = "Blood group is required";
-    if (!data.systolic.trim()) errors.systolic = "Blood pressure is required";
+    if (!data.height?.trim()) errors.height = "Height is required";
+    if (!data.weight?.trim()) errors.weight = "Weight is required";
+    if (!data.bmi?.trim()) errors.bmi = "BMI is required";
+    if (!data.bloodGroup?.trim()) errors.bloodGroup = "Blood group is required";
+    if (!data.systolic?.trim()) errors.systolic = "Blood pressure is required";
 
-    if (!data.heartRate.trim()) errors.heartRate = "Heart rate is required";
+    if (!data.heartRate?.trim()) errors.heartRate = "Heart rate is required";
 
     if (!data.semenAnalysis.trim())
       errors.semenAnalysis = "Seminal Analysis is required";
@@ -227,20 +242,20 @@ export function PhysicalFertilityAssessmentAccordion({
       setShowPartnerDetail(false);
       setShowContent(true);
 
-      //   setShowData((prev) => ({
-      //     ...prev,
-      //     PhysicalAssessmentData: [...prev.PhysicalAssessmentData, formData],
-      //   }));
-
-      //   setShowData((prev) => ({
-      //     ...prev,
-      //     fertilityAssessment: { ...prev.fertilityAssessment, ...formData },
-      //   }));
       setShowData((prev) => ({
         ...prev,
         PhysicalAssessmentData: [...prev.PhysicalAssessmentData, formData],
+      }));
+
+      setShowData((prev) => ({
+        ...prev,
         fertilityAssessment: { ...prev.fertilityAssessment, ...formData },
       }));
+      //   setShowData((prev) => ({
+      //     ...prev,
+      //     PhysicalAssessmentData: [...prev.PhysicalAssessmentData, formData],
+      //     fertilityAssessment: { ...prev.fertilityAssessment, ...formData },
+      //   }));
 
       toast.success("Partner added successfully", {
         icon: <BsInfoCircle size={22} color="white" />,

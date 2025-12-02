@@ -2379,8 +2379,17 @@ export const AppointmentsWeekData = [
     time: "13:30",
   },
 ];
-
-export const AppointmentsMonthData = [
+export interface AppointmentsMonthType {
+ id: string;
+    patient: {
+      _id: string,
+      name: string,
+      profileImage: string | StaticImageData,
+      contactNumber: string,
+    },
+    date: string,
+}
+export const AppointmentsMonthData: AppointmentsMonthType[] = [
   {
     id: "1",
     patient: {

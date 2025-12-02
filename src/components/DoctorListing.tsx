@@ -8,7 +8,7 @@ import Image from 'next/image';
 import PriyaGupta from '../assets/images/Priya Gupta.png';
 import { AppointmentRequestCancelModel } from './TempAppoRequstCancelModel';
 import { BsClock } from 'react-icons/bs';
-import { Appointments, AppointmentsMonthData, AppointmentsType, AppointmentsWeekData, doctorlistingModalData, tempAppointmentProfileData } from '../utlis/StaticData';
+import { Appointments, AppointmentsMonthData, AppointmentsMonthType, AppointmentsType, AppointmentsWeekData, doctorlistingModalData, tempAppointmentProfileData } from '../utlis/StaticData';
 import { InputFieldGroup } from './ui/InputField';
 import { InputSelect } from './ui/InputSelect';
 import { BookAppointment, SuccessModalBookAppointment } from './form/BookAppointment';
@@ -267,7 +267,7 @@ export function CalendarView() {
 
   const [CalnderAppointments, setCalnderAppointments] = useState<AppointmentsType[]>(Appointments);
   const [CalnderAppointmentsWeek, setCalnderAppointmentsWeek] = useState<AppointmentsType[]>(AppointmentsWeekData);
-  const [AppointmentsMonthShow, setAppointmentsMonthShow] = useState<unknown[]>(AppointmentsMonthData);
+  const [AppointmentsMonthShow, setAppointmentsMonthShow] = useState<AppointmentsMonthType[]>(AppointmentsMonthData);
 
   // const [events, setEvents] = useState<Event[] | any>([]);
   const [clickTime, setClickTime] = useState<string>("");
@@ -1340,7 +1340,7 @@ export function CalendarView() {
 
               {selectedView === 'week'
                 &&
-                <>
+                <> 
                   <AppointmentsWeek
                     CalnderAppointmentsWeek={CalnderAppointmentsWeek}
                     setBookAppointmentModal={setBookAppointmentModal}

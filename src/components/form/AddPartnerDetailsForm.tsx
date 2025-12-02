@@ -49,7 +49,7 @@ type PhysicalAssessmentProps = {
   >;
   setShowContent?: (value: boolean) => void;
   setShowPartnerDetail?: (value: boolean) => void;
- setShowData: React.Dispatch<React.SetStateAction<PartnerDetailsData>>;
+  setShowData: React.Dispatch<React.SetStateAction<PartnerDetailsData>>;
   showData: PartnerDetailsData;
 };
 type MedicalHistoryFormProps = {
@@ -67,14 +67,12 @@ type FormError = Partial<Record<keyof FertilityAssessmentType, string>>;
 type FertilityAssessmentProps = {
   setShowContent?: (value: boolean) => void;
   setShowPartnerDetail?: (value: boolean) => void;
-   setShowData: React.Dispatch<React.SetStateAction<PartnerDetailsData>>;
+  setShowData: React.Dispatch<React.SetStateAction<PartnerDetailsData>>;
   showData: PartnerDetailsData;
   initialData?: Partial<FertilityAssessmentType>;
   formData: FertilityAssessmentType | EditFertilityAssessment;
   formError?: FormError;
-  setFormData: React.Dispatch<
-    React.SetStateAction<FertilityAssessmentType>
-  >;
+  setFormData: React.Dispatch<React.SetStateAction<FertilityAssessmentType>>;
   setFormError: React.Dispatch<React.SetStateAction<FormError>>;
 };
 export function BasicDetailsForm({
@@ -221,17 +219,25 @@ export function BasicDetailsForm({
 
     const errors = validateForm(formData);
     setFormError(errors);
-    // console.log("errors", errors);
+
     if (Object.keys(errors).length === 0) {
       setFormError(initialFormError);
       setActiveTab("medical history");
       window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Update showData's profile by merging old profile with form data fields
+      setShowData((prev) => ({
+        ...prev,
+        profile: {
+          ...(typeof prev?.profile === "object" && prev?.profile !== null
+            ? prev.profile
+            : {}),
+          ...formData,
+        },
+      }));
     }
-    setShowData((prev) => ({
-      ...prev,
-      profile: { ...prev.profile, ...formData },
-    }));
   };
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -461,35 +467,38 @@ export function MedicalHistoryForm({
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const errors = validateForm(FormData);
     setMedicalHistoryFormError(errors);
 
     if (Object.keys(errors).length === 0) {
       if (formDataMedicalHistory) {
-        // console.log("updated medicalHistory", {
-        //     ...showData,
-        //     medicalHistory: FormData
-        // });
         toast.success("Changes saved successfully", {
           icon: <BsInfoCircle size={22} color="white" />,
         });
 
-        const updatedData = {
+        const updatedData: PartnerDetailsData = {
           ...showData,
           medicalHistory: FormData,
+          fertilityAssessment: showData?.fertilityAssessment, // important fix
+          // PhysicalAssessmentData: showData?.PhysicalAssessmentData,
+          PhysicalAssessmentData: showData?.PhysicalAssessmentData ?? [],
+
+          profile: showData?.profile,
         };
 
         setShowData(updatedData);
         setEditMedicalHistory?.(false);
       } else {
         setActiveTab("physical & fertility assessment");
-        // console.log("FormData55", FormData);
-        // setShowData((prev: any) => ({ ...prev, medicalHistory: FormData }));
-        setShowData((prev) => ({ ...prev, medicalHistory: FormData }));
+
+        setShowData((prev) => ({
+          ...prev,
+          medicalHistory: FormData,
+        }));
       }
     }
   };
-
   return (
     <>
       <form>
