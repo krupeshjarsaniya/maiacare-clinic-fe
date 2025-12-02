@@ -1,12 +1,14 @@
 "use client";
 import Invoice from "@/components/Invoice";
 
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 
 export default function page() {
   return (
     <>
-      <Invoice />
+      <Suspense fallback={<div>Loading invoice...</div>}>
+        <Invoice />
+      </Suspense>
     </>
   );
 }
