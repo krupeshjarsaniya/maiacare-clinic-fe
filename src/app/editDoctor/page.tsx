@@ -1,14 +1,16 @@
 "use client";
 import EditDoctor from "@/components/EditDoctor";
 
-import React from "react";
+import React, { Suspense } from "react";
 
 
 export default function page() {
 
   return (
     <div>
-      <EditDoctor />
+      <Suspense fallback={<div>Loading edit doctor...</div>}>
+        <EditDoctor />
+      </Suspense>
     </div>
   );
 }
