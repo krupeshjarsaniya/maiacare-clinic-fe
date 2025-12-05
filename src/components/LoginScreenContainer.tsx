@@ -36,7 +36,7 @@ export default function LoginScreenContainer() {
 
                             </div>
                             <h2 className="login-title text-center mt-3" >
-                                Sign In To Your Account.
+                                Log In To Your Account.
 
                             </h2>
                             <p className="login-subtitle text-center">Please enter details to access your dashboard</p>
