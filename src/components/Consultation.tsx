@@ -229,6 +229,7 @@ export default function Consultation() {
         const imgSrc = info.row.original.profileImage;
         const name = info.row.original.name;
         const id = info.row.original._id; // <-- Make sure you have an `id`
+        const verified = info.row.original.verified; // <-- Make sure you have a `verified` field
         return (
           <Link
             href={`/patients/${id}`}
