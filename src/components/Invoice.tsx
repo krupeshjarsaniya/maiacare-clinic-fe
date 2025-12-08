@@ -292,23 +292,7 @@ export default function Invoice() {
 
       {/* Table */}
       <CommonTable data={filteredData} columns={columns} />
-      {/* Pagination */}
-      <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-        <small className="text-muted">
-          Showing {filteredData.length} of {invoice.length} results
-        </small>
-        <Pagination size="sm" className="mb-0">
-          <Pagination.Prev disabled />
-          {[1, 2, 3, 4, 5].map((p) => (
-            <Pagination.Item key={p} active={p === 1}>
-              {p}
-            </Pagination.Item>
-          ))}
-          <Pagination.Ellipsis disabled />
-          <Pagination.Item>99</Pagination.Item>
-          <Pagination.Next />
-        </Pagination>
-      </div>
+      
     </div>
   );
 }

@@ -497,3 +497,28 @@ export interface AddPatientFormObjType {
   emergencyContact: emergencyContact;
   type: string;
 }
+// get all doctor
+export interface Doctor {
+  _id: string;
+  name: string;
+  specialty: string;
+  verified: boolean;
+  profilePicture: string; // URL string
+}
+export interface GetAllPatient {
+  _id: string;
+  verified: boolean;
+  profileImage: string;
+  name: string;
+  gender: string;
+  dob: string;            // ISO date string
+  contactNumber: string;
+  email: string;
+  address: string;
+  pincode: string;
+  city: string;
+  state: string;
+  age: number;
+  doctor: Doctor;
+
+}

@@ -24,6 +24,7 @@ import dummyPatientImg from "../../assets/images/dummy-patient-sucess.png";
 import { useRouter } from "next/navigation";
 import { addPatient } from "@/utlis/apis/apiHelper";
 import toast from "react-hot-toast";
+import { formatDateTime } from "@/utlis/Helper";
 
 type FormError = Partial<Record<keyof AddPatientFormData, string>>;
 
@@ -204,7 +205,7 @@ function AddPatientForm() {
           name: formData.name,
           email: formData.email,
           gender: formData.gender,
-          dob: formData.date,
+          dob: formatDateTime(formData.date),
           contactNumber: formData.phone,
           address: formData.address,
           pincode: formData.pincode,
@@ -225,7 +226,9 @@ function AddPatientForm() {
       addPatient(data)
         .then((response) => {
           console.log("response : ", response);
+
           router.push("/patients");
+          localStorage.setItem("patientAddedSuccess", "true");
           if (response.data.status) {
             setShowSuccessModal(true);
             setFormError(initialFormError);

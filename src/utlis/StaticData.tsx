@@ -594,7 +594,8 @@ export const invoice: invoice[] = [
 // patient consultation data
 
 export interface ConsultationEntry {
-  id: number; // <-- ADD ID
+  _id?: number;
+  id?: number; // <-- ADD ID
   name: string;
   mobile: string;
   treatment: string;
@@ -606,7 +607,7 @@ export interface ConsultationEntry {
 
 export const consultationData: ConsultationEntry[] = [
   {
-    id: 1,
+    _id: 1,
     name: "Rani Desai",
     mobile: "9092038491",
     treatment: "Fertility Support +2",
@@ -614,9 +615,10 @@ export const consultationData: ConsultationEntry[] = [
     status: "Active",
     image: patient,
     date: "2025-09-15",
+    id: 0
   },
   {
-    id: 2,
+    _id: 2,
     name: "Nina Gupta",
     mobile: "9092038491",
     treatment: "IVF",
@@ -626,7 +628,7 @@ export const consultationData: ConsultationEntry[] = [
     date: "2025-11-07",
   },
   {
-    id: 3,
+    _id: 3,
     name: "Himari Roy",
     mobile: "9092038491",
     treatment: "Egg Freezing",
@@ -636,7 +638,7 @@ export const consultationData: ConsultationEntry[] = [
     date: "2025-09-15",
   },
   {
-    id: 4,
+    _id: 4,
     name: "Anjali Shinde",
     mobile: "9092038491",
     treatment: "IVF",
@@ -646,7 +648,7 @@ export const consultationData: ConsultationEntry[] = [
     date: "2025-09-15",
   },
   {
-    id: 5,
+    _id: 5,
     name: "Anjali Shinde",
     mobile: "9092038491",
     treatment: "Fertility Support +2",
@@ -656,7 +658,7 @@ export const consultationData: ConsultationEntry[] = [
     date: "2025-11-08",
   },
   {
-    id: 6,
+    _id: 6,
     name: "Aastha Patil",
     mobile: "9092038491",
     treatment: "IVF",
@@ -665,46 +667,46 @@ export const consultationData: ConsultationEntry[] = [
     image: patient,
     date: "2025-09-15",
   },
-  {
-    id: 7,
-    name: "Anjali Shinde",
-    mobile: "9092038491",
-    treatment: "Fertility Support +2",
-    pin: "400077",
-    status: "Deactivated",
-    image: patient,
-    date: "2025-09-15",
-  },
-  {
-    id: 8,
-    name: "Rani Desai",
-    mobile: "9092038491",
-    treatment: "Egg Freezing",
-    pin: "400077",
-    status: "Active",
-    image: patient,
-    date: "2025-09-15",
-  },
-  {
-    id: 9,
-    name: "Anjali Shinde",
-    mobile: "9092038491",
-    treatment: "Fertility Support +2",
-    pin: "400077",
-    status: "Deactivated",
-    image: patient,
-    date: "2025-09-15",
-  },
-  {
-    id: 10,
-    name: "Rani Desai",
-    mobile: "9092038491",
-    treatment: "Egg Freezing",
-    pin: "400077",
-    status: "Active",
-    image: patient,
-    date: "2025-10-15",
-  },
+  // {
+  //   id: 7,
+  //   name: "Anjali Shinde",
+  //   mobile: "9092038491",
+  //   treatment: "Fertility Support +2",
+  //   pin: "400077",
+  //   status: "Deactivated",
+  //   image: patient,
+  //   date: "2025-09-15",
+  // },
+  // {
+  //   id: 8,
+  //   name: "Rani Desai",
+  //   mobile: "9092038491",
+  //   treatment: "Egg Freezing",
+  //   pin: "400077",
+  //   status: "Active",
+  //   image: patient,
+  //   date: "2025-09-15",
+  // },
+  // {
+  //   id: 9,
+  //   name: "Anjali Shinde",
+  //   mobile: "9092038491",
+  //   treatment: "Fertility Support +2",
+  //   pin: "400077",
+  //   status: "Deactivated",
+  //   image: patient,
+  //   date: "2025-09-15",
+  // },
+  // {
+  //   id: 10,
+  //   name: "Rani Desai",
+  //   mobile: "9092038491",
+  //   treatment: "Egg Freezing",
+  //   pin: "400077",
+  //   status: "Active",
+  //   image: patient,
+  //   date: "2025-10-15",
+  // },
 ];
 
 import { ColumnDef } from "@tanstack/react-table";

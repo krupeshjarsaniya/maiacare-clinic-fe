@@ -14,3 +14,18 @@ export const addDoctor = (data:DoctorDetails) =>{
 export const addPatient = (data: AddPatientFormObjType) => {
   return apiClient.post("/patient/add-patient", data);
 }
+// getAll Patient
+export const getAllPatient = () => {
+  return apiClient.get("/patient/get-patient");
+}
+
+
+
+export const getAll = () => {
+  const token = localStorage.getItem("token");
+  return apiClient.get("/patient/get-patient", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

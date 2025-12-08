@@ -438,7 +438,7 @@ export default function Doctor() {
       <CommonTable data={filteredData} columns={columns} />
       <DoctorAddedModal />
       {/* Pagination */}
-      <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+      {/* <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap">
         <small className="text-muted">
           Showing {filteredData.length} of {DoctorData.length} results
         </small>
@@ -453,7 +453,7 @@ export default function Doctor() {
           <Pagination.Item>99</Pagination.Item>
           <Pagination.Next />
         </Pagination>
-      </div>
+      </div> */}
 
      
       <Modal

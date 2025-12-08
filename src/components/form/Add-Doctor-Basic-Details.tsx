@@ -20,8 +20,8 @@ import cross from "../../assets/images/crossedit.png";
 export default function AddDoctorBasicDetails({
   onNext,
   onSaveDoctor,
-  // onUpdate,
-}: {
+}: // onUpdate,
+{
   onNext: () => void;
   onSaveDoctor: (doctorData: unknown) => void;
   // onUpdate: (data: FormData) => void;
@@ -657,6 +657,9 @@ export default function AddDoctorBasicDetails({
           </div>
         </div>
       </ContentContainer>
+
+      {/* qualifications */}
+      <ContentContainer className="mt-3">hy</ContentContainer>
 
       <div className="d-flex justify-content-end mt-4">
         <Button

@@ -1546,8 +1546,8 @@ body {
 .patient-profile-dot {
   border: 1px solid var(--google-icon-border);
   border-radius: 8px;
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
