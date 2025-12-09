@@ -720,13 +720,13 @@ export function PhysicalAssessment({
   };
 
   const initialFormData: PhysicalAssessmentDataModel = {
-    id: "",
+    patientId: "",
     height: "",
     weight: "",
     bmi: "",
     bloodGroup: "",
-    systolic: "",
-    diastolic: "",
+    bloodPressureSystolic: "",
+    bloodPressureDiastolic: "",
     heartRate: "",
   };
   const [showPhisicalAssessment, setShowPhisicalAssessment] =
@@ -827,24 +827,24 @@ export function PhysicalAssessment({
           <Col md={5} className="input-custom-width">
             <InputFieldGroup
               label="Blood Pressure"
-              name="systolic"
+              name="bloodPressureSystolic"
               type="number"
               placeholder="Systolic(mmHg)"
               required={true}
               disabled={false}
               readOnly={false}
-              value={formData.systolic}
+              value={formData?.bloodPressureSystolic}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 handleChange(e);
               }}
-              error={formError?.systolic}
+              error={formError?.bloodPressureSystolic}
             />
           </Col>
 
           <Col
             md={1}
             className={
-              formError?.systolic
+              formError?.bloodPressureSystolic
                 ? "or-custom-width d-flex justify-content-center align-items-center mt-4"
                 : "or-custom-width d-flex justify-content-center align-items-center mt-5 "
             }
@@ -866,18 +866,18 @@ export function PhysicalAssessment({
           <Col md={5} className="input-custom-width">
             <InputFieldGroup
               label="" // No label here to match the design
-              name="diastolic"
+              name="bloodPressureDiastolic"
               type="number"
               className="input-custom-data"
               placeholder="Diastolic(mmHg)"
               required={false}
               disabled={false}
               readOnly={false}
-              value={formData.diastolic}
+              value={formData.bloodPressureDiastolic}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 handleChange(e);
               }}
-              error={formError?.diastolic}
+              error={formError?.bloodPressureDiastolic}
             />
           </Col>
 

@@ -735,14 +735,14 @@ export interface PartnerDetailData {
   medicalHistory: MedicalHistoryType;
 
   PhysicalAssessmentData: {
-    id: string;
+    patientId: string;
     date: string;
     height: string;
     weight: string;
     bmi: string;
     bloodGroup: string;
-    systolic: string;
-    diastolic: string;
+    bloodPressureSystolic: string;
+    bloodPressureDiastolic: string;
     heartRate: string;
   }[];
 

@@ -313,7 +313,7 @@ const PatientReport = () => {
           </Button>
         </div>
       </div>
-      s
+      
       <div className="d-md-none d-sm-flex d-none flex-column align-items-sm-start align-items-center gap-3 mb-3">
         <div className="d-flex align-items-center justify-content-sm-start justify-content-center flex-wrap gap-3 w-100">
           <div className="patient-header-search-width">

@@ -37,24 +37,24 @@ const PhisicalAssessmentForm = ({
   type FormError = Partial<Record<keyof PhysicalAssessmentDataModel, string>>;
   const initialFormError: FormError = {};
   const initialFormData: PhysicalAssessmentDataModel = {
-    id: editPhysicalAssessment?.id || "",
+    patientId: editPhysicalAssessment?.patientId || "",
     height: editPhysicalAssessment?.height || "",
     weight: editPhysicalAssessment?.weight || "",
     bmi: editPhysicalAssessment?.bmi || "",
     bloodGroup: editPhysicalAssessment?.bloodGroup || "",
-    systolic: editPhysicalAssessment?.systolic || "",
-    diastolic: editPhysicalAssessment?.diastolic || "",
+    bloodPressureSystolic: editPhysicalAssessment?.bloodPressureSystolic || "",
+    bloodPressureDiastolic: editPhysicalAssessment?.bloodPressureDiastolic || "",
     heartRate: editPhysicalAssessment?.heartRate || "",
   
   };
   const initialFormDataForClear: PhysicalAssessmentDataModel = {
-    id: "",
+    patientId: "",
     height: "",
     weight: "",
     bmi: "",
     bloodGroup: "",
-    systolic: "",
-    diastolic: "",
+    bloodPressureSystolic: "",
+    bloodPressureDiastolic: "",
     heartRate: "",
   
   };
@@ -78,8 +78,8 @@ const PhisicalAssessmentForm = ({
         errors.bloodGroup = "Blood group is required";
     }
 
-    if (!data.systolic.trim() && !data.diastolic.trim()) {
-      errors.systolic = " systolic is required";
+    if (!data.bloodPressureSystolic.trim() && !data.bloodPressureDiastolic.trim()) {
+      errors.bloodPressureSystolic = " systolic is required";
 
       // errors.diastolic = "At least one of systolic or diastolic is required";
     }
@@ -120,10 +120,10 @@ const PhisicalAssessmentForm = ({
         id: generateRandomId(),
       };
 
-      if (editPhysicalAssessment && editPhysicalAssessment.id) {
+      if (editPhysicalAssessment && editPhysicalAssessment.patientId) {
         setModalFormPhisicalData((prev) =>
           prev.map((item) =>
-            item.id === editPhysicalAssessment.id
+            item.patientId === editPhysicalAssessment.patientId
               ? { ...item, ...formData }
               : item
           )
@@ -243,24 +243,24 @@ const PhisicalAssessmentForm = ({
           <Col md={5} className="input-custom-width">
             <InputFieldGroup
               label="Blood Pressure"
-              name="systolic"
+              name="bloodPressureSystolic"
               type="number"
               placeholder="Systolic(mmHg)"
               required={true}
               disabled={false}
               readOnly={false}
-              value={formData.systolic}
+              value={formData.bloodPressureSystolic}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 handleChange(e);
               }}
-              error={formError.systolic}
+              error={formError.bloodPressureSystolic}
             />
           </Col>
 
           <Col
             md={1}
             className={
-              formError.systolic
+              formError.bloodPressureSystolic
                 ? "or-custom-width d-flex justify-content-center align-items-center mt-md-4 "
                 : "or-custom-width d-flex justify-content-center align-items-center mt-5"
             }
@@ -283,14 +283,14 @@ const PhisicalAssessmentForm = ({
           <Col md={5} className="input-custom-width ">
             <InputFieldGroup
               label="" // No label here to match the design
-              name="diastolic"
+              name="bloodPressureDiastolic"
               type="number"
               className="input-custom-data "
               placeholder="Diastolic(mmHg)"
               required={false}
               disabled={false}
               readOnly={false}
-              value={formData.diastolic}
+              value={formData.bloodPressureDiastolic}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 handleChange(e);
               }}

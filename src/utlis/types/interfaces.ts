@@ -71,13 +71,13 @@ export interface Patient {
   status: string;
 }
 export interface PhysicalAssessmentDataModel {
-  id: string;
+  patientId: string;
   height: string;
   weight: string;
   bmi: string;
   bloodGroup: string;
-  systolic: string;
-  diastolic: string;
+  bloodPressureSystolic: string;
+  bloodPressureDiastolic: string;
   heartRate: string;
 }
 export interface CancelAppointmentForm {
@@ -169,8 +169,10 @@ export type FertilityAssessmentType = {
   weight?: string;
   bmi?: string;
   bloodGroup?: string;
-  systolic?: string;
-  diastolic?: string;
+
+  bloodPressureSystolic?: string;
+  bloodPressureDiastolic?: string;
+
   heartRate?: string;
   semenAnalysis: string;
   semenAnalysisContent: string;
@@ -511,7 +513,7 @@ export interface GetAllPatient {
   profileImage: string;
   name: string;
   gender: string;
-  dob: string;            // ISO date string
+  dob: string; // ISO date string
   contactNumber: string;
   email: string;
   address: string;
@@ -520,5 +522,35 @@ export interface GetAllPatient {
   state: string;
   age: number;
   doctor: Doctor;
+}
 
+// medical history
+type Medications = {
+  status: string;
+  medicationsDetails: string;
+};
+type Surgeries = {
+  status: string;
+  surgeriesDetails: string;
+};
+export interface MedicalHistory {
+  patientId: string;
+  medications: Medications;
+  surgeries: Surgeries;
+  conditions: string[];
+  familyHistory: string;
+  lifestyle: string[];
+  exerciseFrequency: string;
+  stressLevel: string;
+}
+// partner basic details
+
+export interface PartnerBasicDetail {
+  patientId: string;
+  partnerImage: string;
+  partnerName: string;
+  partnerContactNumber: string;
+  partnerEmail: string;
+  partnerGender: string;
+  partnerAge: string;
 }

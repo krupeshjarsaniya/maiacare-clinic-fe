@@ -160,8 +160,8 @@ export function PhysicalFertilityAssessmentAccordion({
     bmi: initialData?.bmi || "",
     bloodGroup: initialData?.bloodGroup || "",
     id: initialData?.id || "",
-    systolic: initialData?.systolic || "",
-    diastolic: initialData?.diastolic || "",
+    bloodPressureSystolic: initialData?.bloodPressureSystolic || "",
+    bloodPressureDiastolic: initialData?.bloodPressureDiastolic || "",
     heartRate: initialData?.heartRate || "",
     semenAnalysis: initialData?.semenAnalysis || "yes",
     semenAnalysisContent: initialData?.semenAnalysisContent || "",
@@ -177,13 +177,13 @@ export function PhysicalFertilityAssessmentAccordion({
     useState<FertilityAssessmentType>(initialFormData);
   type FormError = Partial<Record<keyof FertilityAssessmentType, string>>;
   const initialPhysicalData: PhysicalAssessmentDataModel = {
-    id: "",
+    patientId: "",
     height: "",
     weight: "",
     bmi: "",
     bloodGroup: "",
-    systolic: "",
-    diastolic: "",
+    bloodPressureSystolic: "",
+    bloodPressureDiastolic: "",
     heartRate: "",
   };
 
@@ -226,7 +226,7 @@ export function PhysicalFertilityAssessmentAccordion({
     if (!data.weight?.trim()) errors.weight = "Weight is required";
     if (!data.bmi?.trim()) errors.bmi = "BMI is required";
     if (!data.bloodGroup?.trim()) errors.bloodGroup = "Blood group is required";
-    if (!data.systolic?.trim()) errors.systolic = "Blood pressure is required";
+    if (!data.bloodPressureSystolic?.trim()) errors.bloodPressureSystolic = "Blood pressure is required";
     if (!data.heartRate?.trim()) errors.heartRate = "Heart rate is required";
     return errors;
   };

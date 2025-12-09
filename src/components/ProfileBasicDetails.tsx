@@ -62,15 +62,16 @@ const getStatusBadgeClass = (status: string) => {
   }
 };
 interface PhysicalAssessment {
-  date: string;
-  id: string;
+  date?: string;
+  patientId: string;
   height: string;
   weight: string;
   bmi: string;
   bloodGroup: string;
-  systolic: string;
-  diastolic: string;
+  bloodPressureSystolic: string;
+  bloodPressureDiastolic: string;
   heartRate: string;
+  
 }
 interface AllergyItem {
   id?: number | string;
@@ -130,13 +131,13 @@ const ProfileBasicDetail = () => {
     });
 
   const initialFormData: PhysicalAssessmentDataModel = {
-    id: "",
+    patientId: "",
     height: "",
     weight: "",
     bmi: "",
     bloodGroup: "",
-    systolic: "",
-    diastolic: "",
+    bloodPressureSystolic: "",
+    bloodPressureDiastolic: "",
     heartRate: "",
   };
   const [editPhysicalAssessment, setEditPhysicalAssessment] =
@@ -737,10 +738,10 @@ const ProfileBasicDetail = () => {
                                   </span>
                                   {/* <span className='phisical-assessment-accordion-showData-box-subtitle'>{item.systolic}/{item.diastolic} mmHg </span> */}
                                   <span className="phisical-assessment-accordion-showData-box-subtitle">
-                                    {item.systolic}
-                                    {item.systolic && item.diastolic && "/"}
-                                    {item.diastolic}
-                                    {(item.systolic || item.diastolic) &&
+                                    {item.bloodPressureSystolic}
+                                    {item.bloodPressureSystolic && item.bloodPressureDiastolic && "/"}
+                                    {item.bloodPressureDiastolic}
+                                    {(item.bloodPressureSystolic || item.bloodPressureDiastolic) &&
                                       " mmHg"}
                                   </span>
                                 </div>
@@ -1428,7 +1429,7 @@ const ProfileBasicDetail = () => {
               setEditPhysicalAssessment(initialFormData);
             }}
             header={
-              editPhysicalAssessment && editPhysicalAssessment.id
+              editPhysicalAssessment && editPhysicalAssessment.patientId
                 ? "Edit Physical Assessment"
                 : modalFormPhisicalData.length === 0
                 ? "Physical Assessment"

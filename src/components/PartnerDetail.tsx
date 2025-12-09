@@ -46,14 +46,14 @@ interface LifestyleItem {
   value: string;
 }
 interface PhysicalAssessmentItem {
-  id?: string;
+  patientId?: string;
   date: string;
   bloodGroup: string;
   height: string; // changed to string
   weight: string; // changed to string
   bmi: string; // changed to string
-  systolic: string; // changed to string
-  diastolic: string; // changed to string
+  bloodPressureSystolic: string; // changed to string
+  bloodPressureDiastolic: string; // changed to string
   heartRate?: string; // add if API returns it
 }
 interface FertilityAssessmentItem {
@@ -100,15 +100,14 @@ export default function PartnerDetail({
   };
 
   const initialFormDataAddPhysicalAssessment: PhysicalAssessmentDataModel = {
-    id: "",
+    patientId: "",
     height: "",
     weight: "",
     bmi: "",
     bloodGroup: "",
-    systolic: "",
-    diastolic: "",
+    bloodPressureSystolic: "",
+    bloodPressureDiastolic: "",
     heartRate: "",
-    
   };
   const initialFormDataEditFertilityAssessment: EditFertilityAssessment = {
     semenAnalysis: "",
@@ -169,7 +168,8 @@ export default function PartnerDetail({
     if (!data.weight.trim()) errors.weight = "Weight is required";
     if (!data.bmi.trim()) errors.bmi = "BMI is required";
     if (!data.bloodGroup.trim()) errors.bloodGroup = "Blood group is required";
-    if (!data.systolic.trim()) errors.systolic = "Blood pressure is required";
+    if (!data.bloodPressureSystolic.trim())
+      errors.bloodPressureSystolic = "Blood pressure is required";
 
     if (!data.heartRate.trim()) errors.heartRate = "Heart rate is required";
 
@@ -628,12 +628,12 @@ export default function PartnerDetail({
                     {showData.medicalHistory?.MedicalconditionAllergies?.map(
                       (item: Allergy) => {
                         return (
-                          <p
+                          <div
                             key={item.id}
                             className="accordion-title-detail d-inline-block border-box-orange-font box-border-orange me-2 mb-2"
                           >
                             {item.value}
-                          </p>
+                          </div>
                         );
                       }
                     )}
@@ -992,10 +992,14 @@ export default function PartnerDetail({
 
                                 {/* <span className='phisical-assessment-accordion-showData-box-subtitle'>{item.systolic}/{item.diastolic} mmHg</span> */}
                                 <span className="phisical-assessment-accordion-showData-box-subtitle">
-                                  {item.systolic}
-                                  {item.systolic && item.diastolic && "/"}
-                                  {item.diastolic}
-                                  {(item.systolic || item.diastolic) && " mmHg"}
+                                  {item.bloodPressureSystolic}
+                                  {item.bloodPressureSystolic &&
+                                    item.bloodPressureDiastolic &&
+                                    "/"}
+                                  {item.bloodPressureDiastolic}
+                                  {(item.bloodPressureSystolic ||
+                                    item.bloodPressureDiastolic) &&
+                                    " mmHg"}
                                 </span>
                               </div>
                             </div>
