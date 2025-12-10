@@ -9,7 +9,7 @@ import Button from "@/components/ui/Button";
 import { InputFieldGroup } from "@/components/ui/InputField";
 import { Col, Row } from "react-bootstrap";
 import { InputSelect } from "@/components/ui/InputSelect";
-import { PhysicalAssessmentDataModel } from "../../utlis/types/interfaces";
+import { PhysicalAssessment, PhysicalAssessmentDataModel } from "../../utlis/types/interfaces";
 import toast from "react-hot-toast";
 import { BsInfoCircle } from "react-icons/bs";
 
@@ -22,7 +22,7 @@ interface PropsPhisicalAssessmentForm {
   setEditPhysicalAssessment?: React.Dispatch<
     React.SetStateAction<PhysicalAssessmentDataModel>
   >;
-  modalFormPhisicalData?: PhysicalAssessmentDataModel[];
+  modalFormPhisicalData?: PhysicalAssessment[] | null;
 }
 
 // React.Dispatch<React.SetStateAction<PhysicalAssessmentDataModel>>  PhysicalAssessmentDataModel

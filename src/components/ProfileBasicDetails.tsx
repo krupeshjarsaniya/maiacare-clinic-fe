@@ -31,11 +31,16 @@ import MenstrualCycleIcon from "../assets/images/MenstrualCycle-icons.png";
 import PregnancyIcon from "../assets/images/Pregnancy-icons.png";
 import PencilEditIcons from "../assets/images/EditIcon.png";
 import {
+  FertilityAssessment,
   FertilityAssessmentFormType,
+  MedicalHistoryShow,
   MedicalHistoryType,
+  PatientData,
   PatientJourneyItem,
+ 
   PhysicalAssessmentDataModel,
 } from "../utlis/types/interfaces";
+import { PhysicalAssessment } from "@/data/partnerData";
 
 const contactData = {
   phone: "+91 12345 67890",
@@ -61,28 +66,41 @@ const getStatusBadgeClass = (status: string) => {
       return "badge bg-secondary";
   }
 };
-interface PhysicalAssessment {
-  date?: string;
-  patientId: string;
-  height: string;
-  weight: string;
-  bmi: string;
-  bloodGroup: string;
-  bloodPressureSystolic: string;
-  bloodPressureDiastolic: string;
-  heartRate: string;
-  
-}
+// interface PhysicalAssessment {
+//   date?: string;
+//   patientId: string;
+//   height: string;
+//   weight: string;
+//   bmi: string;
+//   bloodGroup: string;
+//   bloodPressureSystolic: string;
+//   bloodPressureDiastolic: string;
+//   heartRate: string;
+// }
 interface AllergyItem {
   id?: number | string;
-  value: string;
+  value?: string;
 }
 interface LifestyleItem {
   id?: number | string;
-  value: string;
+  value?: string;
 }
 
-const ProfileBasicDetail = () => {
+const ProfileBasicDetail = ({
+  patientData,
+  fetchPatientData,
+  medicalHistoryFormData,
+  modalFormFertilityData,
+  modalFormPhisicalData,
+  loading,
+}: {
+  patientData?: PatientData | null;
+  fetchPatientData?: () => void;
+  medicalHistoryFormData?: MedicalHistoryShow | null;
+  modalFormFertilityData?: FertilityAssessment | null;
+  modalFormPhisicalData?: PhysicalAssessment[] | null;
+  loading?: boolean;
+}) => {
   const router = useRouter();
   const [activeAccordion, setActiveAccordion] = useState<string[]>([
     "0",
@@ -95,27 +113,27 @@ const ProfileBasicDetail = () => {
     useState<boolean>(false);
 
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [medicalHistoryFormData, setMedicalHistoryFormData] =
-    useState<MedicalHistoryType>({} as MedicalHistoryType);
+  // const [medicalHistoryFormData, setMedicalHistoryFormData] =
+  //   useState<MedicalHistoryType>({} as MedicalHistoryType);
 
   const [editingMedicalHistory, setEditingMedicalHistory] =
     useState<MedicalHistoryType | null>(null);
 
-  const [modalFormPhisicalData, setModalFormPhisicalData] = useState<
-    PhysicalAssessmentDataModel[]
-  >([]);
-  const [modalFormFertilityData, setModalFormFertilityData] =
-    useState<FertilityAssessmentFormType>({
-      ageAtFirstMenstruation: "",
-      cycleLength: "",
-      periodLength: "",
-      date: "", // or new Date() if it's a Date type
-      isCycleRegular: "",
-      menstrualIssues: "",
-      pregnancy: "",
-      timeduration: "",
-      ectopicpregnancy: "",
-    });
+  // const [modalFormPhisicalData, setModalFormPhisicalData] = useState<
+  //   PhysicalAssessmentDataModel[]
+  // >([]);
+  // const [modalFormFertilityData, setModalFormFertilityData] =
+  //   useState<FertilityAssessmentFormType>({
+  //     ageAtFirstMenstruation: "",
+  //     cycleLength: "",
+  //     periodLength: "",
+  //     date: "", // or new Date() if it's a Date type
+  //     isCycleRegular: "",
+  //     menstrualIssues: "",
+  //     pregnancy: "",
+  //     timeduration: "",
+  //     ectopicpregnancy: "",
+  //   });
 
   const [editFertilityAssessment, setEditFertilityAssessment] =
     useState<FertilityAssessmentFormType>({
@@ -192,7 +210,7 @@ const ProfileBasicDetail = () => {
       title: "Physical Assessment",
       content: (
         <>
-          {modalFormPhisicalData.length === 0 ? (
+          {modalFormPhisicalData?.length === 0 ? (
             <div className="text-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -739,9 +757,12 @@ const ProfileBasicDetail = () => {
                                   {/* <span className='phisical-assessment-accordion-showData-box-subtitle'>{item.systolic}/{item.diastolic} mmHg </span> */}
                                   <span className="phisical-assessment-accordion-showData-box-subtitle">
                                     {item.bloodPressureSystolic}
-                                    {item.bloodPressureSystolic && item.bloodPressureDiastolic && "/"}
+                                    {item.bloodPressureSystolic &&
+                                      item.bloodPressureDiastolic &&
+                                      "/"}
                                     {item.bloodPressureDiastolic}
-                                    {(item.bloodPressureSystolic || item.bloodPressureDiastolic) &&
+                                    {(item.bloodPressureSystolic ||
+                                      item.bloodPressureDiastolic) &&
                                       " mmHg"}
                                   </span>
                                 </div>
@@ -803,7 +824,7 @@ const ProfileBasicDetail = () => {
       content: (
         <>
           {/* Object.keys(modalFormFertilityData).length === 0 && */}
-          {Object.keys(modalFormFertilityData).length === 0 ? (
+          {modalFormFertilityData === null ? (
             <div className="text-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -952,7 +973,10 @@ const ProfileBasicDetail = () => {
                             Age at first menstruation
                           </span>
                           <span className="accordion-title-detail">
-                            {modalFormFertilityData.ageAtFirstMenstruation}
+                            {
+                              modalFormFertilityData?.menstrualCycle
+                                ?.ageAtFirstMenstruation
+                            }
                           </span>
                         </div>
                       </Col>
@@ -962,7 +986,10 @@ const ProfileBasicDetail = () => {
                             Cycle Length
                           </span>
                           <span className="accordion-title-detail">
-                            {modalFormFertilityData.cycleLength}
+                            {
+                              modalFormFertilityData?.menstrualCycle
+                                ?.cycleLength
+                            }
                           </span>
                         </div>
                       </Col>
@@ -973,7 +1000,10 @@ const ProfileBasicDetail = () => {
                             Period Length
                           </span>
                           <span className="accordion-title-detail">
-                            {modalFormFertilityData.periodLength}
+                            {
+                              modalFormFertilityData?.menstrualCycle
+                                ?.periodLength
+                            }
                           </span>
                         </div>
                       </Col>
@@ -983,7 +1013,10 @@ const ProfileBasicDetail = () => {
                             Last Period Date
                           </span>
                           <span className="accordion-title-detail">
-                            {modalFormFertilityData.date}
+                            {
+                              modalFormFertilityData?.menstrualCycle
+                                ?.lastPeriodDate
+                            }
                           </span>
                         </div>
                       </Col>
@@ -993,7 +1026,10 @@ const ProfileBasicDetail = () => {
                             Is your cycle regular?
                           </span>
                           <span className="accordion-title-detail">
-                            {modalFormFertilityData.isCycleRegular}
+                            {
+                              modalFormFertilityData?.menstrualCycle
+                                ?.isCycleRegular
+                            }
                           </span>
                         </div>
                       </Col>
@@ -1003,7 +1039,10 @@ const ProfileBasicDetail = () => {
                             Do you experience menstrual issues?
                           </span>
                           <span className="accordion-title-detail">
-                            {modalFormFertilityData.menstrualIssues}
+                            {
+                              modalFormFertilityData?.menstrualCycle
+                                ?.menstrualIssues
+                            }
                           </span>
                         </div>
                       </Col>
@@ -1062,7 +1101,7 @@ const ProfileBasicDetail = () => {
                             Have you been pregnant before?
                           </span>
                           <span className="accordion-title-detail">
-                            {modalFormFertilityData.pregnancy}
+                            {modalFormFertilityData?.pregnancy?.pregnantBefore}
                           </span>
                         </div>
                       </Col>
@@ -1072,7 +1111,10 @@ const ProfileBasicDetail = () => {
                             How long have you been trying to conceive?
                           </span>
                           <span className="accordion-title-detail">
-                            {modalFormFertilityData.timeduration}
+                            {
+                              modalFormFertilityData?.pregnancy
+                                ?.tryingToConceiveDuration
+                            }
                           </span>
                         </div>
                       </Col>
@@ -1082,7 +1124,10 @@ const ProfileBasicDetail = () => {
                             Any history of miscarriage or ectopic pregnancy?
                           </span>
                           <span className="accordion-title-detail">
-                            {modalFormFertilityData.ectopicpregnancy}
+                            {
+                              modalFormFertilityData?.pregnancy
+                                ?.miscarriageOrEctopicHistory
+                            }
                           </span>
                         </div>
                       </Col>
@@ -1100,7 +1145,7 @@ const ProfileBasicDetail = () => {
       title: "Medical History",
       content: (
         <div>
-          {Object.keys(medicalHistoryFormData).length == 0 ? (
+          {medicalHistoryFormData == null ? (
             <div className="text-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1190,8 +1235,10 @@ const ProfileBasicDetail = () => {
                         Current Medications
                       </h6>
                       <p className=" accordion-title-detail">
-                        {medicalHistoryFormData?.medication === "yes"
-                          ? medicalHistoryFormData?.medicationcontent || "Yes"
+                        {medicalHistoryFormData?.medications
+                          ?.medicationsDetails === "yes"
+                          ? medicalHistoryFormData?.medications
+                              ?.medicationsDetails || "Yes"
                           : "No"}
                       </p>
                     </div>
@@ -1201,8 +1248,9 @@ const ProfileBasicDetail = () => {
                     <div className="">
                       <h6 className=" contact-details-emergency">Surgeries</h6>
                       <p className=" accordion-title-detail">
-                        {medicalHistoryFormData.surgeries === "yes"
-                          ? medicalHistoryFormData.surgeriesContent || "Yes"
+                        {medicalHistoryFormData?.surgeries?.status === "Yes"
+                          ? medicalHistoryFormData?.surgeries
+                              ?.surgeriesDetails || "Yes"
                           : "No"}
                       </p>
                     </div>
@@ -1213,8 +1261,17 @@ const ProfileBasicDetail = () => {
                       <h6 className=" contact-details-emergency">
                         Medical condition / Allergies
                       </h6>
-
-                      {medicalHistoryFormData.MedicalconditionAllergies.map(
+                      {(
+                        medicalHistoryFormData?.conditions as AllergyItem[]
+                      )?.map((item) => (
+                        <p
+                          key={item.id}
+                          className="accordion-title-detail d-inline-block border-box-orange-font box-border-orange me-2 mb-2"
+                        >
+                          {item.value}
+                        </p>
+                      ))}
+                      {/* {medicalHistoryFormData?.conditions ?.map(
                         (item: AllergyItem) => {
                           return (
                             <p
@@ -1225,7 +1282,7 @@ const ProfileBasicDetail = () => {
                             </p>
                           );
                         }
-                      )}
+                      )} */}
                     </div>
                   </Col>
 
@@ -1237,7 +1294,7 @@ const ProfileBasicDetail = () => {
                       <div className=" accordion-title-detail">
                         <ul>
                           <li className="medical-emergency-fimily-history">
-                            {medicalHistoryFormData.familyMedicalHistory ||
+                            {medicalHistoryFormData?.familyHistory ||
                               "No added family history"}
                           </li>
                         </ul>
@@ -1248,18 +1305,19 @@ const ProfileBasicDetail = () => {
                   <Col sm={7}>
                     <div className="">
                       <h6 className=" contact-details-emergency">Lifestyle</h6>
-                      {medicalHistoryFormData.lifestyle.map(
-                        (item: LifestyleItem) => {
-                          return (
-                            <p
-                              key={item.id}
-                              className="accordion-title-detail d-inline-block border-box-blue-font box-border-blue me-2 mb-2"
-                            >
-                              {item.value}
-                            </p>
-                          );
-                        }
-                      )}
+
+                      {(
+                        medicalHistoryFormData?.lifestyle as LifestyleItem[]
+                      )?.map((item: LifestyleItem) => {
+                        return (
+                          <p
+                            key={item.id}
+                            className="accordion-title-detail d-inline-block border-box-blue-font box-border-blue me-2 mb-2"
+                          >
+                            {item.value}
+                          </p>
+                        );
+                      })}
                     </div>
                   </Col>
 
@@ -1269,7 +1327,7 @@ const ProfileBasicDetail = () => {
                         Physical Exercise
                       </h6>
                       <p className="accordion-title-detail border-box-orange-font box-border-orange d-inline-block ">
-                        {medicalHistoryFormData.exercise}
+                        {medicalHistoryFormData?.exerciseFrequency}
                       </p>
                     </div>
                   </Col>
@@ -1280,7 +1338,7 @@ const ProfileBasicDetail = () => {
                         Stress Level
                       </h6>
                       <p className="accordion-title-detail d-inline-block border-box-red-font box-border-red">
-                        {medicalHistoryFormData.stress}
+                        {medicalHistoryFormData?.stressLevel}
                       </p>
                     </div>
                   </Col>
@@ -1431,7 +1489,7 @@ const ProfileBasicDetail = () => {
             header={
               editPhysicalAssessment && editPhysicalAssessment.patientId
                 ? "Edit Physical Assessment"
-                : modalFormPhisicalData.length === 0
+                : modalFormPhisicalData?.length === 0
                 ? "Physical Assessment"
                 : "Add New Physical Assessment"
             }
@@ -1440,11 +1498,13 @@ const ProfileBasicDetail = () => {
           >
             <div className="mb-0 ">
               <PhisicalAssessmentForm
-                setModalFormPhisicalData={setModalFormPhisicalData}
                 setShowPhisicalAssessment={setShowPhisicalAssessment}
                 editPhysicalAssessment={editPhysicalAssessment}
                 setEditPhysicalAssessment={setEditPhysicalAssessment}
                 modalFormPhisicalData={modalFormPhisicalData}
+                patientId={patientData?._id}
+                fetchPatientData={fetchPatientData}
+            
               />
             </div>
           </Modal>
@@ -1455,7 +1515,7 @@ const ProfileBasicDetail = () => {
               setShowFertilityAssessment(false);
             }}
             header={
-              Object.keys(modalFormFertilityData).length === 0
+              Object.keys(modalFormFertilityData || {}).length === 0
                 ? "Fertility Assessment"
                 : "Edit Fertility Assessment"
             }
@@ -1475,7 +1535,7 @@ const ProfileBasicDetail = () => {
             show={showModal}
             onHide={() => setShowModal(false)}
             header={
-              Object.keys(medicalHistoryFormData).length === 0
+              Object.keys(medicalHistoryFormData || {}).length === 0
                 ? "Add Medical History"
                 : "Edit Medical History"
             }
@@ -1484,10 +1544,15 @@ const ProfileBasicDetail = () => {
           >
             <div className="mb-0">
               <MedicalHistory
-                setMedicalHistoryFormData={setMedicalHistoryFormData}
                 setShowModal={setShowModal}
                 initialData={editingMedicalHistory}
                 onClose={() => setEditingMedicalHistory(null)}
+                patientId={patientData?._id}
+                fetchPatientData={fetchPatientData}
+                // setMedicalHistoryFormData={setMedicalHistoryFormData}
+                // setShowModal={setShowModal}
+                // initialData={editingMedicalHistory}
+                // onClose={() => setEditingMedicalHistory(null)}
               />
             </div>
           </Modal>

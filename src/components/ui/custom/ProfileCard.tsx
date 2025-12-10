@@ -6,36 +6,35 @@ import ProfileBasicDetail from "../../../components/ProfileBasicDetails";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import ContentContainer from "../ContentContainer";
 import CustomTabs from "../CustomTabs";
-
+import { PersonalDetails } from "@/utlis/types/interfaces";
+import profile from "@/assets/images/Profile-doctor.png";
+import { useRouter } from "next/navigation";
 type ProfileProps = {
-  name: string;
-  image?: string;
-  id?: string;
-  gender?: string;
-  dob?: string;
-  age?: number;
-  joinDate?: string;
-  status?: "Active" | "Inactive";
+  profileData?: PersonalDetails | null;
+  patientIdShow?: string;
+  loading?: boolean;
 };
-
 export const ProfileCard: React.FC<ProfileProps> = ({
-  name,
-  image,
-  id,
-  gender,
-  dob,
-  age,
-  joinDate,
-  status,
+  profileData,
+  patientIdShow,
 }) => {
+  const router = useRouter();
   return (
     <Card className={`shadow-sm rounded-4 patient-profile-card`}>
       <div className="d-flex justify-content-between align-items-start  ">
         <div className="d-flex align-items-start align-items-sm-center gap-3 flex-column flex-sm-row">
           <div>
+            {/* <Image
+              src={`/${profileData.profileImage}`}
+              alt="profileimage"
+              width={90}
+              height={90}
+              className="rounded-3"
+            /> */}
             <Image
-              src={PrfileImage}
-              alt={name}
+              // src={profileData?.profileImage && profileData?.profileImage}
+              src={profile}
+              alt="profileimage"
               width={90}
               height={90}
               className="rounded-3"
@@ -43,9 +42,14 @@ export const ProfileCard: React.FC<ProfileProps> = ({
           </div>
           <div>
             <div className="d-flex align-items-center mb-1">
-              <h6 className="mb-0 doctor-profile-heading me-2">{name}</h6>
+              <h6 className="mb-0 doctor-profile-heading me-2">
+                {profileData?.name}
+              </h6>
 
-              <span className="patient-journey-badge-InProgress">{status}</span>
+              <span className="patient-journey-badge-InProgress">
+                {/* status */}
+                Active
+              </span>
             </div>
 
             <div className="pt-sm-1 p-0 d-flex  ">
@@ -62,7 +66,7 @@ export const ProfileCard: React.FC<ProfileProps> = ({
                     fill="#8A8D93"
                   />
                 </svg>
-                {id}
+                {patientIdShow}
               </div>
               <div className="doctor-profile-subheading d-flex gap-1 align-items-center">
                 <svg
@@ -77,7 +81,7 @@ export const ProfileCard: React.FC<ProfileProps> = ({
                     fill="#8A8D93"
                   />
                 </svg>
-                {gender}
+                {profileData?.gender}
               </div>
             </div>
             <div className="pt-sm-1 p-0 d-flex ">
@@ -94,7 +98,8 @@ export const ProfileCard: React.FC<ProfileProps> = ({
                     fill="#8A8D93"
                   />
                 </svg>
-                {dob}
+
+                {profileData?.dob}
               </div>
               <div className="doctor-profile-subheading d-flex gap-1 align-items-center">
                 <svg
@@ -129,7 +134,7 @@ export const ProfileCard: React.FC<ProfileProps> = ({
                     </clipPath>
                   </defs>
                 </svg>
-                {age} Years
+                {profileData?.age} Years
               </div>
             </div>
             <div className="pt-sm-1 p-0 doctor-profile-subheading d-flex gap-1 align-items-center">
@@ -145,7 +150,7 @@ export const ProfileCard: React.FC<ProfileProps> = ({
                   fill="#8A8D93"
                 />
               </svg>
-              Joined Date: {joinDate}
+              Joined Date: 7 Jan 2025
             </div>
           </div>
         </div>
@@ -161,7 +166,9 @@ export const ProfileCard: React.FC<ProfileProps> = ({
               </div>
             </Dropdown.Toggle>
             <Dropdown.Menu className="dropdown-menu-end">
-              <Dropdown.Item>Edit</Dropdown.Item>
+              <Dropdown.Item
+              onClick={()=>router.push(`/editPatient`)}
+              >Edit</Dropdown.Item>
               <Dropdown.Item>View</Dropdown.Item>
               <Dropdown.Item className="text-danger">Delete</Dropdown.Item>
             </Dropdown.Menu>

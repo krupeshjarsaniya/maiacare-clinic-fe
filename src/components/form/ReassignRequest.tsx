@@ -43,7 +43,6 @@ interface FormData {
   reason: string;
 }
 
-
 interface FormError {
   name?: string;
   additionalNote?: string | undefined;
@@ -55,7 +54,7 @@ export function ReassignRequest({
   show,
   onClose,
   onSubmit,
-  title = "Reschedule Appointment",
+  title = "Reassign Appointment",
   setShowSuccessModalBook,
 }: RescheduleAppointmentRequestProps) {
   const [formData, setFormData] = useState<FormData>({
@@ -141,10 +140,6 @@ export function ReassignRequest({
     // setStep(1);
   };
   const handleData = () => {
-    // setShowSuccessModalBook(true);
-    // setFormData({ name: "", type: "", additionalNote: "", reason: "" });
-    // onClose(); // close current modal
-    // setStep(0);
     if (validateForm(1)) {
       setShowSuccessModalBook(true);
       setFormData({ name: "", type: "", additionalNote: "", reason: "" });

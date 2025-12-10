@@ -1,11 +1,15 @@
 import {
   AddPatientFormObjType,
+  Appointment,
+  CancelAppointment,
   DoctorDetails,
   FertilityAssessmentType,
   MedicalHistory,
   PartnerBasicDetail,
   PhysicalAssessmentDataModel,
   Qualification,
+  ReassignDoctor,
+  RescheduleAppointment,
 } from "../types/interfaces";
 import { LoginRequest } from "../types/requestInterface";
 import apiClient from "./axiosInstance";
@@ -172,10 +176,41 @@ export const addQualifications = (data: Qualification, id: string | number) => {
   return apiClient.post(`/doctor/qualifications/${id}`, data);
 };
 // edit
-export const editQualifications = (data: Qualification, id: string | number) => {
+export const editQualifications = (
+  data: Qualification,
+  id: string | number
+) => {
   return apiClient.put(`/doctor/qualifications/${id}`, data);
 };
 // delete
 export const deleteQualifications = (id: string | number) => {
   return apiClient.delete(`/doctor/qualifications/${id}`);
+};
+
+// ====: Appointments :====
+// add Appointment
+export const addAppointment = (data: Appointment) => {
+  return apiClient.post("/appointments/create-appointment", data);
+};
+// get patient info
+export const getAppointmentPatientInfo = (id: string | number) => {
+  return apiClient.get(`/appointments/getshort-patient-info/${id}`);
+};
+
+//  ====: Reschedule Appointment :====
+// add Reschedule Appointment
+export const addRescheduleAppointment = (data: RescheduleAppointment) => {
+  return apiClient.post("/appointments/reschedule-appointment", data);
+};
+
+//  ====: Reassign Appointment :====
+// add Reassign Appointment
+export const addReassignAppointment = (data: ReassignDoctor) => {
+  return apiClient.post("/appointments/reassign-doctor", data);
+};
+
+// ====: Cancel Appointment :====
+// add Cancel Appointment
+export const addCancelAppointment = (data: CancelAppointment) => {
+  return apiClient.post("/appointments/cancel-appointment", data);
 };

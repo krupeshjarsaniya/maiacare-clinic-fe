@@ -92,6 +92,3 @@ const AddDoctor = () => {
   );
 };
 export default AddDoctor;
-function setBasicDetails(data: any) {
-  throw new Error("Function not implemented.");
-}

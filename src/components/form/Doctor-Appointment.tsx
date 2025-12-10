@@ -81,64 +81,6 @@ export default function DoctorAppointment() {
     setFilteredData(updated);
   };
 
-  //   useEffect(() => {
-  //     let data = appointement;
-
-  //     // 🔹 filter by status (query param)
-  //     if (filter === "active") {
-  //       data = data.filter((item) => item.status === "Active");
-  //     } else if (filter === "cancelled") {
-  //       data = data.filter((item) => item.status === "Inactive");
-  //     }
-
-  //     // 🔹 filter by search
-  //     if (searchQuery.trim() !== "") {
-  //       const q = searchQuery.toLowerCase();
-  //       data = data.filter(
-  //         (item) =>
-  //           item.name.toLowerCase().includes(q) ||
-  //           item.time.toLowerCase().includes(q) ||
-  //           item.mobile.toLowerCase().includes(q)
-  //       );
-  //     }
-
-  //     // 🔹 filter by time
-  //     if (timeFilter !== "All Time") {
-  //       const now = new Date();
-  //     //   const data = appointement;
-  //       data = data.filter((item) => {
-  //         if (!item.date) return false; // skip if no date
-  //         const itemDate = new Date(item.date);
-  //         if (isNaN(itemDate.getTime())) return false;
-
-  //         if (timeFilter === "Today") {
-  //           return itemDate.toDateString() === now.toDateString();
-  //         }
-
-  //         if (timeFilter === "This Week") {
-  //           const weekStart = new Date(now);
-  //           weekStart.setDate(now.getDate() - now.getDay()); // Sunday
-  //           weekStart.setHours(0, 0, 0, 0);
-
-  //           const weekEnd = new Date(weekStart);
-  //           weekEnd.setDate(weekStart.getDate() + 7); // Next Sunday
-
-  //           return itemDate >= weekStart && itemDate < weekEnd;
-  //         }
-
-  //         if (timeFilter === "This Month") {
-  //           return (
-  //             itemDate.getMonth() === now.getMonth() &&
-  //             itemDate.getFullYear() === now.getFullYear()
-  //           );
-  //         }
-
-  //         return true;
-  //       });
-  //     }
-
-  //     setFilteredData(data);
-  //   }, [filter, searchQuery, timeFilter]);
   useEffect(() => {
     // First filter on raw appointement array
     let data = appointement;

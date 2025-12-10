@@ -3,8 +3,7 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import { headers } from "next/headers";
 import { getTokenFromCookie } from "../Helper";
-
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
+const baseURL = process.env.API_BASE_URL;
 
 const apiServer = axios.create({
   baseURL: baseURL + "/api/clinic/v1",

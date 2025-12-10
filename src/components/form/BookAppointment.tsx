@@ -33,20 +33,19 @@ import {
 } from "../../utlis/types/interfaces";
 import { PhoneNumberInput } from "../ui/PhoneNumberInput";
 import { RadioButtonGroup } from "../ui/RadioField";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import Modal from "../ui/Modal";
 import SuccessImageBookAppointment from "@/assets/images/appointmentrequest.png";
 // import { PatientAutocomplete, PatientShow, SelecteAgeBox } from "../TempPatientAutocomplete";
 import { PatientsDetails } from "../../utlis/StaticData";
 import temppatientImg1 from "@/assets/images/Profile-doctor.png";
+// import { Doctor } from "../Doctor";
+import doctor1 from "@/assets/images/doctor1.png";
+import doctor2 from "@/assets/images/doctor1.png";
+import doctor3 from "@/assets/images/doctor1.png";
+import doctor4 from "@/assets/images/doctor1.png";
+import doctor5 from "@/assets/images/doctor1.png";
 
-// interface BookAppointmentProps {
-//   setBookAppointmentModal: React.Dispatch<React.SetStateAction<boolean>>;
-//   setShowSuccessModalBook: React.Dispatch<React.SetStateAction<boolean>>;
-//   appointmentTime?: string;
-//   appointmentDate?: string;
-//   onAddAppointment?:string;
-// }
 interface BookAppointmentProps {
   setBookAppointmentModal: React.Dispatch<React.SetStateAction<boolean>>;
   setShowSuccessModalBook: React.Dispatch<React.SetStateAction<boolean>>;
@@ -64,10 +63,12 @@ interface PatientData {
     src: string;
   };
 }
-interface OptionType {
-  id: string;
-  value: string;
-  label: string;
+interface Doctor {
+  id: number;
+  name: string;
+  ProfilePhoto?: {
+    src: string | StaticImageData;
+  };
 }
 export function BookAppointment({
   setBookAppointmentModal,
@@ -87,12 +88,14 @@ export function BookAppointment({
     appointmentTime: appointmentTime || "",
     forTime: "",
     additionalNote: "",
-    status:"",
+    status: "",
     patientName: null,
     phone: "",
     email: "",
     patientAge: "25-35",
     gender: "male",
+    name: "",
+    selectedDoctor: null,
   };
 
   const initialFormError: FormError = {};
@@ -117,12 +120,28 @@ export function BookAppointment({
   })();
   const [search, setSearch] = useState("");
   const [patients, setPatients] = useState<PatientData[]>([]);
-
-  //   const filtered: PatientData[] = useMemo(() => {
-  //     return patients.filter((p) =>
-  //       p.name.toLowerCase().includes(search.toLowerCase())
-  //     );
-  //   }, [patients, search]);
+  const [filter, setFiltered] = useState<Doctor[]>([]);
+  const Doctors: Doctor[] = [
+    { id: 1, name: "Dr. Milind Gaba", ProfilePhoto: doctor1 },
+    { id: 2, name: "Dr. Sonia Advani", ProfilePhoto: doctor2 },
+    { id: 3, name: "Dr. Meena Neema", ProfilePhoto: doctor3 },
+    {
+      id: 4,
+      name: "Dr. Sushant Patil",
+      ProfilePhoto: doctor4,
+    },
+    {
+      id: 5,
+      name: "Dr. Harpreet Bedi",
+      ProfilePhoto: doctor5,
+    },
+  ];
+  const handleFilter = (value: string) => {
+    const results = Doctors.filter((p) =>
+      p.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setFiltered(results);
+  };
 
   const handleChange = (
     e:
@@ -132,6 +151,7 @@ export function BookAppointment({
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
     setFormError((prev) => ({ ...prev, [name]: "" }));
   };
   const validateForm = (data: BookAppointmentForm): FormError => {
@@ -241,6 +261,7 @@ export function BookAppointment({
     setOpen(false);
 
     setFormData((prev) => ({ ...prev, patientName: item }));
+    // setFormData({ ...formData, selectedDoctor: item });
     setFormError((prev) => ({ ...prev, patientName: "" }));
   };
 
@@ -294,6 +315,107 @@ export function BookAppointment({
                 error={formError.appointmentId}
               ></InputFieldGroup>
             </Col>
+            {/* Doctor select */}
+            {/* {formData.name && typeof formData.name === "object" ? (
+              <div className="show-patient-box d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center gap-2">
+                  <Image
+                    className="show-patient-img"
+                    src={formData.name?.ProfilePhoto?.src || temppatientImg1}
+                    alt="patient"
+                    width={48}
+                    height={48}
+                  />
+                  <span className="patient-treatment-box-subtitle-desc">
+                    {formData.name.name}
+                  </span>
+                </div>
+                {formError.name && (
+                  <Form.Text className="text-danger">
+                    {formError.name}
+                  </Form.Text>
+                )}
+                <div
+                  className="cursor-pointer-custom"
+                  onClick={() => {
+                    setFormData({ ...formData, name: "" });
+                    setTxtPatinetName("");
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="29"
+                    height="28"
+                    viewBox="0 0 29 28"
+                    fill="none"
+                  >
+                    <path
+                      d="M23.3035 20.9465C23.5501 21.193 23.6886 21.5275 23.6886 21.8762C23.6886 22.2249 23.5501 22.5593 23.3035 22.8059C23.057 23.0524 22.7226 23.1909 22.3739 23.1909C22.0252 23.1909 21.6907 23.0524 21.4442 22.8059L14.5 15.8594L7.55355 22.8037C7.30698 23.0502 6.97256 23.1888 6.62386 23.1888C6.27516 23.1888 5.94074 23.0502 5.69417 22.8037C5.4476 22.5571 5.30908 22.2227 5.30908 21.874C5.30908 21.5253 5.4476 21.1909 5.69417 20.9443L12.6406 14.0001L5.69636 7.05366C5.44979 6.80709 5.31127 6.47268 5.31127 6.12398C5.31127 5.77528 5.44979 5.44086 5.69636 5.19429C5.94293 4.94772 6.27735 4.8092 6.62605 4.8092C6.97475 4.8092 7.30917 4.94772 7.55573 5.19429L14.5 12.1407L21.4464 5.19319C21.6929 4.94663 22.0273 4.80811 22.376 4.80811C22.7247 4.80811 23.0592 4.94663 23.3057 5.19319C23.5523 5.43976 23.6908 5.77418 23.6908 6.12288C23.6908 6.47158 23.5523 6.806 23.3057 7.05257L16.3593 14.0001L23.3035 20.9465Z"
+                      fill="#B0B4C1"
+                    />
+                  </svg>
+                </div>
+              </div>
+            ) : (
+              <div className="maiacare-input-field-container" ref={dropdownRef}>
+                <InputFieldLabel label="Select Doctor" required={true} />
+                <Form.Control
+                  type="text"
+                  name="patientName"
+                  className="maiacare-input-field w-100"
+                  placeholder="Select"
+                  value={txtPatinetName}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setTxtPatinetName(value);
+                    setOpen(true);
+                    handleFilter(value);
+                    setFormError((prev) => ({ ...prev, patientName: "" }));
+                  }}
+                  onFocus={() => {
+                    if (txtPatinetName.trim().length > 0) setOpen(true);
+                  }}
+                  onBlur={() => setTimeout(() => setOpen(false), 150)}
+                />
+                <InputFieldError error={formError.patientName} />
+
+                <Dropdown className="custome-patient-dropdown" show={open}>
+                  <Dropdown.Menu className="w-100 mt-1 shadow">
+                    {filtered.length > 0 ? (
+                      filtered.map((item, index) => (
+                        <Dropdown.Item
+                          key={item.id}
+                          onClick={() => selectItem(item)}
+                          className={`d-flex align-items-center gap-2 ${
+                            index === highlightIndex ? "active" : ""
+                          }`}
+                        >
+                          {item.ProfilePhoto?.src && (
+                            <Image
+                              className="show-patient-img"
+                              src={item.ProfilePhoto.src}
+                              alt={item.name}
+                              width={48}
+                              height={48}
+                            />
+                          )}
+                          <span className="settings-accordion-subtitle">
+                            {item.name}
+                          </span>
+                        </Dropdown.Item>
+                      ))
+                    ) : (
+                      <Dropdown.Item
+                        disabled
+                        className="text-center settings-accordion-subtitle"
+                      >
+                        No records found
+                      </Dropdown.Item>
+                    )}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+            )} */}
             <Col md={12}>
               <InputSelect
                 label="Type"
@@ -405,7 +527,6 @@ export function BookAppointment({
                 maxLength={100}
               />
             </Col>
-
             <Col md={12}>
               <div className="d-flex justify-content-end">
                 <Button variant="default" type="submit" className="w-50">

@@ -1,6 +1,5 @@
 import { StaticImageData } from "next/image";
 import "../StaticData";
-// import StaticImageData from "../../assets/images/Simpleeditpro.png";
 
 export type ConsultationStatus = "Active" | "Inactive" | "On Leave";
 
@@ -18,8 +17,143 @@ export interface PatientData {
     src: string;
   };
 }
+export interface PersonalDetails {
+  profileImage: string | StaticImageData; 
+  name: string;
+  gender: string;
+  dob: string;
+  contactNumber: string;
+  email: string;
+  address: string;
+  pincode: string;
+  city: string;
+  state: string;
+  age: number;
+}
+export interface EmergencyContact {
+  name: string;
+  contactNumber: string;
+  relation: string;
+  _id: string;
+}
+export interface BloodPressure {
+  systolic: number;
+  diastolic: number;
+}
+export interface PhysicalAssessment {
+  _id?: string;
+  patientId?: string;
+  clinicId?: string;
+  height?: number;
+  weight?: number;
+  bmi: number;
+  bloodGroup?: string;
+  bloodPressure: BloodPressure;
+  heartRate: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+export interface StatusWithDetails {
+  status: "Yes" | "No";
+  // API sends different keys depending on section
+  medicationsDetails?: string | null;
+  surgeriesDetails?: string | null;
+}
 
+export interface MedicalHistoryShow {
+  _id?: string;
+  patientId?: string;
+  clinicId?: string;
+
+  medications: StatusWithDetails;
+  surgeries: StatusWithDetails;
+
+  conditions: string[];
+  familyHistory: string;
+  lifestyle: string[];
+
+  exerciseFrequency: string;
+  stressLevel: string;
+}
+export interface MenstrualCycle {
+  ageAtFirstMenstruation: number;
+  cycleLength: number;
+  periodLength: number;
+  lastPeriodDate: string;
+  isCycleRegular: string;
+
+  menstrualIssues: string;
+  menstrualIssuesDetails: string | null;
+}
+export interface Pregnancy {
+  pregnantBefore: string;
+  pregnantBeforeDetails: string;
+  tryingToConceiveDuration: string;
+
+  miscarriageOrEctopicHistory: string;
+  miscarriageOrEctopicDetails: string | null;
+}
+export interface FertilityAssessment {
+  _id?: string;
+  patientId?: string;
+  clinicId?: string;
+  menstrualCycle: MenstrualCycle;
+  pregnancy: Pregnancy;
+}
+export interface PartnerBasicDetails {
+  clinicId: string;
+  partnerImage: string;
+  partnerName: string;
+  partnerGender: string;
+  partnerAge: number;
+  partnerContactNumber: string;
+  partnerEmail: string;
+}
+export interface FertilityAssessmentPartnerShow {
+  clinicId: string;
+
+  semenAnalysis: {
+    status: "Yes" | "No";
+    semenAnalysisDetails: string | null;
+  };
+
+  fertilityIssues: {
+    status: "Yes" | "No";
+    fertilityIssuesDetails: string | null;
+  };
+
+  fertilityTreatments: {
+    status: "Yes" | "No";
+    fertilityTreatmentsDetails: string | null;
+  };
+
+  surgeries: {
+    status: "Yes" | "No";
+    surgeriesDetails: string | null;
+  };
+}
+export interface PartnerDetails {
+  _id: string;
+  patientId: string;
+  clinicId: string;
+  basicDetails: PartnerBasicDetails;
+  physicalAssessment: PhysicalAssessment[] | null;
+  medicalHistory: MedicalHistoryShow | null;
+  fertilityAssessment: FertilityAssessmentPartnerShow | null;
+}
+export interface PatientData {
+  _id: string;
+  personalDetails: PersonalDetails;
+  emergencyContact: EmergencyContact;
+  verified: boolean;
+  patientId: number;
+  physicalAssessment: PhysicalAssessment[];   // Updated
+  medicalHistory: MedicalHistoryShow | null;      // Updated
+  fertilityAssessment: FertilityAssessment | null; // Updated
+  partnerDetails: PartnerDetails | null;      // Updated
+}
 export interface BookAppointmentForm {
+  name: string;
   status?: string;
   // Appointment Details
   id: string;
@@ -30,13 +164,14 @@ export interface BookAppointmentForm {
   appointmentTime: string;
   forTime: string;
   additionalNote: string;
-
+ 
   // Patient Details
   patientName: PatientData | null; // object (NOT array)
   phone: string;
   email: string;
   patientAge: string;
   gender: string;
+  selectedDoctor?: Doctor | null;
 }
 
 export interface AppointmentData {
@@ -501,6 +636,7 @@ export interface AddPatientFormObjType {
 }
 // get all doctor
 export interface Doctor {
+  ProfilePhoto: any;
   _id: string;
   name: string;
   specialty: string;
@@ -553,4 +689,29 @@ export interface PartnerBasicDetail {
   partnerEmail: string;
   partnerGender: string;
   partnerAge: string;
+}
+
+export interface Appointment {
+  patient_id: string;
+  doctor_id: string;
+  reason: string;
+  type: string;
+  appointmentDate: string;
+  appointmentTime: string;
+}
+export interface RescheduleAppointment {
+  appointmentId: string;
+  newDate: string;
+  newTime: string;
+  reason: string;
+}
+export interface ReassignDoctor {
+  appointmentId: string;
+  doctorId: string;
+  reason: string;
+  notes: string;
+}
+export interface CancelAppointment {
+  appointmentId: string;
+  reason: string;
 }
