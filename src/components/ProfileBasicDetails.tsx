@@ -139,9 +139,7 @@ const ProfileBasicDetail = ({
  const [editingMedicalHistory, setEditingMedicalHistory] =
     useState<MedicalHistoryShow | null>(null);
 
-  const [editFertilityAssessment, setEditFertilityAssessment] = useState<
-    FertilityAssessmentFormType | unknown
-  >({
+  const emptyFertilityAssessment: FertilityAssessmentFormType = {
     ageAtFirstMenstruation: "",
     cycleLength: "",
     periodLength: "",
@@ -157,7 +155,10 @@ const ProfileBasicDetail = ({
     tryingToConceiveDuration: "",
     miscarriageOrEctopicHistory: "No",
     miscarriageOrEctopicDetails: null,
-  });
+  };
+  const [editFertilityAssessment, setEditFertilityAssessment] = useState<
+    FertilityAssessmentFormType
+  >(emptyFertilityAssessment);
   const initialFormData: PhysicalAssessmentDataModel = {
     patientId: "",
     height: "",
@@ -168,6 +169,60 @@ const ProfileBasicDetail = ({
     bloodPressureDiastolic: "",
     heartRate: "",
   };
+  const mapPhysicalAssessmentToFormData = (
+    assessment: PhysicalAssessment
+  ): PhysicalAssessmentDataModel => ({
+    patientId: assessment.patientId ?? "",
+    height: assessment.height?.toString() ?? "",
+    weight: assessment.weight?.toString() ?? "",
+    bmi: assessment.bmi?.toString() ?? "",
+    bloodGroup: assessment.bloodGroup ?? "",
+    bloodPressureSystolic:
+      assessment.bloodPressure?.systolic?.toString() ?? "",
+    bloodPressureDiastolic:
+      assessment.bloodPressure?.diastolic?.toString() ?? "",
+    heartRate: assessment.heartRate?.toString() ?? "",
+  });
+  const mapFertilityAssessmentToFormData = (
+    assessment?: FertilityAssessment | null
+  ): FertilityAssessmentFormType => ({
+    ageAtFirstMenstruation:
+      assessment?.menstrualCycle?.ageAtFirstMenstruation?.toString() ??
+      emptyFertilityAssessment.ageAtFirstMenstruation,
+    cycleLength:
+      assessment?.menstrualCycle?.cycleLength?.toString() ??
+      emptyFertilityAssessment.cycleLength,
+    periodLength:
+      assessment?.menstrualCycle?.periodLength?.toString() ??
+      emptyFertilityAssessment.periodLength,
+    lastPeriodDate:
+      assessment?.menstrualCycle?.lastPeriodDate ??
+      emptyFertilityAssessment.lastPeriodDate,
+    isCycleRegular:
+      assessment?.menstrualCycle?.isCycleRegular ??
+      emptyFertilityAssessment.isCycleRegular,
+    menstrualIssues:
+      assessment?.menstrualCycle?.menstrualIssues ??
+      emptyFertilityAssessment.menstrualIssues,
+    menstrualIssuesDetails:
+      assessment?.menstrualCycle?.menstrualIssuesDetails ??
+      emptyFertilityAssessment.menstrualIssuesDetails,
+    pregnantBefore:
+      assessment?.pregnancy?.pregnantBefore ??
+      emptyFertilityAssessment.pregnantBefore,
+    pregnantBeforeDetails:
+      assessment?.pregnancy?.pregnantBeforeDetails ??
+      emptyFertilityAssessment.pregnantBeforeDetails,
+    tryingToConceiveDuration:
+      assessment?.pregnancy?.tryingToConceiveDuration ??
+      emptyFertilityAssessment.tryingToConceiveDuration,
+    miscarriageOrEctopicHistory:
+      assessment?.pregnancy?.miscarriageOrEctopicHistory ??
+      emptyFertilityAssessment.miscarriageOrEctopicHistory,
+    miscarriageOrEctopicDetails:
+      assessment?.pregnancy?.miscarriageOrEctopicDetails ??
+      emptyFertilityAssessment.miscarriageOrEctopicDetails,
+  });
   const [editPhysicalAssessment, setEditPhysicalAssessment] =
     useState<PhysicalAssessmentDataModel>(initialFormData);
   const convertHeightToCm = (heightStr: string): string => {
@@ -464,8 +519,7 @@ const ProfileBasicDetail = ({
                     Add new
                   </div>
                 </Button>
-                {modalFormPhisicalData?.map((item: any, index: any): any => {
-                  //any error
+                {modalFormPhisicalData?.map((item, index) => {
                   return (
                     <Accordion.Item
                       eventKey={index.toString()}
@@ -481,7 +535,9 @@ const ProfileBasicDetail = ({
                             className="phisical-assessment-accordion-item-edit"
                             onClick={(e) => {
                               setShowPhisicalAssessment(true);
-                              setEditPhysicalAssessment(item);
+                            setEditPhysicalAssessment(
+                              mapPhysicalAssessmentToFormData(item)
+                            );
                               e.stopPropagation();
                             }}
                           >
@@ -907,7 +963,9 @@ const ProfileBasicDetail = ({
               <Button
                 className="mb-3 add-new-button"
                 onClick={() => {
-                  setEditFertilityAssessment(modalFormFertilityData);
+                  setEditFertilityAssessment(
+                    mapFertilityAssessmentToFormData(modalFormFertilityData)
+                  );
                   setShowFertilityAssessment(true);
                 }}
                 variant="outline"

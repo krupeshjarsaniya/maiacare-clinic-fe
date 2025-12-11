@@ -30,6 +30,7 @@ import Button from "../ui/Button";
 import {
   AppointmentData,
   BookAppointmentForm,
+  SelectPatientType,
 } from "../../utlis/types/interfaces";
 import { PhoneNumberInput } from "../ui/PhoneNumberInput";
 import { RadioButtonGroup } from "../ui/RadioField";
@@ -56,13 +57,6 @@ interface BookAppointmentProps {
   onAddAppointment?: (newAppointment: AppointmentData) => void;
 }
 type FormError = Partial<Record<keyof BookAppointmentForm, string>>;
-interface PatientData {
-  id: string | number;
-  name: string;
-  ProfilePhoto?: {
-    src: string;
-  };
-}
 interface Doctor {
   id: number;
   name: string;
@@ -110,7 +104,7 @@ export function BookAppointment({
   const [txtPatinetName, setTxtPatinetName] = useState("");
   const [open, setOpen] = useState(false);
 
-  const patientData = PatientsDetails;
+  const patientData: SelectPatientType[] = PatientsDetails;
   const filtered = (() => {
     if (txtPatinetName.trim().length === 0) return [];
     const matches = patientData.filter((item) =>
@@ -119,7 +113,7 @@ export function BookAppointment({
     return matches.length > 0 ? matches : patientData;
   })();
   const [search, setSearch] = useState("");
-  const [patients, setPatients] = useState<PatientData[]>([]);
+  const [patients, setPatients] = useState<SelectPatientType[]>([]);
   const [filter, setFiltered] = useState<Doctor[]>([]);
   const Doctors: Doctor[] = [
     { id: 1, name: "Dr. Milind Gaba", ProfilePhoto: doctor1 },
@@ -256,7 +250,7 @@ export function BookAppointment({
     }
   };
 
-  const selectItem = (item: PatientData) => {
+  const selectItem = (item: SelectPatientType) => {
     setTxtPatinetName(item.name);
     setOpen(false);
 

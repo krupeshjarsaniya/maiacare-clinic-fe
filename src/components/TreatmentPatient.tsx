@@ -108,6 +108,13 @@ function TreatmentPatient() {
       periodLength: "",
       date: "",
       isCycleRegular: "Regular",
+      lastPeriodDate: "",
+      menstrualIssuesDetails: "",
+      pregnantBefore: "",
+      pregnantBeforeDetails: "",
+      tryingToConceiveDuration: "",
+      miscarriageOrEctopicHistory: "",
+      miscarriageOrEctopicDetails: "",
       menstrualIssues: "yes",
       pregnancy: "yes",
       timeduration: "",
@@ -133,12 +140,15 @@ function TreatmentPatient() {
       ageAtFirstMenstruation: "",
       cycleLength: "",
       periodLength: "",
-      date: "",
       isCycleRegular: "Regular",
-      menstrualIssues: "yes",
-      pregnancy: "yes",
-      timeduration: "",
-      ectopicpregnancy: "yes",
+      lastPeriodDate: "",
+      menstrualIssues: "",
+      menstrualIssuesDetails: "",
+      pregnantBefore: "",
+      pregnantBeforeDetails: "",
+      tryingToConceiveDuration: "",
+      miscarriageOrEctopicHistory: "",
+      miscarriageOrEctopicDetails: "",
     },
     partner: {
       semenAnalysis: "yes",
@@ -161,11 +171,17 @@ function TreatmentPatient() {
   };
 
   const profileData = {
+    profileImage: ProfileImage.src,
     name: "Rani Desai",
-    image: ProfileImage.src,
     id: "PTS-874562",
     gender: "Female",
     dob: "7 Jan 1999",
+    contactNumber: "",
+    email: "",
+    address: "",
+    pincode: "",
+    city: "",
+    state: "",
     age: 31,
     joinDate: "7 Jan 2025",
     status: "Active" as const,
@@ -462,14 +478,7 @@ function TreatmentPatient() {
   return (
     <>
       <ProfileCard
-        name={profileData.name}
-        image={profileData.image}
-        id={profileData.id}
-        gender={profileData.gender}
-        dob={profileData.dob}
-        age={profileData.age}
-        joinDate={profileData.joinDate}
-        status={profileData.status}
+        profileData={profileData}
       />
 
       <Row className="g-3 mt-0">

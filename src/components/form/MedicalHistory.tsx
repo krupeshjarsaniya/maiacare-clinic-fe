@@ -9,7 +9,11 @@ import { MdMailOutline } from "react-icons/md";
 import Textarea from "../ui/Textarea";
 import toast from "react-hot-toast";
 import { BsInfoCircle } from "react-icons/bs";
-import { MedicalHistoryShow, MedicalHistoryType } from "../../utlis/types/interfaces";
+import {
+  MedicalHistoryShow,
+  MedicalHistoryType,
+  OptionType,
+} from "../../utlis/types/interfaces";
 
 interface MedicalHistoryProps {
   setMedicalHistoryFormData: React.Dispatch<
@@ -30,15 +34,23 @@ export default function MedicalHistory({
 }: MedicalHistoryProps) {
   type FormError = Partial<Record<keyof MedicalHistoryType, string>>;
   const initialFormData: MedicalHistoryType = {
-    medication: initialData?.medication || "no",
-    surgeries: initialData?.surgeries || "yes",
-    surgeriesContent: initialData?.surgeriesContent || "",
-    MedicalconditionAllergies: initialData?.MedicalconditionAllergies || [],
-    familyMedicalHistory: initialData?.familyMedicalHistory || "",
-    lifestyle: initialData?.lifestyle || [],
-    stress: initialData?.stress || "high",
-    exercise: initialData?.exercise || "rarely",
-    medicationcontent: initialData?.medicationcontent || "",
+    medication: initialData?.medications?.status || "no",
+    medicationcontent: initialData?.medications?.medicationsDetails || "",
+
+    surgeries: initialData?.surgeries?.status || "yes",
+    surgeriesContent: initialData?.surgeries?.surgeriesDetails || "",
+
+    MedicalconditionAllergies:
+      initialData?.conditions?.map(
+        (item: string): OptionType => ({ value: item, label: item })
+      ) || [],
+    familyMedicalHistory: initialData?.familyHistory || "",
+    lifestyle:
+      initialData?.lifestyle?.map(
+        (item: string): OptionType => ({ value: item, label: item })
+      ) || [],
+    stress: initialData?.stressLevel || "high",
+    exercise: initialData?.exerciseFrequency || "rarely",
   };
 
   const initialFormError: FormError = {};

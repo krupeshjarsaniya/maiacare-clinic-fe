@@ -166,7 +166,7 @@ export interface BookAppointmentForm {
   additionalNote: string;
  
   // Patient Details
-  patientName: PatientData | null; // object (NOT array)
+  patientName: SelectPatientType | null; // object (NOT array)
   phone: string;
   email: string;
   patientAge: string;
@@ -458,6 +458,7 @@ export interface FertilityAssessmentFormType {
   cycleLength: string;
   periodLength: string;
   lastPeriodDate: string;
+  date?: string;
 
   isCycleRegular: string;
 
@@ -471,6 +472,9 @@ export interface FertilityAssessmentFormType {
 
   miscarriageOrEctopicHistory: string;
   miscarriageOrEctopicDetails: string | null;
+  pregnancy?: string;
+  timeduration?: string;
+  ectopicpregnancy?: string;
 }
 
 export interface TreatmentFertilityAssessmentFormType {
@@ -644,7 +648,7 @@ export interface AddPatientFormObjType {
 }
 // get all doctor
 export interface Doctor {
-  ProfilePhoto: any;
+  ProfilePhoto: string | StaticImageData | { src: string } | null;
   _id: string;
   name: string;
   specialty: string;

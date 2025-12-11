@@ -3,8 +3,10 @@ import type { NextRequest } from "next/server";
 import apiServer from "@/utlis/apis/axiosBackendHelper";
 import { handleApiError } from "@/utlis/apis/errorHandler";
 
-export async function PUT(req: NextRequest, context: any) {
-  const id = context.params.id;
+type RouteContext = { params: Promise<{ id: string }> };
+
+export async function PUT(_: NextRequest, { params }: RouteContext) {
+  const { id } = await params;
   try {
     const response = await apiServer.get(`/update-patient/${id}`);
     return NextResponse.json(response.data);

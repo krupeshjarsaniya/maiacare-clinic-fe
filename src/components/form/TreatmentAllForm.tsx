@@ -330,10 +330,22 @@ export function TreatmentFertilityAssessmentPatient({
       editProgressUpdatesData?.patient?.ageAtFirstMenstruation || "",
     cycleLength: editProgressUpdatesData?.patient?.cycleLength || "",
     periodLength: editProgressUpdatesData?.patient?.periodLength || "",
+    lastPeriodDate: editProgressUpdatesData?.patient?.lastPeriodDate || "",
     date: editProgressUpdatesData?.patient?.date || "",
     isCycleRegular:
       editProgressUpdatesData?.patient?.isCycleRegular || "Regular",
     menstrualIssues: editProgressUpdatesData?.patient?.menstrualIssues || "yes",
+    menstrualIssuesDetails:
+      editProgressUpdatesData?.patient?.menstrualIssuesDetails || "",
+    pregnantBefore: editProgressUpdatesData?.patient?.pregnantBefore || "yes",
+    pregnantBeforeDetails:
+      editProgressUpdatesData?.patient?.pregnantBeforeDetails || "",
+    tryingToConceiveDuration:
+      editProgressUpdatesData?.patient?.tryingToConceiveDuration || "",
+    miscarriageOrEctopicHistory:
+      editProgressUpdatesData?.patient?.miscarriageOrEctopicHistory || "no",
+    miscarriageOrEctopicDetails:
+      editProgressUpdatesData?.patient?.miscarriageOrEctopicDetails || "",
     pregnancy: editProgressUpdatesData?.patient?.pregnancy || "yes",
     timeduration: editProgressUpdatesData?.patient?.timeduration || "",
     ectopicpregnancy:
@@ -380,9 +392,16 @@ export function TreatmentFertilityAssessmentPatient({
       ageAtFirstMenstruation: "",
       cycleLength: "",
       periodLength: "",
+      lastPeriodDate: "",
       date: "",
       isCycleRegular: "Regular",
       menstrualIssues: "yes",
+      menstrualIssuesDetails: "",
+      pregnantBefore: "yes",
+      pregnantBeforeDetails: "",
+      tryingToConceiveDuration: "",
+      miscarriageOrEctopicHistory: "no",
+      miscarriageOrEctopicDetails: "",
       pregnancy: "yes",
       timeduration: "",
       ectopicpregnancy: "yes",

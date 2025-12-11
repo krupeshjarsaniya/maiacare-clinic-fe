@@ -3,8 +3,10 @@ import apiServer from "@/utlis/apis/axiosBackendHelper";
 import { parseRequestBody } from "@/utlis/apis/requestHandler";
 import { handleApiError } from "@/utlis/apis/errorHandler";
 
-export async function POST(req: Request, context: any) {
-  const { id } = context.params;
+type RouteContext = { params: Promise<{ id: string }> };
+
+export async function POST(req: Request, { params }: RouteContext) {
+  const { id } = await params;
   const BASE_URL = `/doctor/qualifications-add/${id}`;
   try {
     const body = await parseRequestBody(req);
@@ -19,8 +21,8 @@ export async function POST(req: Request, context: any) {
   }
 }
 
-export async function PUT(req: Request, context: any) {
-  const { id } = context.params;
+export async function PUT(req: Request, { params }: RouteContext) {
+  const { id } = await params;
   const BASE_URL = `/doctor/qualifications-edit/${id}`;
 
   try {
@@ -38,8 +40,8 @@ export async function PUT(req: Request, context: any) {
     return handleApiError(error);
   }
 }
-export async function DELETE(req: Request, context: any) {
-  const { id } = context.params;
+export async function DELETE(_: Request, { params }: RouteContext) {
+  const { id } = await params;
 
   try {
     const response = await apiServer.delete(

@@ -3,9 +3,11 @@ import apiServer from "@/utlis/apis/axiosBackendHelper";
 // import { parseRequestBody } from "@/utils/apis/requestHandler";
 import { handleApiError } from "@/utlis/apis/errorHandler";
 
-export async function GET(req: Request, context: any) {
+type RouteContext = { params: Promise<{ id: string }> };
+
+export async function GET(_: Request, { params }: RouteContext) {
   const API_BASE_URL = "/patient/partner/basicDetails";
-  const { id } = context.params;
+  const { id } = await params;
   try {
     // const response = await apiServer.get(`API_BASE_URL,`);
     const response = await apiServer.get(`${API_BASE_URL}/${id}`);

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { Accordion, Col, Row } from "react-bootstrap";
 import { InputSelect } from "../ui/InputSelect";
 import { DatePickerFieldGroup } from "../ui/CustomDatePicker";
@@ -19,6 +19,7 @@ interface FertilityAssessmentFormProps {
   editFertilityAssessment?: FertilityAssessmentFormType;
   patientId?: string | undefined;
   fetchPatientData?: () => void;
+  setModalFormFertilityData?: Dispatch<SetStateAction<unknown>>;
 }
 
 export const FertilityAssessmentForm = ({
@@ -26,36 +27,39 @@ export const FertilityAssessmentForm = ({
   editFertilityAssessment,
   fetchPatientData,
   patientId,
+  setModalFormFertilityData,
 }: FertilityAssessmentFormProps) => {
   type FormError = Partial<Record<keyof FertilityAssessmentFormType, string>>;
   const initialFormError: FormError = {};
 
   const initialFormData: FertilityAssessmentFormType = {
     ageAtFirstMenstruation:
-      editFertilityAssessment?.menstrualCycle?.ageAtFirstMenstruation || "",
-    cycleLength: editFertilityAssessment?.menstrualCycle?.cycleLength || "",
-    periodLength: editFertilityAssessment?.menstrualCycle?.periodLength || "",
-    lastPeriodDate:
-      editFertilityAssessment?.menstrualCycle?.lastPeriodDate || "",
-    isCycleRegular:
-      editFertilityAssessment?.menstrualCycle?.isCycleRegular || "Regular",
+      editFertilityAssessment?.ageAtFirstMenstruation || "",
+    cycleLength: editFertilityAssessment?.cycleLength || "",
+    periodLength: editFertilityAssessment?.periodLength || "",
+    lastPeriodDate: editFertilityAssessment?.lastPeriodDate || "",
+    date: editFertilityAssessment?.date || "",
 
-    menstrualIssues:
-      editFertilityAssessment?.menstrualCycle?.menstrualIssues || "Yes",
+    isCycleRegular: editFertilityAssessment?.isCycleRegular || "Regular",
+
+    menstrualIssues: editFertilityAssessment?.menstrualIssues || "Yes",
     menstrualIssuesDetails:
-      editFertilityAssessment?.menstrualCycle?.menstrualIssuesDetails || null,
+      editFertilityAssessment?.menstrualIssuesDetails || "",
 
-    pregnantBefore: editFertilityAssessment?.pregnancy?.pregnantBefore || "Yes",
+    pregnantBefore: editFertilityAssessment?.pregnantBefore || "Yes",
     pregnantBeforeDetails:
-      editFertilityAssessment?.pregnancy?.pregnantBeforeDetails || null,
+      editFertilityAssessment?.pregnantBeforeDetails || "",
 
     tryingToConceiveDuration:
-      editFertilityAssessment?.pregnancy?.tryingToConceiveDuration || "",
+      editFertilityAssessment?.tryingToConceiveDuration || "",
 
     miscarriageOrEctopicHistory:
-      editFertilityAssessment?.pregnancy?.miscarriageOrEctopicHistory || "No",
+      editFertilityAssessment?.miscarriageOrEctopicHistory || "No",
     miscarriageOrEctopicDetails:
-      editFertilityAssessment?.pregnancy?.miscarriageOrEctopicDetails || null,
+      editFertilityAssessment?.miscarriageOrEctopicDetails || null,
+    pregnancy: editFertilityAssessment?.pregnancy || "",
+    timeduration: editFertilityAssessment?.timeduration || "",
+    ectopicpregnancy: editFertilityAssessment?.ectopicpregnancy || "",
   };
 
   const [formData, setFormData] =
