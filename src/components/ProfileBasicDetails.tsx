@@ -136,7 +136,7 @@ const ProfileBasicDetail = ({
 
   // const [editingMedicalHistory, setEditingMedicalHistory] =
   //   useState<MedicalHistoryType | null>(null);
- const [editingMedicalHistory, setEditingMedicalHistory] =
+  const [editingMedicalHistory, setEditingMedicalHistory] =
     useState<MedicalHistoryShow | null>(null);
 
   const emptyFertilityAssessment: FertilityAssessmentFormType = {
@@ -156,9 +156,8 @@ const ProfileBasicDetail = ({
     miscarriageOrEctopicHistory: "No",
     miscarriageOrEctopicDetails: null,
   };
-  const [editFertilityAssessment, setEditFertilityAssessment] = useState<
-    FertilityAssessmentFormType
-  >(emptyFertilityAssessment);
+  const [editFertilityAssessment, setEditFertilityAssessment] =
+    useState<FertilityAssessmentFormType>(emptyFertilityAssessment);
   const initialFormData: PhysicalAssessmentDataModel = {
     patientId: "",
     height: "",
@@ -177,8 +176,7 @@ const ProfileBasicDetail = ({
     weight: assessment.weight?.toString() ?? "",
     bmi: assessment.bmi?.toString() ?? "",
     bloodGroup: assessment.bloodGroup ?? "",
-    bloodPressureSystolic:
-      assessment.bloodPressure?.systolic?.toString() ?? "",
+    bloodPressureSystolic: assessment.bloodPressure?.systolic?.toString() ?? "",
     bloodPressureDiastolic:
       assessment.bloodPressure?.diastolic?.toString() ?? "",
     heartRate: assessment.heartRate?.toString() ?? "",
@@ -535,9 +533,9 @@ const ProfileBasicDetail = ({
                             className="phisical-assessment-accordion-item-edit"
                             onClick={(e) => {
                               setShowPhisicalAssessment(true);
-                            setEditPhysicalAssessment(
-                              mapPhysicalAssessmentToFormData(item)
-                            );
+                              setEditPhysicalAssessment(
+                                mapPhysicalAssessmentToFormData(item)
+                              );
                               e.stopPropagation();
                             }}
                           >
@@ -1343,28 +1341,16 @@ const ProfileBasicDetail = ({
                       <h6 className=" contact-details-emergency">
                         Medical condition / Allergies
                       </h6>
-                      {(
-                        medicalHistoryFormData?.conditions as AllergyItem[]
-                      )?.map((item) => (
-                        <p
-                          key={item.id}
-                          className="accordion-title-detail d-inline-block border-box-orange-font box-border-orange me-2 mb-2"
-                        >
-                          {item.value}
-                        </p>
-                      ))}
-                      {/* {medicalHistoryFormData?.conditions ?.map(
-                        (item: AllergyItem) => {
-                          return (
-                            <p
-                              key={item.id}
-                              className="accordion-title-detail d-inline-block border-box-orange-font box-border-orange me-2 mb-2"
-                            >
-                              {item.value}
-                            </p>
-                          );
-                        }
-                      )} */}
+                      {medicalHistoryFormData?.conditions?.map(
+                        (item: string, index: number) => (
+                          <p
+                            key={index}
+                            className="accordion-title-detail d-inline-block border-box-orange-font box-border-orange me-2 mb-2"
+                          >
+                            {item}
+                          </p>
+                        )
+                      )}
                     </div>
                   </Col>
 
@@ -1388,18 +1374,16 @@ const ProfileBasicDetail = ({
                     <div className="">
                       <h6 className=" contact-details-emergency">Lifestyle</h6>
 
-                      {(
-                        medicalHistoryFormData?.lifestyle as LifestyleItem[]
-                      )?.map((item: LifestyleItem) => {
-                        return (
+                      {medicalHistoryFormData?.lifestyle?.map(
+                        (item: string, index: number) => (
                           <p
-                            key={item.id}
+                            key={index}
                             className="accordion-title-detail d-inline-block border-box-blue-font box-border-blue me-2 mb-2"
                           >
-                            {item.value}
+                            {item}
                           </p>
-                        );
-                      })}
+                        )
+                      )}
                     </div>
                   </Col>
 
