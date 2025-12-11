@@ -1,3 +1,7 @@
+export interface BloodPressure {
+  systolic: number;
+  diastolic: number;
+}
 export interface PhysicalAssessment {
   date: string;
   height: string;

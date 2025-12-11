@@ -16,31 +16,46 @@ import {
 
 interface FertilityAssessmentFormProps {
   setShowFertilityAssessment?: React.Dispatch<React.SetStateAction<boolean>>;
-  setModalFormFertilityData?: React.Dispatch<
-    React.SetStateAction<FertilityAssessmentFormType>
-  >;
   editFertilityAssessment?: FertilityAssessmentFormType;
+  patientId?: string | undefined;
+  fetchPatientData?: () => void;
 }
 
 export const FertilityAssessmentForm = ({
   setShowFertilityAssessment,
-  setModalFormFertilityData,
   editFertilityAssessment,
+  fetchPatientData,
+  patientId,
 }: FertilityAssessmentFormProps) => {
   type FormError = Partial<Record<keyof FertilityAssessmentFormType, string>>;
   const initialFormError: FormError = {};
 
   const initialFormData: FertilityAssessmentFormType = {
     ageAtFirstMenstruation:
-      editFertilityAssessment?.ageAtFirstMenstruation || "",
-    cycleLength: editFertilityAssessment?.cycleLength || "",
-    periodLength: editFertilityAssessment?.periodLength || "",
-    date: editFertilityAssessment?.date || "",
-    isCycleRegular: editFertilityAssessment?.isCycleRegular || "Regular",
-    menstrualIssues: editFertilityAssessment?.menstrualIssues || "yes",
-    pregnancy: editFertilityAssessment?.pregnancy || "yes",
-    timeduration: editFertilityAssessment?.timeduration || "",
-    ectopicpregnancy: editFertilityAssessment?.ectopicpregnancy || "yes",
+      editFertilityAssessment?.menstrualCycle?.ageAtFirstMenstruation || "",
+    cycleLength: editFertilityAssessment?.menstrualCycle?.cycleLength || "",
+    periodLength: editFertilityAssessment?.menstrualCycle?.periodLength || "",
+    lastPeriodDate:
+      editFertilityAssessment?.menstrualCycle?.lastPeriodDate || "",
+    isCycleRegular:
+      editFertilityAssessment?.menstrualCycle?.isCycleRegular || "Regular",
+
+    menstrualIssues:
+      editFertilityAssessment?.menstrualCycle?.menstrualIssues || "Yes",
+    menstrualIssuesDetails:
+      editFertilityAssessment?.menstrualCycle?.menstrualIssuesDetails || null,
+
+    pregnantBefore: editFertilityAssessment?.pregnancy?.pregnantBefore || "Yes",
+    pregnantBeforeDetails:
+      editFertilityAssessment?.pregnancy?.pregnantBeforeDetails || null,
+
+    tryingToConceiveDuration:
+      editFertilityAssessment?.pregnancy?.tryingToConceiveDuration || "",
+
+    miscarriageOrEctopicHistory:
+      editFertilityAssessment?.pregnancy?.miscarriageOrEctopicHistory || "No",
+    miscarriageOrEctopicDetails:
+      editFertilityAssessment?.pregnancy?.miscarriageOrEctopicDetails || null,
   };
 
   const [formData, setFormData] =

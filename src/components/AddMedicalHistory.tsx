@@ -52,6 +52,56 @@ const AddMedicalHistory = () => {
     null
   );
 
+  const [getAllPatients, setGetAllPatients] = useState<GetAllPatient[]>([]);
+  const [patientCoute, setPatientCoute] = useState<number>(0);
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    dispatch(
+      setHeaderData({
+        title: patientData?.personalDetails
+          ? patientData.personalDetails.name
+          : "Patient Not Found",
+        subtitle: patientData?.personalDetails
+          ? patientData.personalDetails.name
+          : "Patient Not Found",
+      })
+    );
+  }, [patientData, dispatch]);
+
+  const fetchPatientData = () => {
+    console.log("patientId:-", patientId);
+
+    if (!patientId) return; // guard undefined
+    setLoading(true); // start loader
+    getPatientInfo(patientId)
+      .then((response) => {
+        if (response.data.status) {
+          setPatientData(response.data.data);
+          setPatientIdShow(response.data.data?.patientId);
+          setModalFormPhisicalData(response.data.data?.physicalAssessment);
+          setMedicalHistoryFormData(response.data.data?.medicalHistory);
+          setModalFormFertilityData(response.data.data?.fertilityAssessment);
+          setPartnerDetails(response.data.data?.partnerDetails);
+        } else {
+          toast.error("Failed to fetch patient data");
+        }
+      })
+      .catch((err) => {
+        console.log("error", err.response);
+      })
+      .finally(() => {
+        setLoading(false); // stop loader
+      });
+  };
+  useEffect(() => {
+    // getPatientInfo();
+    setActiveTab(key);
+  }, [key]);
+  useEffect(() => {
+    fetchPatientData();
+  }, [patientId]);
   const tabOptions = [
     {
       key: "basic",
@@ -115,56 +165,6 @@ const AddMedicalHistory = () => {
       ),
     },
   ];
-  const [getAllPatients, setGetAllPatients] = useState<GetAllPatient[]>([]);
-  const [patientCoute, setPatientCoute] = useState<number>(0);
-
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    dispatch(
-      setHeaderData({
-        title: patientData?.personalDetails
-          ? patientData.personalDetails.name
-          : "Patient Not Found",
-        subtitle: patientData?.personalDetails
-          ? patientData.personalDetails.name
-          : "Patient Not Found",
-      })
-    );
-  }, [patientData, dispatch]);
-
-  const fetchPatientData = () => {
-    console.log("patientId:-", patientId);
-
-    if (!patientId) return; // guard undefined
-    setLoading(true); // start loader
-    getPatientInfo(patientId)
-      .then((response) => {
-        if (response.data.status) {
-          setPatientData(response.data.data);
-          setPatientIdShow(response.data.data?.patientId);
-          setModalFormPhisicalData(response.data.data?.physicalAssessment);
-          setMedicalHistoryFormData(response.data.data?.medicalHistory);
-          setModalFormFertilityData(response.data.data?.fertilityAssessment);
-          setPartnerDetails(response.data.data?.partnerDetails);
-        } else {
-          toast.error("Failed to fetch patient data");
-        }
-      })
-      .catch((err) => {
-        console.log("error", err.response);
-      })
-      .finally(() => {
-        setLoading(false); // stop loader
-      });
-  };
-  useEffect(() => {
-    // getPatientInfo();
-    setActiveTab(key);
-  }, [key]);
-  useEffect(() => {
-    fetchPatientData();
-  }, [patientId]);
   return (
     <>
       <ProfileCard

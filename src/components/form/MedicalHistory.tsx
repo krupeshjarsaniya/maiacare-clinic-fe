@@ -9,15 +9,17 @@ import { MdMailOutline } from "react-icons/md";
 import Textarea from "../ui/Textarea";
 import toast from "react-hot-toast";
 import { BsInfoCircle } from "react-icons/bs";
-import { MedicalHistoryType } from "../../utlis/types/interfaces";
+import { MedicalHistoryShow, MedicalHistoryType } from "../../utlis/types/interfaces";
 
 interface MedicalHistoryProps {
   setMedicalHistoryFormData: React.Dispatch<
     React.SetStateAction<MedicalHistoryType>
   >;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  initialData?: MedicalHistoryType | null;
+  initialData?: MedicalHistoryShow | null;
   onClose?: () => void;
+  patientId?: string;
+  fetchPatientData?: () => void;
 }
 
 export default function MedicalHistory({

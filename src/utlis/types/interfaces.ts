@@ -457,12 +457,20 @@ export interface FertilityAssessmentFormType {
   ageAtFirstMenstruation: string;
   cycleLength: string;
   periodLength: string;
-  date: string;
+  lastPeriodDate: string;
+
   isCycleRegular: string;
+
   menstrualIssues: string;
-  pregnancy: string;
-  timeduration: string;
-  ectopicpregnancy: string;
+  menstrualIssuesDetails: string;
+
+  pregnantBefore: string;
+  pregnantBeforeDetails: string;
+
+  tryingToConceiveDuration: string;
+
+  miscarriageOrEctopicHistory: string;
+  miscarriageOrEctopicDetails: string | null;
 }
 
 export interface TreatmentFertilityAssessmentFormType {

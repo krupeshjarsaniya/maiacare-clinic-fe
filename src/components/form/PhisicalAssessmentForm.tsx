@@ -23,6 +23,8 @@ interface PropsPhisicalAssessmentForm {
     React.SetStateAction<PhysicalAssessmentDataModel>
   >;
   modalFormPhisicalData?: PhysicalAssessment[] | null;
+  patientId?: string;
+   fetchPatientData?: () => void;
 }
 
 // React.Dispatch<React.SetStateAction<PhysicalAssessmentDataModel>>  PhysicalAssessmentDataModel
@@ -33,6 +35,8 @@ const PhisicalAssessmentForm = ({
   editPhysicalAssessment,
   setEditPhysicalAssessment,
   modalFormPhisicalData,
+  fetchPatientData,
+  patientId
 }: PropsPhisicalAssessmentForm) => {
   type FormError = Partial<Record<keyof PhysicalAssessmentDataModel, string>>;
   const initialFormError: FormError = {};

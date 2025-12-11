@@ -37,10 +37,9 @@ import {
   MedicalHistoryType,
   PatientData,
   PatientJourneyItem,
- 
   PhysicalAssessmentDataModel,
 } from "../utlis/types/interfaces";
-import { PhysicalAssessment } from "@/data/partnerData";
+import { PhysicalAssessment } from "@/utlis/types/interfaces";
 
 const contactData = {
   phone: "+91 12345 67890",
@@ -85,7 +84,28 @@ interface LifestyleItem {
   id?: number | string;
   value?: string;
 }
+export interface FertilityAssessmentData {
+  // Patient-level
+  patientId?: string;
 
+  // Menstrual Cycle
+  ageAtFirstMenstruation: string | number;
+  cycleLength: string | number;
+  periodLength: string | number;
+  lastPeriodDate: string;
+  isCycleRegular: string;
+
+  menstrualIssues: string; // "Yes" | "No"
+  menstrualIssuesDetails: string;
+
+  // Pregnancy Section
+  pregnantBefore: string; // "Yes" | "No"
+  pregnantBeforeDetails: string;
+  tryingToConceiveDuration: string;
+
+  miscarriageOrEctopicHistory: string; // "Yes" | "No"
+  miscarriageOrEctopicDetails: string | null;
+}
 const ProfileBasicDetail = ({
   patientData,
   fetchPatientData,
@@ -113,41 +133,31 @@ const ProfileBasicDetail = ({
     useState<boolean>(false);
 
   const [showModal, setShowModal] = useState<boolean>(false);
-  // const [medicalHistoryFormData, setMedicalHistoryFormData] =
-  //   useState<MedicalHistoryType>({} as MedicalHistoryType);
 
-  const [editingMedicalHistory, setEditingMedicalHistory] =
-    useState<MedicalHistoryType | null>(null);
+  // const [editingMedicalHistory, setEditingMedicalHistory] =
+  //   useState<MedicalHistoryType | null>(null);
+ const [editingMedicalHistory, setEditingMedicalHistory] =
+    useState<MedicalHistoryShow | null>(null);
 
-  // const [modalFormPhisicalData, setModalFormPhisicalData] = useState<
-  //   PhysicalAssessmentDataModel[]
-  // >([]);
-  // const [modalFormFertilityData, setModalFormFertilityData] =
-  //   useState<FertilityAssessmentFormType>({
-  //     ageAtFirstMenstruation: "",
-  //     cycleLength: "",
-  //     periodLength: "",
-  //     date: "", // or new Date() if it's a Date type
-  //     isCycleRegular: "",
-  //     menstrualIssues: "",
-  //     pregnancy: "",
-  //     timeduration: "",
-  //     ectopicpregnancy: "",
-  //   });
+  const [editFertilityAssessment, setEditFertilityAssessment] = useState<
+    FertilityAssessmentFormType | unknown
+  >({
+    ageAtFirstMenstruation: "",
+    cycleLength: "",
+    periodLength: "",
+    lastPeriodDate: "",
+    isCycleRegular: "Regular",
 
-  const [editFertilityAssessment, setEditFertilityAssessment] =
-    useState<FertilityAssessmentFormType>({
-      ageAtFirstMenstruation: "",
-      cycleLength: "",
-      periodLength: "",
-      date: "",
-      isCycleRegular: "Regular",
-      menstrualIssues: "yes",
-      pregnancy: "yes",
-      timeduration: "",
-      ectopicpregnancy: "yes",
-    });
+    menstrualIssues: "Yes",
+    menstrualIssuesDetails: "",
 
+    pregnantBefore: "Yes",
+    pregnantBeforeDetails: "",
+
+    tryingToConceiveDuration: "",
+    miscarriageOrEctopicHistory: "No",
+    miscarriageOrEctopicDetails: null,
+  });
   const initialFormData: PhysicalAssessmentDataModel = {
     patientId: "",
     height: "",
@@ -160,7 +170,6 @@ const ProfileBasicDetail = ({
   };
   const [editPhysicalAssessment, setEditPhysicalAssessment] =
     useState<PhysicalAssessmentDataModel>(initialFormData);
-
   const convertHeightToCm = (heightStr: string): string => {
     if (!heightStr) return "";
 
@@ -455,130 +464,142 @@ const ProfileBasicDetail = ({
                     Add new
                   </div>
                 </Button>
-                {(modalFormPhisicalData as PhysicalAssessment[])?.map(
-                  (item: PhysicalAssessment, index: number) => {
-                    return (
-                      <Accordion.Item
-                        eventKey={index.toString()}
-                        className="phisical-assessment-accordion-item mb-3"
-                        key={index}
-                      >
-                        <Accordion.Header>
-                          <div className="d-flex align-items-center gap-2">
-                            <h6 className="phisical-assessment-accordion-title-showData m-0">
-                              {item.date}
-                            </h6>
-                            <div
-                              className="phisical-assessment-accordion-item-edit"
-                              onClick={(e) => {
-                                setShowPhisicalAssessment(true);
-                                setEditPhysicalAssessment(item);
-                                e.stopPropagation();
-                              }}
-                            >
-                              <p className="m-0">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  className="me-1"
-                                  width="14"
-                                  height="14"
-                                  viewBox="0 0 14 14"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M13.5484 3.40848L10.7553 0.615983C10.5209 0.381644 10.203 0.25 9.87157 0.25C9.54011 0.25 9.22223 0.381644 8.98782 0.615983L1.28032 8.32286C1.16385 8.43861 1.0715 8.57633 1.00863 8.72803C0.945765 8.87973 0.913622 9.0424 0.914067 9.20661V11.9997C0.914067 12.3313 1.04576 12.6492 1.28018 12.8836C1.5146 13.118 1.83255 13.2497 2.16407 13.2497H12.6641C12.863 13.2497 13.0537 13.1707 13.1944 13.0301C13.3351 12.8894 13.4141 12.6986 13.4141 12.4997C13.4141 12.3008 13.3351 12.1101 13.1944 11.9694C13.0537 11.8288 12.863 11.7497 12.6641 11.7497H6.97657L13.5484 5.17661C13.6646 5.06053 13.7567 4.92271 13.8195 4.77102C13.8824 4.61933 13.9147 4.45674 13.9147 4.29255C13.9147 4.12835 13.8824 3.96576 13.8195 3.81407C13.7567 3.66238 13.6646 3.52456 13.5484 3.40848ZM4.85157 11.7497H2.41407V9.31223L7.66407 4.06223L10.1016 6.49973L4.85157 11.7497ZM11.1641 5.43723L8.72657 2.99973L9.87282 1.85348L12.3103 4.29098L11.1641 5.43723Z"
-                                    fill="#2B4360"
-                                  />
-                                </svg>
-                                Edit
-                              </p>
-                            </div>
+                {modalFormPhisicalData?.map((item: any, index: any): any => {
+                  //any error
+                  return (
+                    <Accordion.Item
+                      eventKey={index.toString()}
+                      className="phisical-assessment-accordion-item mb-3"
+                      key={index}
+                    >
+                      <Accordion.Header>
+                        <div className="d-flex align-items-center gap-2">
+                          <h6 className="phisical-assessment-accordion-title-showData m-0">
+                            {item.createdAt}
+                          </h6>
+                          <div
+                            className="phisical-assessment-accordion-item-edit"
+                            onClick={(e) => {
+                              setShowPhisicalAssessment(true);
+                              setEditPhysicalAssessment(item);
+                              e.stopPropagation();
+                            }}
+                          >
+                            <p className="m-0">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="me-1"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                              >
+                                <path
+                                  d="M13.5484 3.40848L10.7553 0.615983C10.5209 0.381644 10.203 0.25 9.87157 0.25C9.54011 0.25 9.22223 0.381644 8.98782 0.615983L1.28032 8.32286C1.16385 8.43861 1.0715 8.57633 1.00863 8.72803C0.945765 8.87973 0.913622 9.0424 0.914067 9.20661V11.9997C0.914067 12.3313 1.04576 12.6492 1.28018 12.8836C1.5146 13.118 1.83255 13.2497 2.16407 13.2497H12.6641C12.863 13.2497 13.0537 13.1707 13.1944 13.0301C13.3351 12.8894 13.4141 12.6986 13.4141 12.4997C13.4141 12.3008 13.3351 12.1101 13.1944 11.9694C13.0537 11.8288 12.863 11.7497 12.6641 11.7497H6.97657L13.5484 5.17661C13.6646 5.06053 13.7567 4.92271 13.8195 4.77102C13.8824 4.61933 13.9147 4.45674 13.9147 4.29255C13.9147 4.12835 13.8824 3.96576 13.8195 3.81407C13.7567 3.66238 13.6646 3.52456 13.5484 3.40848ZM4.85157 11.7497H2.41407V9.31223L7.66407 4.06223L10.1016 6.49973L4.85157 11.7497ZM11.1641 5.43723L8.72657 2.99973L9.87282 1.85348L12.3103 4.29098L11.1641 5.43723Z"
+                                  fill="#2B4360"
+                                />
+                              </svg>
+                              Edit
+                            </p>
                           </div>
-                        </Accordion.Header>
-                        <Accordion.Body className="pt-0">
-                          <Row className="g-3">
-                            <Col md={4} sm={6}>
-                              <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="43"
-                                  height="43"
-                                  viewBox="0 0 43 43"
-                                  fill="none"
-                                >
-                                  <rect
-                                    x="0.109375"
-                                    y="0.339844"
-                                    width="42"
-                                    height="42"
-                                    rx="7.41176"
-                                    fill="#3E5A91"
-                                    fillOpacity="0.2"
+                        </div>
+                      </Accordion.Header>
+                      <Accordion.Body className="pt-0">
+                        <Row className="g-3">
+                          <Col md={4} sm={6}>
+                            <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="43"
+                                height="43"
+                                viewBox="0 0 43 43"
+                                fill="none"
+                              >
+                                <rect
+                                  x="0.109375"
+                                  y="0.339844"
+                                  width="42"
+                                  height="42"
+                                  rx="7.41176"
+                                  fill="#3E5A91"
+                                  fillOpacity="0.2"
+                                />
+                                <g clipPath="url(#clip0_7367_20111)">
+                                  <path
+                                    d="M19.6268 9.35156H13.1858V33.5087H19.6268V9.35156Z"
+                                    stroke="#3E5A91"
+                                    strokeWidth="1.66213"
+                                    strokeMiterlimit="10"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                   />
-                                  <g clipPath="url(#clip0_7367_20111)">
-                                    <path
-                                      d="M19.6268 9.35156H13.1858V33.5087H19.6268V9.35156Z"
-                                      stroke="#3E5A91"
-                                      strokeWidth="1.66213"
-                                      strokeMiterlimit="10"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
+                                  <path
+                                    d="M9.75024 13.5664H32.6328"
+                                    stroke="#3E5A91"
+                                    strokeWidth="1.66213"
+                                    strokeMiterlimit="10"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                  <path
+                                    d="M16.1631 18.5391H19.6417"
+                                    stroke="#3E5A91"
+                                    strokeWidth="0.831064"
+                                    strokeMiterlimit="10"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                  <path
+                                    d="M16.1631 23.5391H19.6417"
+                                    stroke="#3E5A91"
+                                    strokeWidth="0.831064"
+                                    strokeMiterlimit="10"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                  <path
+                                    d="M16.1631 28.4844H19.6417"
+                                    stroke="#3E5A91"
+                                    strokeWidth="0.831064"
+                                    strokeMiterlimit="10"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_7367_20111">
+                                    <rect
+                                      width="27.1765"
+                                      height="27.1765"
+                                      fill="white"
+                                      transform="translate(7.52124 7.75)"
                                     />
-                                    <path
-                                      d="M9.75024 13.5664H32.6328"
-                                      stroke="#3E5A91"
-                                      strokeWidth="1.66213"
-                                      strokeMiterlimit="10"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                    <path
-                                      d="M16.1631 18.5391H19.6417"
-                                      stroke="#3E5A91"
-                                      strokeWidth="0.831064"
-                                      strokeMiterlimit="10"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                    <path
-                                      d="M16.1631 23.5391H19.6417"
-                                      stroke="#3E5A91"
-                                      strokeWidth="0.831064"
-                                      strokeMiterlimit="10"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                    <path
-                                      d="M16.1631 28.4844H19.6417"
-                                      stroke="#3E5A91"
-                                      strokeWidth="0.831064"
-                                      strokeMiterlimit="10"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                  </g>
-                                  <defs>
-                                    <clipPath id="clip0_7367_20111">
-                                      <rect
-                                        width="27.1765"
-                                        height="27.1765"
-                                        fill="white"
-                                        transform="translate(7.52124 7.75)"
-                                      />
-                                    </clipPath>
-                                  </defs>
-                                </svg>
+                                  </clipPath>
+                                </defs>
+                              </svg>
 
-                                <div className="d-flex flex-column gap-1">
-                                  <span className="contact-details-emergency">
-                                    Height
-                                  </span>
+                              <div className="d-flex flex-column gap-1">
+                                <span className="contact-details-emergency">
+                                  Height
+                                </span>
 
-                                  {/* <span className='phisical-assessment-accordion-showData-box-subtitle'>
-                                                                    {item.height} <span>({(item.height * 2.54).toFixed(0)} cm)</span>
-                                                                </span> */}
+                                <span className="phisical-assessment-accordion-showData-box-subtitle">
+                                  {item.height}
+                                  {convertHeightToCm(
+                                    item.height?.toString() ?? ""
+                                  ) && (
+                                    <span>
+                                      {" "}
+                                      (
+                                      {convertHeightToCm(
+                                        item.height?.toString() ?? ""
+                                      )}{" "}
+                                      cm)
+                                    </span>
+                                  )}
+                                </span>
 
-                                  <span className="phisical-assessment-accordion-showData-box-subtitle">
+                                {/* <span className="phisical-assessment-accordion-showData-box-subtitle">
                                     {item.height}
                                     {convertHeightToCm(item.height) && (
                                       <span>
@@ -586,176 +607,180 @@ const ProfileBasicDetail = ({
                                         ({convertHeightToCm(item.height)} cm)
                                       </span>
                                     )}
-                                  </span>
-                                </div>
+                                  </span> */}
                               </div>
-                            </Col>
-                            <Col md={4} sm={6}>
-                              <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="43"
-                                  height="43"
-                                  viewBox="0 0 43 43"
-                                  fill="none"
-                                >
-                                  <rect
-                                    x="0.109375"
-                                    y="0.339844"
-                                    width="42"
-                                    height="42"
-                                    rx="6"
-                                    fill="#F4C47E"
-                                    fillOpacity="0.2"
-                                  />
-                                  <path
-                                    d="M9.85962 8.21484H32.3596C33.3596 8.21484 34.2346 9.08984 34.2346 10.0898V32.5898C34.2346 33.5898 33.3596 34.4648 32.3596 34.4648H9.85962C8.85962 34.4648 7.98462 33.5898 7.98462 32.5898V10.0898C7.98462 9.08984 8.85962 8.21484 9.85962 8.21484Z"
-                                    stroke="#F4C47E"
-                                    strokeWidth="0.934397"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                  <path
-                                    d="M18.9846 17.3398L17.9846 15.0898M28.6096 15.0898C24.4846 10.9648 17.7346 10.9648 13.6096 15.0898L17.1096 18.5898C19.3596 16.3398 22.8596 16.3398 25.1096 18.5898L28.6096 15.0898Z"
-                                    stroke="#F4C47E"
-                                    strokeWidth="0.934397"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
+                            </div>
+                          </Col>
+                          <Col md={4} sm={6}>
+                            <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="43"
+                                height="43"
+                                viewBox="0 0 43 43"
+                                fill="none"
+                              >
+                                <rect
+                                  x="0.109375"
+                                  y="0.339844"
+                                  width="42"
+                                  height="42"
+                                  rx="6"
+                                  fill="#F4C47E"
+                                  fillOpacity="0.2"
+                                />
+                                <path
+                                  d="M9.85962 8.21484H32.3596C33.3596 8.21484 34.2346 9.08984 34.2346 10.0898V32.5898C34.2346 33.5898 33.3596 34.4648 32.3596 34.4648H9.85962C8.85962 34.4648 7.98462 33.5898 7.98462 32.5898V10.0898C7.98462 9.08984 8.85962 8.21484 9.85962 8.21484Z"
+                                  stroke="#F4C47E"
+                                  strokeWidth="0.934397"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                                <path
+                                  d="M18.9846 17.3398L17.9846 15.0898M28.6096 15.0898C24.4846 10.9648 17.7346 10.9648 13.6096 15.0898L17.1096 18.5898C19.3596 16.3398 22.8596 16.3398 25.1096 18.5898L28.6096 15.0898Z"
+                                  stroke="#F4C47E"
+                                  strokeWidth="0.934397"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
 
-                                <div className="d-flex flex-column gap-1">
-                                  <span className="contact-details-emergency">
-                                    Weight
-                                  </span>
-                                  <span className="phisical-assessment-accordion-showData-box-subtitle">
-                                    {item.weight} kg
-                                  </span>
-                                </div>
+                              <div className="d-flex flex-column gap-1">
+                                <span className="contact-details-emergency">
+                                  Weight
+                                </span>
+                                <span className="phisical-assessment-accordion-showData-box-subtitle">
+                                  {item.weight} kg
+                                </span>
                               </div>
-                            </Col>
-                            <Col md={4} sm={6}>
-                              <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="43"
-                                  height="43"
-                                  viewBox="0 0 43 43"
-                                  fill="none"
-                                >
-                                  <rect
-                                    x="0.109375"
-                                    y="0.339844"
-                                    width="42"
-                                    height="42"
-                                    rx="6"
-                                    fill="#2ECF98"
-                                    fillOpacity="0.2"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M21.1104 13.8398C22.1459 13.8398 22.9854 13.0004 22.9854 11.9648C22.9854 10.9293 22.1459 10.0898 21.1104 10.0898C20.0748 10.0898 19.2354 10.9293 19.2354 11.9648C19.2354 13.0004 20.0748 13.8398 21.1104 13.8398ZM21.1104 15.0898C22.8362 15.0898 24.2354 13.6907 24.2354 11.9648C24.2354 10.239 22.8362 8.83984 21.1104 8.83984C19.3845 8.83984 17.9854 10.239 17.9854 11.9648C17.9854 13.6907 19.3845 15.0898 21.1104 15.0898Z"
-                                    fill="#2ECF98"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M16.9686 17.7868C17.5582 17.899 17.9848 18.4145 17.9848 19.0148V31.9653C17.9848 32.3105 18.2646 32.5903 18.6098 32.5903H18.6641C18.9873 32.5903 19.2573 32.3438 19.2865 32.0219L19.8598 25.7153C19.8616 25.0262 20.4208 24.4685 21.1098 24.4685C21.7989 24.4685 22.358 25.0262 22.3598 25.7152L22.9331 32.0219C22.9624 32.3438 23.2323 32.5903 23.5556 32.5903H23.6098C23.955 32.5903 24.2348 32.3105 24.2348 31.9653V19.0384C24.2348 18.438 24.6616 17.9225 25.2513 17.8104C26.3488 17.6017 27.5093 17.312 28.7847 16.9404C29.1161 16.8438 29.3065 16.4968 29.2099 16.1654C29.1133 15.834 28.7664 15.6437 28.435 15.7403C25.5386 16.5844 23.3165 16.975 21.1125 16.9652C18.9063 16.9552 16.6815 16.544 13.777 15.7381C13.4443 15.6458 13.0999 15.8406 13.0076 16.1732C12.9153 16.5059 13.1101 16.8503 13.4428 16.9425C14.7135 17.2952 15.8715 17.578 16.9686 17.7868ZM20.471 32.4669C20.2501 33.2652 19.5193 33.8403 18.6641 33.8403H18.6098C17.5743 33.8403 16.7348 33.0009 16.7348 31.9653V19.0148C15.5937 18.7976 14.4006 18.5056 13.1085 18.147C12.1107 17.8702 11.5262 16.8368 11.8031 15.839C12.08 14.8412 13.1133 14.2567 14.1111 14.5336C16.967 15.326 19.0705 15.706 21.1181 15.7152C23.1591 15.7243 25.2545 15.3652 28.0852 14.5402C29.0794 14.2505 30.1202 14.8215 30.41 15.8157C30.6997 16.8098 30.1286 17.8507 29.1345 18.1404C27.8318 18.52 26.6314 18.8204 25.4848 19.0384V31.9653C25.4848 33.0009 24.6454 33.8403 23.6098 33.8403H23.5556C22.7003 33.8403 21.9695 33.2652 21.7486 32.4669C21.7284 32.3935 21.7124 32.3182 21.701 32.2414C21.6958 32.2063 21.6915 32.1708 21.6883 32.135L21.115 25.8285C21.1116 25.7917 21.11 25.7551 21.1098 25.7185C21.1097 25.7551 21.108 25.7917 21.1047 25.8285L20.5314 32.135C20.5281 32.1708 20.5239 32.2063 20.5187 32.2414C20.5073 32.3182 20.4913 32.3935 20.471 32.4669Z"
-                                    fill="#2ECF98"
-                                  />
-                                </svg>
+                            </div>
+                          </Col>
+                          <Col md={4} sm={6}>
+                            <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="43"
+                                height="43"
+                                viewBox="0 0 43 43"
+                                fill="none"
+                              >
+                                <rect
+                                  x="0.109375"
+                                  y="0.339844"
+                                  width="42"
+                                  height="42"
+                                  rx="6"
+                                  fill="#2ECF98"
+                                  fillOpacity="0.2"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M21.1104 13.8398C22.1459 13.8398 22.9854 13.0004 22.9854 11.9648C22.9854 10.9293 22.1459 10.0898 21.1104 10.0898C20.0748 10.0898 19.2354 10.9293 19.2354 11.9648C19.2354 13.0004 20.0748 13.8398 21.1104 13.8398ZM21.1104 15.0898C22.8362 15.0898 24.2354 13.6907 24.2354 11.9648C24.2354 10.239 22.8362 8.83984 21.1104 8.83984C19.3845 8.83984 17.9854 10.239 17.9854 11.9648C17.9854 13.6907 19.3845 15.0898 21.1104 15.0898Z"
+                                  fill="#2ECF98"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M16.9686 17.7868C17.5582 17.899 17.9848 18.4145 17.9848 19.0148V31.9653C17.9848 32.3105 18.2646 32.5903 18.6098 32.5903H18.6641C18.9873 32.5903 19.2573 32.3438 19.2865 32.0219L19.8598 25.7153C19.8616 25.0262 20.4208 24.4685 21.1098 24.4685C21.7989 24.4685 22.358 25.0262 22.3598 25.7152L22.9331 32.0219C22.9624 32.3438 23.2323 32.5903 23.5556 32.5903H23.6098C23.955 32.5903 24.2348 32.3105 24.2348 31.9653V19.0384C24.2348 18.438 24.6616 17.9225 25.2513 17.8104C26.3488 17.6017 27.5093 17.312 28.7847 16.9404C29.1161 16.8438 29.3065 16.4968 29.2099 16.1654C29.1133 15.834 28.7664 15.6437 28.435 15.7403C25.5386 16.5844 23.3165 16.975 21.1125 16.9652C18.9063 16.9552 16.6815 16.544 13.777 15.7381C13.4443 15.6458 13.0999 15.8406 13.0076 16.1732C12.9153 16.5059 13.1101 16.8503 13.4428 16.9425C14.7135 17.2952 15.8715 17.578 16.9686 17.7868ZM20.471 32.4669C20.2501 33.2652 19.5193 33.8403 18.6641 33.8403H18.6098C17.5743 33.8403 16.7348 33.0009 16.7348 31.9653V19.0148C15.5937 18.7976 14.4006 18.5056 13.1085 18.147C12.1107 17.8702 11.5262 16.8368 11.8031 15.839C12.08 14.8412 13.1133 14.2567 14.1111 14.5336C16.967 15.326 19.0705 15.706 21.1181 15.7152C23.1591 15.7243 25.2545 15.3652 28.0852 14.5402C29.0794 14.2505 30.1202 14.8215 30.41 15.8157C30.6997 16.8098 30.1286 17.8507 29.1345 18.1404C27.8318 18.52 26.6314 18.8204 25.4848 19.0384V31.9653C25.4848 33.0009 24.6454 33.8403 23.6098 33.8403H23.5556C22.7003 33.8403 21.9695 33.2652 21.7486 32.4669C21.7284 32.3935 21.7124 32.3182 21.701 32.2414C21.6958 32.2063 21.6915 32.1708 21.6883 32.135L21.115 25.8285C21.1116 25.7917 21.11 25.7551 21.1098 25.7185C21.1097 25.7551 21.108 25.7917 21.1047 25.8285L20.5314 32.135C20.5281 32.1708 20.5239 32.2063 20.5187 32.2414C20.5073 32.3182 20.4913 32.3935 20.471 32.4669Z"
+                                  fill="#2ECF98"
+                                />
+                              </svg>
 
-                                <div className="d-flex flex-column gap-1">
-                                  <span className="contact-details-emergency">
-                                    BMI
-                                  </span>
-                                  <span className="phisical-assessment-accordion-showData-box-subtitle">
-                                    {item.bmi} (Normal)
-                                  </span>
-                                </div>
+                              <div className="d-flex flex-column gap-1">
+                                <span className="contact-details-emergency">
+                                  BMI
+                                </span>
+                                <span className="phisical-assessment-accordion-showData-box-subtitle">
+                                  {item.bmi} (Normal)
+                                </span>
                               </div>
-                            </Col>
+                            </div>
+                          </Col>
 
-                            <Col md={4} sm={6}>
-                              <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="43"
-                                  height="43"
-                                  viewBox="0 0 43 43"
-                                  fill="none"
-                                >
-                                  <rect
-                                    x="0.109375"
-                                    y="0.339844"
-                                    width="42"
-                                    height="42"
-                                    rx="6"
-                                    fill="#F12647"
-                                    fillOpacity="0.2"
-                                  />
-                                  <path
-                                    d="M21.7724 8.48956C21.6854 8.40247 21.5821 8.33338 21.4684 8.28624C21.3546 8.23911 21.2327 8.21484 21.1096 8.21484C20.9865 8.21484 20.8646 8.23911 20.7509 8.28624C20.6371 8.33338 20.5338 8.40247 20.4468 8.48956C20.0911 8.84478 11.7346 17.2914 11.7346 25.0899C11.7346 27.5763 12.7223 29.9608 14.4805 31.719C16.2386 33.4772 18.6232 34.4649 21.1096 34.4649C23.596 34.4649 25.9806 33.4772 27.7387 31.719C29.4969 29.9608 30.4846 27.5763 30.4846 25.0899C30.4846 17.2914 22.1281 8.84478 21.7724 8.48956ZM21.1096 32.5899C19.1212 32.5876 17.2149 31.7967 15.8088 30.3907C14.4028 28.9846 13.6119 27.0783 13.6096 25.0899C13.6096 19.2699 19.1641 12.657 21.1096 10.5202C23.0561 12.6561 28.6096 19.2616 28.6096 25.0899C28.6073 27.0783 27.8164 28.9846 26.4104 30.3907C25.0044 31.7967 23.098 32.5876 21.1096 32.5899Z"
-                                    fill="#F12647"
-                                    fillOpacity="0.7"
-                                  />
-                                  <path
-                                    d="M23.9221 24.1523H22.0471V22.2773C22.0471 22.0287 21.9483 21.7902 21.7725 21.6144C21.5967 21.4386 21.3583 21.3398 21.1096 21.3398C20.861 21.3398 20.6225 21.4386 20.4467 21.6144C20.2709 21.7902 20.1721 22.0287 20.1721 22.2773V24.1523H18.2971C18.0485 24.1523 17.81 24.2511 17.6342 24.4269C17.4584 24.6027 17.3596 24.8412 17.3596 25.0898C17.3596 25.3385 17.4584 25.5769 17.6342 25.7528C17.81 25.9286 18.0485 26.0273 18.2971 26.0273H20.1721V27.9023C20.1721 28.151 20.2709 28.3894 20.4467 28.5653C20.6225 28.7411 20.861 28.8398 21.1096 28.8398C21.3583 28.8398 21.5967 28.7411 21.7725 28.5653C21.9483 28.3894 22.0471 28.151 22.0471 27.9023V26.0273H23.9221C24.1708 26.0273 24.4092 25.9286 24.585 25.7528C24.7608 25.5769 24.8596 25.3385 24.8596 25.0898C24.8596 24.8412 24.7608 24.6027 24.585 24.4269C24.4092 24.2511 24.1708 24.1523 23.9221 24.1523Z"
-                                    fill="#F12647"
-                                    fillOpacity="0.7"
-                                  />
-                                </svg>
+                          <Col md={4} sm={6}>
+                            <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="43"
+                                height="43"
+                                viewBox="0 0 43 43"
+                                fill="none"
+                              >
+                                <rect
+                                  x="0.109375"
+                                  y="0.339844"
+                                  width="42"
+                                  height="42"
+                                  rx="6"
+                                  fill="#F12647"
+                                  fillOpacity="0.2"
+                                />
+                                <path
+                                  d="M21.7724 8.48956C21.6854 8.40247 21.5821 8.33338 21.4684 8.28624C21.3546 8.23911 21.2327 8.21484 21.1096 8.21484C20.9865 8.21484 20.8646 8.23911 20.7509 8.28624C20.6371 8.33338 20.5338 8.40247 20.4468 8.48956C20.0911 8.84478 11.7346 17.2914 11.7346 25.0899C11.7346 27.5763 12.7223 29.9608 14.4805 31.719C16.2386 33.4772 18.6232 34.4649 21.1096 34.4649C23.596 34.4649 25.9806 33.4772 27.7387 31.719C29.4969 29.9608 30.4846 27.5763 30.4846 25.0899C30.4846 17.2914 22.1281 8.84478 21.7724 8.48956ZM21.1096 32.5899C19.1212 32.5876 17.2149 31.7967 15.8088 30.3907C14.4028 28.9846 13.6119 27.0783 13.6096 25.0899C13.6096 19.2699 19.1641 12.657 21.1096 10.5202C23.0561 12.6561 28.6096 19.2616 28.6096 25.0899C28.6073 27.0783 27.8164 28.9846 26.4104 30.3907C25.0044 31.7967 23.098 32.5876 21.1096 32.5899Z"
+                                  fill="#F12647"
+                                  fillOpacity="0.7"
+                                />
+                                <path
+                                  d="M23.9221 24.1523H22.0471V22.2773C22.0471 22.0287 21.9483 21.7902 21.7725 21.6144C21.5967 21.4386 21.3583 21.3398 21.1096 21.3398C20.861 21.3398 20.6225 21.4386 20.4467 21.6144C20.2709 21.7902 20.1721 22.0287 20.1721 22.2773V24.1523H18.2971C18.0485 24.1523 17.81 24.2511 17.6342 24.4269C17.4584 24.6027 17.3596 24.8412 17.3596 25.0898C17.3596 25.3385 17.4584 25.5769 17.6342 25.7528C17.81 25.9286 18.0485 26.0273 18.2971 26.0273H20.1721V27.9023C20.1721 28.151 20.2709 28.3894 20.4467 28.5653C20.6225 28.7411 20.861 28.8398 21.1096 28.8398C21.3583 28.8398 21.5967 28.7411 21.7725 28.5653C21.9483 28.3894 22.0471 28.151 22.0471 27.9023V26.0273H23.9221C24.1708 26.0273 24.4092 25.9286 24.585 25.7528C24.7608 25.5769 24.8596 25.3385 24.8596 25.0898C24.8596 24.8412 24.7608 24.6027 24.585 24.4269C24.4092 24.2511 24.1708 24.1523 23.9221 24.1523Z"
+                                  fill="#F12647"
+                                  fillOpacity="0.7"
+                                />
+                              </svg>
 
-                                <div className="d-flex flex-column gap-1">
-                                  <span className="contact-details-emergency">
-                                    Blood Group
-                                  </span>
-                                  <span className="phisical-assessment-accordion-showData-box-subtitle">
-                                    {item.bloodGroup}
-                                  </span>
-                                </div>
+                              <div className="d-flex flex-column gap-1">
+                                <span className="contact-details-emergency">
+                                  Blood Group
+                                </span>
+                                <span className="phisical-assessment-accordion-showData-box-subtitle">
+                                  {item.bloodGroup}
+                                </span>
                               </div>
-                            </Col>
+                            </div>
+                          </Col>
 
-                            <Col md={4} sm={6}>
-                              <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="43"
-                                  height="43"
-                                  viewBox="0 0 43 43"
-                                  fill="none"
-                                >
-                                  <rect
-                                    x="0.109375"
-                                    y="0.339844"
-                                    width="42"
-                                    height="42"
-                                    rx="6"
-                                    fill="#E29578"
-                                    fillOpacity="0.2"
-                                  />
-                                  <path
-                                    d="M28.5498 25.9676C28.2312 25.9677 27.9218 25.8646 27.6716 25.675C27.4214 25.4855 27.245 25.2205 27.1708 24.9229L25.1305 16.695C25.115 16.6332 25.0801 16.5775 25.0305 16.5353C24.981 16.4932 24.9192 16.4666 24.8534 16.4593C24.7877 16.452 24.7212 16.4642 24.6629 16.4944C24.6046 16.5245 24.5574 16.5711 24.5276 16.6278L22.1301 21.2332C22.0073 21.4635 21.8196 21.656 21.5885 21.7888C21.3573 21.9216 21.0919 21.9893 20.8226 21.9843C20.5529 21.9761 20.2912 21.8943 20.0682 21.7485C19.8452 21.6027 19.67 21.3988 19.5632 21.1609L18.5977 18.9985H13.4231C13.2782 18.9985 13.1393 18.9432 13.0369 18.8448C12.9345 18.7465 12.877 18.6131 12.877 18.474C12.877 18.3349 12.9345 18.2015 13.0369 18.1031C13.1393 18.0048 13.2782 17.9495 13.4231 17.9495H18.9581C19.065 17.9495 19.1695 17.9795 19.2588 18.036C19.348 18.0925 19.418 18.173 19.46 18.2673L20.567 20.7476C20.5914 20.8018 20.6314 20.8483 20.6823 20.8815C20.7331 20.9147 20.7928 20.9334 20.8543 20.9353C20.9163 20.9397 20.9783 20.9256 21.0317 20.8949C21.085 20.8642 21.1272 20.8184 21.1525 20.7638L23.55 16.159C23.6797 15.9091 23.8864 15.7036 24.142 15.5705C24.3976 15.4375 24.6897 15.3832 24.9785 15.4152C25.2673 15.4472 25.5389 15.5638 25.7562 15.7493C25.9736 15.9347 26.1262 16.1799 26.1933 16.4516L28.2331 24.6801C28.2478 24.7396 28.2806 24.7935 28.3272 24.8352C28.3739 24.8768 28.4323 24.9042 28.4952 24.914C28.5581 24.9245 28.6228 24.9166 28.6809 24.8913C28.739 24.8661 28.7879 24.8246 28.8213 24.7724L30.7955 21.7399C30.8446 21.6644 30.9129 21.6022 30.9939 21.5591C31.0749 21.516 31.166 21.4934 31.2586 21.4934H35.5632C35.7081 21.4934 35.847 21.5486 35.9494 21.647C36.0518 21.7453 36.1094 21.8787 36.1094 22.0178C36.1094 22.1569 36.0518 22.2903 35.9494 22.3887C35.847 22.4871 35.7081 22.5423 35.5632 22.5423H31.5612L29.7475 25.3288C29.6209 25.5243 29.4445 25.6856 29.2349 25.7974C29.0253 25.9091 28.7895 25.9677 28.5498 25.9676Z"
-                                    fill="#E29578"
-                                    stroke="#E29578"
-                                    strokeWidth="0.2"
-                                  />
-                                  <path
-                                    d="M24.3984 22.1814C24.3522 22.0512 24.2566 21.9444 24.1322 21.8843C24.0078 21.8241 23.8647 21.8155 23.734 21.8603C23.6033 21.9051 23.4956 21.9996 23.4342 22.1233C23.3728 22.2471 23.3627 22.3901 23.4061 22.5212C23.6646 23.2237 23.714 23.2132 23.734 23.9614C23.734 26.0479 22.9052 28.0489 21.4298 29.5243C19.9545 30.9996 17.9534 31.8285 15.867 31.8285C13.7805 31.8285 11.7794 30.9996 10.3041 29.5243C8.82872 28.0489 7.99987 26.0479 7.99987 23.9614C7.99987 19.6088 14.2621 12.7618 15.867 11.0783C17.8948 13.1938 18.7331 13.9852 20.3573 16.4244C20.4335 16.5389 20.5517 16.6189 20.6863 16.6472C20.821 16.6754 20.9613 16.6495 21.0771 16.5752C21.1929 16.5009 21.2749 16.3841 21.3053 16.2499C21.3358 16.1158 21.3123 15.975 21.2399 15.858C19.4774 13.2069 18.4666 12.2275 16.2378 9.95434C16.1394 9.85602 16.006 9.80078 15.867 9.80078C15.7279 9.80078 15.5945 9.85602 15.4962 9.95434C15.1474 10.3031 6.95093 18.5615 6.95093 23.9614C6.95093 26.3261 7.89029 28.5939 9.56237 30.266C11.2344 31.9381 13.5023 32.8774 15.867 32.8774C18.2316 32.8774 20.4995 31.9381 22.1715 30.266C23.8436 28.5939 24.783 26.3261 24.783 23.9614C24.6995 23.1026 24.6944 23.0173 24.3984 22.1814Z"
-                                    fill="#E29578"
-                                    stroke="#E29578"
-                                    strokeWidth="0.289362"
-                                  />
-                                </svg>
+                          <Col md={4} sm={6}>
+                            <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="43"
+                                height="43"
+                                viewBox="0 0 43 43"
+                                fill="none"
+                              >
+                                <rect
+                                  x="0.109375"
+                                  y="0.339844"
+                                  width="42"
+                                  height="42"
+                                  rx="6"
+                                  fill="#E29578"
+                                  fillOpacity="0.2"
+                                />
+                                <path
+                                  d="M28.5498 25.9676C28.2312 25.9677 27.9218 25.8646 27.6716 25.675C27.4214 25.4855 27.245 25.2205 27.1708 24.9229L25.1305 16.695C25.115 16.6332 25.0801 16.5775 25.0305 16.5353C24.981 16.4932 24.9192 16.4666 24.8534 16.4593C24.7877 16.452 24.7212 16.4642 24.6629 16.4944C24.6046 16.5245 24.5574 16.5711 24.5276 16.6278L22.1301 21.2332C22.0073 21.4635 21.8196 21.656 21.5885 21.7888C21.3573 21.9216 21.0919 21.9893 20.8226 21.9843C20.5529 21.9761 20.2912 21.8943 20.0682 21.7485C19.8452 21.6027 19.67 21.3988 19.5632 21.1609L18.5977 18.9985H13.4231C13.2782 18.9985 13.1393 18.9432 13.0369 18.8448C12.9345 18.7465 12.877 18.6131 12.877 18.474C12.877 18.3349 12.9345 18.2015 13.0369 18.1031C13.1393 18.0048 13.2782 17.9495 13.4231 17.9495H18.9581C19.065 17.9495 19.1695 17.9795 19.2588 18.036C19.348 18.0925 19.418 18.173 19.46 18.2673L20.567 20.7476C20.5914 20.8018 20.6314 20.8483 20.6823 20.8815C20.7331 20.9147 20.7928 20.9334 20.8543 20.9353C20.9163 20.9397 20.9783 20.9256 21.0317 20.8949C21.085 20.8642 21.1272 20.8184 21.1525 20.7638L23.55 16.159C23.6797 15.9091 23.8864 15.7036 24.142 15.5705C24.3976 15.4375 24.6897 15.3832 24.9785 15.4152C25.2673 15.4472 25.5389 15.5638 25.7562 15.7493C25.9736 15.9347 26.1262 16.1799 26.1933 16.4516L28.2331 24.6801C28.2478 24.7396 28.2806 24.7935 28.3272 24.8352C28.3739 24.8768 28.4323 24.9042 28.4952 24.914C28.5581 24.9245 28.6228 24.9166 28.6809 24.8913C28.739 24.8661 28.7879 24.8246 28.8213 24.7724L30.7955 21.7399C30.8446 21.6644 30.9129 21.6022 30.9939 21.5591C31.0749 21.516 31.166 21.4934 31.2586 21.4934H35.5632C35.7081 21.4934 35.847 21.5486 35.9494 21.647C36.0518 21.7453 36.1094 21.8787 36.1094 22.0178C36.1094 22.1569 36.0518 22.2903 35.9494 22.3887C35.847 22.4871 35.7081 22.5423 35.5632 22.5423H31.5612L29.7475 25.3288C29.6209 25.5243 29.4445 25.6856 29.2349 25.7974C29.0253 25.9091 28.7895 25.9677 28.5498 25.9676Z"
+                                  fill="#E29578"
+                                  stroke="#E29578"
+                                  strokeWidth="0.2"
+                                />
+                                <path
+                                  d="M24.3984 22.1814C24.3522 22.0512 24.2566 21.9444 24.1322 21.8843C24.0078 21.8241 23.8647 21.8155 23.734 21.8603C23.6033 21.9051 23.4956 21.9996 23.4342 22.1233C23.3728 22.2471 23.3627 22.3901 23.4061 22.5212C23.6646 23.2237 23.714 23.2132 23.734 23.9614C23.734 26.0479 22.9052 28.0489 21.4298 29.5243C19.9545 30.9996 17.9534 31.8285 15.867 31.8285C13.7805 31.8285 11.7794 30.9996 10.3041 29.5243C8.82872 28.0489 7.99987 26.0479 7.99987 23.9614C7.99987 19.6088 14.2621 12.7618 15.867 11.0783C17.8948 13.1938 18.7331 13.9852 20.3573 16.4244C20.4335 16.5389 20.5517 16.6189 20.6863 16.6472C20.821 16.6754 20.9613 16.6495 21.0771 16.5752C21.1929 16.5009 21.2749 16.3841 21.3053 16.2499C21.3358 16.1158 21.3123 15.975 21.2399 15.858C19.4774 13.2069 18.4666 12.2275 16.2378 9.95434C16.1394 9.85602 16.006 9.80078 15.867 9.80078C15.7279 9.80078 15.5945 9.85602 15.4962 9.95434C15.1474 10.3031 6.95093 18.5615 6.95093 23.9614C6.95093 26.3261 7.89029 28.5939 9.56237 30.266C11.2344 31.9381 13.5023 32.8774 15.867 32.8774C18.2316 32.8774 20.4995 31.9381 22.1715 30.266C23.8436 28.5939 24.783 26.3261 24.783 23.9614C24.6995 23.1026 24.6944 23.0173 24.3984 22.1814Z"
+                                  fill="#E29578"
+                                  stroke="#E29578"
+                                  strokeWidth="0.289362"
+                                />
+                              </svg>
 
-                                <div className="d-flex flex-column gap-1">
-                                  <span className="contact-details-emergency">
-                                    Blood Pressure
-                                  </span>
-                                  {/* <span className='phisical-assessment-accordion-showData-box-subtitle'>{item.systolic}/{item.diastolic} mmHg </span> */}
-                                  <span className="phisical-assessment-accordion-showData-box-subtitle">
+                              <div className="d-flex flex-column gap-1">
+                                <span className="contact-details-emergency">
+                                  Blood Pressure
+                                </span>
+                                <span className="phisical-assessment-accordion-showData-box-subtitle">
+                                  {item.bloodPressure.diastolic}/
+                                  {item.bloodPressure.systolic} mmHg
+                                </span>
+                                {/* <span className='phisical-assessment-accordion-showData-box-subtitle'>{item.systolic}/{item.diastolic} mmHg </span> */}
+                                {/* <span className="phisical-assessment-accordion-showData-box-subtitle">
                                     {item.bloodPressureSystolic}
                                     {item.bloodPressureSystolic &&
                                       item.bloodPressureDiastolic &&
@@ -764,54 +789,53 @@ const ProfileBasicDetail = ({
                                     {(item.bloodPressureSystolic ||
                                       item.bloodPressureDiastolic) &&
                                       " mmHg"}
-                                  </span>
-                                </div>
+                                  </span> */}
                               </div>
-                            </Col>
-                            <Col md={4} sm={6}>
-                              <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="43"
-                                  height="43"
-                                  viewBox="0 0 43 43"
-                                  fill="none"
-                                >
-                                  <rect
-                                    x="0.109375"
-                                    y="0.339844"
-                                    width="42"
-                                    height="42"
-                                    rx="6"
-                                    fill="#FF8695"
-                                    fillOpacity="0.2"
-                                  />
-                                  <path
-                                    d="M24.1666 25.3992L19.7041 30.2648L11.1353 20.8898C10.499 20.2073 10.0785 19.352 9.92667 18.4313C9.77488 17.5105 9.89857 16.5655 10.2822 15.7148C10.587 15.0118 11.0594 14.3941 11.6583 13.916C12.2571 13.4379 12.964 13.1138 13.7171 12.9723C14.4702 12.8307 15.2466 12.876 15.9781 13.104C16.7097 13.3321 17.3742 13.736 17.9135 14.2805L19.0385 15.4148C19.1256 15.5027 19.2293 15.5725 19.3435 15.6201C19.4578 15.6676 19.5803 15.6922 19.7041 15.6922C19.8278 15.6922 19.9504 15.6676 20.0646 15.6201C20.1789 15.5725 20.2826 15.5027 20.3697 15.4148L21.4947 14.2805C21.9356 13.8381 22.4604 13.4884 23.0384 13.2517C23.6164 13.015 24.2358 12.8963 24.8603 12.9023C25.5938 12.8979 26.3176 13.0702 26.9703 13.4048C27.6231 13.7393 28.1856 14.2262 28.6103 14.8242C29.0622 15.4425 29.3615 16.1589 29.4837 16.9149C29.6059 17.6709 29.5475 18.4451 29.3135 19.1742C29.268 19.294 29.2477 19.4218 29.2536 19.5497C29.2594 19.6777 29.2915 19.803 29.3477 19.9181C29.4039 20.0332 29.4831 20.1355 29.5804 20.2188C29.6777 20.3021 29.7911 20.3646 29.9135 20.4023C30.1497 20.4792 30.4067 20.4592 30.6282 20.3467C30.8497 20.2342 31.0175 20.0384 31.0947 19.8023C31.4235 18.7931 31.5099 17.7205 31.347 16.6716C31.1842 15.6227 30.7766 14.6269 30.1572 13.7648C29.5564 12.9194 28.7622 12.2298 27.8408 11.7536C26.9194 11.2774 25.8975 11.0284 24.8603 11.0273C23.989 11.0274 23.1263 11.1997 22.3219 11.5343C21.5174 11.869 20.7871 12.3594 20.1728 12.9773L19.7135 13.4461L19.2353 12.9773C18.6211 12.3594 17.8907 11.869 17.0863 11.5343C16.2818 11.1997 15.4191 11.0274 14.5478 11.0273C13.2729 11.0282 12.0263 11.4037 10.9629 12.107C9.89956 12.8104 9.06627 13.8107 8.56658 14.9836C8.02599 16.1691 7.85055 17.4887 8.06258 18.7743C8.27462 20.0599 8.86454 21.2532 9.7572 22.2023L19.0103 32.2898C19.0982 32.3865 19.2053 32.4638 19.3248 32.5166C19.4442 32.5695 19.5734 32.5968 19.7041 32.5968C19.8347 32.5968 19.9639 32.5695 20.0834 32.5166C20.2029 32.4638 20.31 32.3865 20.3978 32.2898L25.5541 26.6648C25.7232 26.4808 25.8122 26.2372 25.8017 25.9876C25.7911 25.7379 25.6818 25.5027 25.4978 25.3336C25.3138 25.1645 25.0702 25.0755 24.8206 25.086C24.5709 25.0966 24.3357 25.2058 24.1666 25.3898V25.3992Z"
-                                    fill="#FF8695"
-                                  />
-                                  <path
-                                    d="M33.2974 22.2774H26.4349L24.7942 18.1805C24.7248 18.0061 24.6045 17.8565 24.4491 17.7512C24.2936 17.6459 24.1101 17.5897 23.9224 17.5899C23.7367 17.5882 23.5548 17.6416 23.3996 17.7434C23.2444 17.8452 23.1229 17.9908 23.0505 18.1618L21.1755 22.643L20.1442 20.0555C20.0725 19.875 19.9465 19.7212 19.7836 19.6154C19.6207 19.5096 19.429 19.457 19.2349 19.4649C19.0432 19.4702 18.8577 19.5341 18.7034 19.6481C18.5492 19.7621 18.4337 19.9207 18.3724 20.1024L17.6224 22.2774H16.4224C16.1737 22.2774 15.9353 22.3762 15.7595 22.552C15.5836 22.7278 15.4849 22.9662 15.4849 23.2149C15.4849 23.4635 15.5836 23.702 15.7595 23.8778C15.9353 24.0536 16.1737 24.1524 16.4224 24.1524H18.2974C18.4939 24.1529 18.6856 24.0916 18.8455 23.9772C19.0053 23.8628 19.1251 23.7011 19.188 23.5149L19.3099 23.1305L20.2474 25.4368C20.3162 25.6097 20.435 25.7583 20.5887 25.8634C20.7423 25.9686 20.9237 26.0257 21.1099 26.0274C21.2939 26.0272 21.4738 25.9729 21.6272 25.8712C21.7805 25.7695 21.9006 25.625 21.9724 25.4555L23.8474 20.9743L24.8786 23.5618C24.9508 23.7439 25.0783 23.8987 25.2431 24.0047C25.4079 24.1106 25.6017 24.1623 25.7974 24.1524H33.2974C33.546 24.1524 33.7845 24.0536 33.9603 23.8778C34.1361 23.702 34.2349 23.4635 34.2349 23.2149C34.2349 22.9662 34.1361 22.7278 33.9603 22.552C33.7845 22.3762 33.546 22.2774 33.2974 22.2774Z"
-                                    fill="#FF8695"
-                                  />
-                                </svg>
+                            </div>
+                          </Col>
+                          <Col md={4} sm={6}>
+                            <div className="phisical-assessment-accordion-showData-box d-flex gap-3">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="43"
+                                height="43"
+                                viewBox="0 0 43 43"
+                                fill="none"
+                              >
+                                <rect
+                                  x="0.109375"
+                                  y="0.339844"
+                                  width="42"
+                                  height="42"
+                                  rx="6"
+                                  fill="#FF8695"
+                                  fillOpacity="0.2"
+                                />
+                                <path
+                                  d="M24.1666 25.3992L19.7041 30.2648L11.1353 20.8898C10.499 20.2073 10.0785 19.352 9.92667 18.4313C9.77488 17.5105 9.89857 16.5655 10.2822 15.7148C10.587 15.0118 11.0594 14.3941 11.6583 13.916C12.2571 13.4379 12.964 13.1138 13.7171 12.9723C14.4702 12.8307 15.2466 12.876 15.9781 13.104C16.7097 13.3321 17.3742 13.736 17.9135 14.2805L19.0385 15.4148C19.1256 15.5027 19.2293 15.5725 19.3435 15.6201C19.4578 15.6676 19.5803 15.6922 19.7041 15.6922C19.8278 15.6922 19.9504 15.6676 20.0646 15.6201C20.1789 15.5725 20.2826 15.5027 20.3697 15.4148L21.4947 14.2805C21.9356 13.8381 22.4604 13.4884 23.0384 13.2517C23.6164 13.015 24.2358 12.8963 24.8603 12.9023C25.5938 12.8979 26.3176 13.0702 26.9703 13.4048C27.6231 13.7393 28.1856 14.2262 28.6103 14.8242C29.0622 15.4425 29.3615 16.1589 29.4837 16.9149C29.6059 17.6709 29.5475 18.4451 29.3135 19.1742C29.268 19.294 29.2477 19.4218 29.2536 19.5497C29.2594 19.6777 29.2915 19.803 29.3477 19.9181C29.4039 20.0332 29.4831 20.1355 29.5804 20.2188C29.6777 20.3021 29.7911 20.3646 29.9135 20.4023C30.1497 20.4792 30.4067 20.4592 30.6282 20.3467C30.8497 20.2342 31.0175 20.0384 31.0947 19.8023C31.4235 18.7931 31.5099 17.7205 31.347 16.6716C31.1842 15.6227 30.7766 14.6269 30.1572 13.7648C29.5564 12.9194 28.7622 12.2298 27.8408 11.7536C26.9194 11.2774 25.8975 11.0284 24.8603 11.0273C23.989 11.0274 23.1263 11.1997 22.3219 11.5343C21.5174 11.869 20.7871 12.3594 20.1728 12.9773L19.7135 13.4461L19.2353 12.9773C18.6211 12.3594 17.8907 11.869 17.0863 11.5343C16.2818 11.1997 15.4191 11.0274 14.5478 11.0273C13.2729 11.0282 12.0263 11.4037 10.9629 12.107C9.89956 12.8104 9.06627 13.8107 8.56658 14.9836C8.02599 16.1691 7.85055 17.4887 8.06258 18.7743C8.27462 20.0599 8.86454 21.2532 9.7572 22.2023L19.0103 32.2898C19.0982 32.3865 19.2053 32.4638 19.3248 32.5166C19.4442 32.5695 19.5734 32.5968 19.7041 32.5968C19.8347 32.5968 19.9639 32.5695 20.0834 32.5166C20.2029 32.4638 20.31 32.3865 20.3978 32.2898L25.5541 26.6648C25.7232 26.4808 25.8122 26.2372 25.8017 25.9876C25.7911 25.7379 25.6818 25.5027 25.4978 25.3336C25.3138 25.1645 25.0702 25.0755 24.8206 25.086C24.5709 25.0966 24.3357 25.2058 24.1666 25.3898V25.3992Z"
+                                  fill="#FF8695"
+                                />
+                                <path
+                                  d="M33.2974 22.2774H26.4349L24.7942 18.1805C24.7248 18.0061 24.6045 17.8565 24.4491 17.7512C24.2936 17.6459 24.1101 17.5897 23.9224 17.5899C23.7367 17.5882 23.5548 17.6416 23.3996 17.7434C23.2444 17.8452 23.1229 17.9908 23.0505 18.1618L21.1755 22.643L20.1442 20.0555C20.0725 19.875 19.9465 19.7212 19.7836 19.6154C19.6207 19.5096 19.429 19.457 19.2349 19.4649C19.0432 19.4702 18.8577 19.5341 18.7034 19.6481C18.5492 19.7621 18.4337 19.9207 18.3724 20.1024L17.6224 22.2774H16.4224C16.1737 22.2774 15.9353 22.3762 15.7595 22.552C15.5836 22.7278 15.4849 22.9662 15.4849 23.2149C15.4849 23.4635 15.5836 23.702 15.7595 23.8778C15.9353 24.0536 16.1737 24.1524 16.4224 24.1524H18.2974C18.4939 24.1529 18.6856 24.0916 18.8455 23.9772C19.0053 23.8628 19.1251 23.7011 19.188 23.5149L19.3099 23.1305L20.2474 25.4368C20.3162 25.6097 20.435 25.7583 20.5887 25.8634C20.7423 25.9686 20.9237 26.0257 21.1099 26.0274C21.2939 26.0272 21.4738 25.9729 21.6272 25.8712C21.7805 25.7695 21.9006 25.625 21.9724 25.4555L23.8474 20.9743L24.8786 23.5618C24.9508 23.7439 25.0783 23.8987 25.2431 24.0047C25.4079 24.1106 25.6017 24.1623 25.7974 24.1524H33.2974C33.546 24.1524 33.7845 24.0536 33.9603 23.8778C34.1361 23.702 34.2349 23.4635 34.2349 23.2149C34.2349 22.9662 34.1361 22.7278 33.9603 22.552C33.7845 22.3762 33.546 22.2774 33.2974 22.2774Z"
+                                  fill="#FF8695"
+                                />
+                              </svg>
 
-                                <div className="d-flex flex-column gap-1">
-                                  <span className="contact-details-emergency">
-                                    Hearth Rate
-                                  </span>
-                                  <span className="phisical-assessment-accordion-showData-box-subtitle">
-                                    {item.heartRate} bpm
-                                  </span>
-                                </div>
+                              <div className="d-flex flex-column gap-1">
+                                <span className="contact-details-emergency">
+                                  Hearth Rate
+                                </span>
+                                <span className="phisical-assessment-accordion-showData-box-subtitle">
+                                  {item.heartRate} bpm
+                                </span>
                               </div>
-                            </Col>
-                          </Row>
-                        </Accordion.Body>
-                      </Accordion.Item>
-                    );
-                  }
-                )}
+                            </div>
+                          </Col>
+                        </Row>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  );
+                })}
               </Accordion>
             </div>
           )}
@@ -1504,7 +1528,11 @@ const ProfileBasicDetail = ({
                 modalFormPhisicalData={modalFormPhisicalData}
                 patientId={patientData?._id}
                 fetchPatientData={fetchPatientData}
-            
+                setModalFormPhisicalData={function (
+                  value: React.SetStateAction<PhysicalAssessmentDataModel[]>
+                ): void {
+                  throw new Error("Function not implemented.");
+                }}
               />
             </div>
           </Modal>
@@ -1525,8 +1553,9 @@ const ProfileBasicDetail = ({
             <div className="mb-0">
               <FertilityAssessmentForm
                 setShowFertilityAssessment={setShowFertilityAssessment}
-                setModalFormFertilityData={setModalFormFertilityData}
                 editFertilityAssessment={editFertilityAssessment}
+                patientId={patientData?._id}
+                fetchPatientData={fetchPatientData}
               />
             </div>
           </Modal>
@@ -1549,7 +1578,11 @@ const ProfileBasicDetail = ({
                 onClose={() => setEditingMedicalHistory(null)}
                 patientId={patientData?._id}
                 fetchPatientData={fetchPatientData}
-                // setMedicalHistoryFormData={setMedicalHistoryFormData}
+                setMedicalHistoryFormData={function (
+                  value: React.SetStateAction<MedicalHistoryType>
+                ): void {
+                  throw new Error("Function not implemented.");
+                }} // setMedicalHistoryFormData={setMedicalHistoryFormData}
                 // setShowModal={setShowModal}
                 // initialData={editingMedicalHistory}
                 // onClose={() => setEditingMedicalHistory(null)}
