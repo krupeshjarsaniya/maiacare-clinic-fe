@@ -39,7 +39,7 @@ import { PickersDay, PickersDayProps } from "@mui/x-date-pickers/PickersDay";
 
 
 type DayProps = React.ComponentProps<typeof PickersDay>;
-interface CustomDayProps extends PickersDayProps {
+interface CustomDayProps extends PickersDayProps<dayjs.Dayjs> {
   selectedDay?: dayjs.Dayjs | null;
 }
 
