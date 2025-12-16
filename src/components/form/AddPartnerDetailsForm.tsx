@@ -81,7 +81,7 @@ type FormError = Partial<Record<keyof FertilityAssessmentType, string>>;
 
 type FertilityAssessmentProps = {
   formData: FertilityAssessmentPartner | EditFertilityAssessment;
-  setFormData: React.Dispatch<React.SetStateAction<FertilityAssessmentPartner>>;
+  setFormData: React.Dispatch<React.SetStateAction<FertilityAssessmentPartner>> | React.Dispatch<React.SetStateAction<EditFertilityAssessment>> | ((value: React.SetStateAction<FertilityAssessmentPartner | EditFertilityAssessment>) => void);
   setFormError: React.Dispatch<React.SetStateAction<FormError>>;
   formError?: FormError;
 };
@@ -1102,7 +1102,7 @@ export function FertilityAssessment({
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
     setFormError((prev) => ({ ...prev, [name]: "" }));
   };
   const handleSubmitData = (e: React.FormEvent) => {
