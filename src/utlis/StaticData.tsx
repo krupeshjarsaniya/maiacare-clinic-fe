@@ -715,11 +715,14 @@ import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 export type LeaveEntry = {
   id: string;
-  type: string;
+  reason: string;
   startDate: string;
   endDate: string;
   days: string;
   status?: string;
+  note?: string;
+  doctorId?: string;
+  leaveId?: string;
 };
 
 export interface PartnerDetailData {
@@ -761,56 +764,56 @@ export interface PartnerDetailData {
 export const leaveData: LeaveEntry[] = [
   {
     id: "01",
-    type: "Holi",
+    reason: "Holi",
     startDate: "12/08/25",
     endDate: "12/08/25",
     days: "1 Day",
   },
   {
     id: "02",
-    type: "Sick leave",
+    reason: "Sick leave",
     startDate: "12/08/25",
     endDate: "12/08/25",
     days: "3 Days",
   },
   {
     id: "03",
-    type: "Vacation",
+    reason: "Vacation",
     startDate: "12/08/25",
     endDate: "12/08/25",
     days: "15 Days",
   },
   {
     id: "04",
-    type: "Family Thing",
+    reason: "Family Thing",
     startDate: "12/08/25",
     endDate: "12/08/25",
     days: "1 Day",
   },
   {
     id: "05",
-    type: "Sick leave",
+    reason: "Sick leave",
     startDate: "12/08/25",
     endDate: "12/08/25",
     days: "2 Days",
   },
   {
     id: "06",
-    type: "Casual leave",
+    reason: "Casual leave",
     startDate: "12/08/25",
     endDate: "12/08/25",
     days: "1 Day",
   },
   {
     id: "07",
-    type: "Family thing",
+    reason: "Family thing",
     startDate: "12/08/25",
     endDate: "12/08/25",
     days: "2 Days",
   },
   {
     id: "08",
-    type: "Casual leave",
+    reason: "Casual leave",
     startDate: "12/08/25",
     endDate: "12/08/25",
     days: "1 Day",
@@ -824,7 +827,7 @@ export const leaveColumns: ColumnDef<LeaveEntry>[] = [
   },
   {
     header: "Leave Type",
-    accessorKey: "type",
+    accessorKey: "reason",
   },
   {
     header: "Start Date",

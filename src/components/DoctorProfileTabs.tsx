@@ -20,7 +20,7 @@ import { DoctorDetails } from "@/utlis/types/interfaces";
 const ProfileTabes = () => {
   const params = useParams<{ id?: string }>();
   const DoctorId = "6943a7e6a55e888c3f9fa264";
-  console.log("DoctorId", DoctorId);
+
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
     dispatch(
@@ -36,13 +36,11 @@ const ProfileTabes = () => {
   const [doctorIdShow, setDoctorIdShow] = useState<string>("");
 
   const fetchPatientData = () => {
-
     if (!DoctorId) return; // guard undefined
     setLoading(true); // start loader
     getDoctor(DoctorId)
       .then((response) => {
         if (response.data.status) {
-          console.log("doctor data:", response.data.doctor);
           setDoctorData(response.data.doctor);
           setDoctorIdShow(response.data.doctor?._id);
           // setModalFormPhisicalData(response.data.data?.physicalAssessment);
@@ -70,9 +68,9 @@ const ProfileTabes = () => {
       label: "Basic Details",
       content: (
         <>
-          <DoctorBasicDetails 
-           DoctorData={DoctorData}
-           doctorIdShow={doctorIdShow}
+          <DoctorBasicDetails
+            DoctorData={DoctorData}
+            doctorIdShow={doctorIdShow}
             // modalFormPhisicalData={modalFormPhisicalData}
             // medicalHistoryFormData={medicalHistoryFormData}
             // modalFormFertilityData={modalFormFertilityData}
@@ -84,7 +82,7 @@ const ProfileTabes = () => {
     {
       key: "leaves",
       label: "Manage Leaves",
-      content: <>{<DoctorManageLeave />}</>,
+      content: <>{<DoctorManageLeave doctorIdShow={doctorIdShow} />}</>,
     },
     {
       key: "assignedpatients",
@@ -100,9 +98,7 @@ const ProfileTabes = () => {
 
   return (
     <>
-      <DoctorDetailPageComponent
-      DoctorData={DoctorData}
-      />
+      <DoctorDetailPageComponent DoctorData={DoctorData} />
       <div className="mt-4">
         <CustomTabs
           activeKey={activeTab}

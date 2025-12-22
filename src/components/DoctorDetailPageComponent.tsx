@@ -131,7 +131,7 @@ const DoctorDetailPageComponent = ({
   const handleresultclose = () => {
     setShowResultModal(false);
   };
-  console.log("DoctorData:",DoctorData);
+  
   
   const DoctorProfileCard: React.FC<{ doctor: typeof DoctorData}> = ({
     doctor,

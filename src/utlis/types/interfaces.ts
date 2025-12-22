@@ -659,7 +659,7 @@ export interface OperationalHour {
 export interface ClinicDetails {
   _id?: string;
   // groupOperationalHours: any;
-  clinicLogo: string;
+  clinicLogo: string ;
   clinicName: string;
   contactNumber: string;
   email: string;
@@ -679,7 +679,8 @@ export interface ClinicDetails {
 }
 
 export interface Qualification {
-  _id?: string ;
+  _id?: string;
+  doctorId?: string ;
   degree: string;
   fieldOfStudy: string;
   university: string;

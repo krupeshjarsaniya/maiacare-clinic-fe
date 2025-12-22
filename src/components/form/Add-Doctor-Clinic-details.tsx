@@ -22,8 +22,8 @@ export default function AddDoctorClinicdetails({
   onPrevious,
   data,
 }: {
-  data: DoctorDetails["clinicDetails"];
-  onNext: (data: DoctorDetails["clinicDetails"]) => void;
+  data: DoctorDetails["clinics"];
+  onNext: (data: DoctorDetails["clinics"]) => void;
   onPrevious: () => void;
 }) {
   // Personal Details
@@ -148,35 +148,37 @@ export default function AddDoctorClinicdetails({
     return errors;
   };
 
-const buildClinicPayload = (): DoctorDetails["clinicDetails"] => {
-  return {
-    clinicLogo: selectedImage || "",
-    clinicName: formData.Name,
-    contactNumber: formData.Contact,
-    email: formData.Email,
-    address: formData.Address,
-    mapLink: formData.MapLink,
-    pincode: formData.Pincode,
-    city: formData.City,
-    state: formData.State,
+  const buildClinicPayload = (): DoctorDetails["clinics"] => {
+    return [
+      {
+        clinicLogo: selectedImage || "",
+        clinicName: formData.Name,
+        contactNumber: formData.Contact,
+        email: formData.Email,
+        address: formData.Address,
+        mapLink: formData.MapLink,
+        pincode: formData.Pincode,
+        city: formData.City,
+        state: formData.State,
 
-    // ✅ REQUIRED FIELD ADDED
-     useCustomHours: false,
-     groupOperationalHours: {
-      weekdayOpen: formData.MF,     // "10 AM"
-      weekdayClose: formData.Time,   // "8 PM"
-      weekendOpen: formData.SS,     // "10 AM"
-      weekendClose: formData.Timer,   // "6 PM"
-    },
+        // ✅ REQUIRED FIELD ADDED
+        useCustomHours: false,
+        groupOperationalHours: {
+          weekdayOpen: formData.MF, // "10 AM"
+          weekdayClose: formData.Time, // "8 PM"
+          weekendOpen: formData.SS, // "10 AM"
+          weekendClose: formData.Timer, // "6 PM"
+        },
 
-    contactPerson: {
-      name: formData.ContactName,
-      contactNumber: formData.ContactNo,
-      email: formData.ContactEmail,
-      aadharNumber: formatAadhaar(formData.Adcard),
-    },
+        contactPerson: {
+          name: formData.ContactName,
+          contactNumber: formData.ContactNo,
+          email: formData.ContactEmail,
+          aadharNumber: formatAadhaar(formData.Adcard),
+        },
+      },
+    ];
   };
-};
 
   // nextpage
   const handleNextClick = () => {

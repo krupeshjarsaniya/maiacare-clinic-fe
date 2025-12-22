@@ -24,7 +24,7 @@ export const login = (data: LoginRequest) => {
 // get profile
 export const getProfile = () => {
   const token = localStorage.getItem("token");
-  return apiClient.get("/profile/get", {
+  return apiClient.get("/clinic-info", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -136,9 +136,7 @@ export const updatePatientPartnerMedicalHistory = (data: object) => {
 
 // Partner Physical Assessment
 // add
-export const addPatientPartnerPhysicalAssessment = (
-  data: object
-) => {
+export const addPatientPartnerPhysicalAssessment = (data: object) => {
   return apiClient.post("/patient/partner/physicalAssessment", data);
 };
 // get
@@ -146,17 +144,13 @@ export const getPatientPartnerPhysicalAssessment = () => {
   return apiClient.get("/patient/partner/physicalAssessment");
 };
 // update
-export const updatePatientPartnerPhysicalAssessment = (
-  data: object
-) => {
+export const updatePatientPartnerPhysicalAssessment = (data: object) => {
   return apiClient.put("/patient/partner/physicalAssessment", data);
 };
 
 // Partner Fertility Assessment
 // add
-export const addPatientPartnerFertilityAssessment = (
-  data: object
-) => {
+export const addPatientPartnerFertilityAssessment = (data: object) => {
   return apiClient.post("/patient/partner/fertilityAssessment", data);
 };
 // get
@@ -164,9 +158,7 @@ export const getPatientPartnerFertilityAssessment = (id: string | number) => {
   return apiClient.get(`/patient/partner/fertilityAssessment/${id}`);
 };
 // update
-export const updatePatientPartnerFertilityAssessment = (   
-  data: object
-) => {
+export const updatePatientPartnerFertilityAssessment = (data: object) => {
   return apiClient.put("/patient/partner/fertilityAssessment", data);
 };
 
@@ -185,13 +177,20 @@ export const editDoctor = (data: object) => {
 export const getDoctor = (id: string | number) => {
   return apiClient.get(`/get-doctor/${id}`);
 };
-     
+//get-doctors-list
+export const getDoctorsList = (data: object) => {
+  return apiClient.get("/get-doctors-list", data);
+};
 // Qualifications....
 // done add
 // add
-export const addQualifications = (data: Qualification[], id: string | number) => {
+export const addQualifications = (
+  data: Qualification[],
+  id: string | number
+) => {
   return apiClient.post(`/doctor/qualifications/${id}`, data);
 };
+// done edit
 // edit
 export const editQualifications = (
   data: Qualification,
@@ -200,8 +199,47 @@ export const editQualifications = (
   return apiClient.put(`/doctor/qualifications/${id}`, data);
 };
 // delete
-export const deleteQualifications = (id: string | number) => {
-  return apiClient.delete(`/doctor/qualifications/${id}`);
+export const deleteQualifications = ({
+  qualificationId,
+  doctorId,
+}: {
+  qualificationId: string;
+  doctorId: string | number;
+}) => {
+  return apiClient.delete(`/doctor/qualifications-delete/${qualificationId}`, {
+    data: { doctorId }, // ✅ correct way
+  });
+};
+
+// manage-leaves
+// done add leave
+// add leave
+export const createleave = (data: object) => {
+  return apiClient.post("/doctor/create-leave", data);
+};
+// get leave
+export const getLeave = (data: object) => {
+  return apiClient.post(`/doctor/get-leaves`, data);
+};
+// delete leave
+// export const deleteLeave = (id: string | number) => {
+//   return apiClient.delete(`/doctor/delete-leave/${id}`);
+// };
+export const deleteLeave = (
+  leaveId: string | number,
+  doctorId: string | number
+) => {
+  return apiClient.delete(`/doctor/delete-leave/${leaveId}`, {
+    data: {
+      doctorId: String(doctorId),
+    },
+  });
+};
+
+
+// update leave
+export const updateLeave = (data: object) => {
+  return apiClient.post("/doctor/update-leave", data);
 };
 
 // ====: Appointments :====

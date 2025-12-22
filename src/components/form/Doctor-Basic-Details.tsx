@@ -19,7 +19,11 @@ import Button from "../ui/Button";
 import toast from "react-hot-toast";
 import DummyPatientImage from "../../assets/images/cliniccard.png";
 import Arrowup from "../../assets/images/ArrowUpRight.png";
-import { ClinicDetails, DoctorDetails, Qualification } from "@/utlis/types/interfaces";
+import {
+  ClinicDetails,
+  DoctorDetails,
+  Qualification,
+} from "@/utlis/types/interfaces";
 import {
   addQualifications,
   deleteQualifications,
@@ -27,6 +31,8 @@ import {
 } from "@/utlis/apis/apiHelper";
 import DeleteConfirmModal from "../ui/DeleteConfirmModal";
 import { AxiosResponse } from "axios";
+import { LuPlus } from "react-icons/lu";
+import { doctorlistingModalData } from "@/utlis/StaticData";
 type DocumentItem = {
   name: string;
   file: string;
@@ -70,9 +76,9 @@ const DoctorBasicDetails = ({
     [key: string]: string;
   }
 
-
   const router = useRouter();
-
+ 
+  
   const initialFormError: FormError = {};
 
   const [formError, setFormError] = useState<FormError>(initialFormError);
@@ -87,12 +93,21 @@ const DoctorBasicDetails = ({
     setShowDeleteModal(false);
     setSelectedId(null);
   };
-  const openDeleteModal = (id: string) => {
+  // const openDeleteModal = (id: string) => {
+  //   setSelectedId(id);
+  //   setShowDeleteModal(true);
+  // };
+  const openDeleteModal = (id?: string) => {
+    if (!id) {
+      toast.error("Invalid qualification ID");
+      return;
+    }
     setSelectedId(id);
     setShowDeleteModal(true);
   };
- const [defaultQualifications, setDefaultQualifications] =
-  useState<QualificationUI[]>([]);
+  const [defaultQualifications, setDefaultQualifications] = useState<
+    QualificationUI[]
+  >([]);
   const [showQualificationModal, setShowQualificationModal] = useState(false);
 
   type FormData = {
@@ -127,24 +142,31 @@ const DoctorBasicDetails = ({
     { ...initialFormData },
   ]);
   const [formErrors, setFormErrors] = useState([
-    { degree: "", fieldofstudy: "", university: "", startYear: "", endYear: "" },
+    {
+      degree: "",
+      fieldofstudy: "",
+      university: "",
+      startYear: "",
+      endYear: "",
+    },
   ]);
-  const operationalHours = [
-    { days: "Mon to Fri", time: "10 AM – 5 PM" },
-    { days: "Sat & Sun", time: "10 AM – 2 PM" },
-  ];
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!selectedId) return;
 
-    try {
-      await deleteQualifications(selectedId);
-      toast.success("Qualification deleted");
-      fetchPatientData?.();
-      closeDeleteModal();
-    } catch {
-      toast.error("Delete failed");
-    }
+    deleteQualifications({qualificationId: selectedId, doctorId: DoctorData._id})
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Qualification deleted");
+
+          closeDeleteModal();
+        } else {
+          console.log("Delete failed");
+        }
+      })
+      .catch((err) => {
+        console.log("Qualification deleting error", err);
+      });
   };
 
   const handleDownload = (url: string, name: string) => {
@@ -155,10 +177,9 @@ const DoctorBasicDetails = ({
     link.click();
     document.body.removeChild(link);
   };
-useEffect(() => {
-  if (DoctorData?.qualifications?.length) {
-    const mapped: QualificationUI[] =
-      DoctorData.qualifications.map((q) => ({
+  useEffect(() => {
+    if (DoctorData?.qualifications?.length) {
+      const mapped: QualificationUI[] = DoctorData.qualifications.map((q) => ({
         _id: q._id?.toString(),
         title: `${q.degree} - ${q.fieldOfStudy}`,
         university: q.university,
@@ -169,10 +190,9 @@ useEffect(() => {
         endYear: q.endYear.toString(),
       }));
 
-    setDefaultQualifications(mapped);
-  }
-}, [DoctorData]);
-
+      setDefaultQualifications(mapped);
+    }
+  }, [DoctorData]);
 
   //================  + add  Modal all data below ============= //
 
@@ -228,7 +248,13 @@ useEffect(() => {
     // ADDD Qualifications validtation msg
     setFormErrors([
       ...formErrors,
-      { degree: "", fieldofstudy: "", university: "", startYear: "", endYear: "" },
+      {
+        degree: "",
+        fieldofstudy: "",
+        university: "",
+        startYear: "",
+        endYear: "",
+      },
     ]);
   };
 
@@ -246,15 +272,6 @@ useEffect(() => {
       endYear: Number(q.endYear),
     })),
   };
-  console.log("Qualifications:-", DoctorData?.qualifications[0]._id);
-
-  // const handleSave = async () => {
-  //   const qualErrors = validateForm1(qualifications);
-  //   setFormErrors(qualErrors);
-
-  //   const hasError = qualErrors.some((err) => Object.values(err).some(Boolean));
-  //   if (hasError) return;
-  // }
 
   const handleSave = async () => {
     // 1️⃣ Validate all rows
@@ -338,41 +355,45 @@ useEffect(() => {
     return errors;
   };
 
- const handleEditSave = () => {
-  const errors = EditValidtation(formData);
-  setFormError(errors);
+  const handleEditSave = async () => {
+    const errors = EditValidtation(formData);
+    setFormError(errors);
 
-  if (Object.keys(errors).length > 0) return;
+    if (Object.keys(errors).length > 0) return;
 
-  if (!selectedQualificationId) {
-    toast.error("Qualification ID not found");
-    return;
-  }
+    if (!selectedQualificationId) {
+      toast.error("Qualification ID not found");
+      return;
+    }
 
-  const payload: Qualification = {
-    degree: formData.degree.trim(),
-    fieldOfStudy: formData.fieldofstudy.trim(),
-    university: formData.university.trim(),
-    startYear: Number(formData.startYear),
-    endYear: Number(formData.endYear),
-  };
+    // ✅ Convert FormData → Qualification
+    const payload: Qualification = {
+      doctorId: doctorIdShow ? String(doctorIdShow) : undefined,
+      degree: formData.degree.trim(),
+      fieldOfStudy: formData.fieldofstudy.trim(), // 👈 mapping fixed
+      university: formData.university.trim(),
+      startYear: Number(formData.startYear),
+      endYear: Number(formData.endYear),
+    };
 
-  editQualifications(payload, selectedQualificationId)
-    .then((response) => {
+    try {
+      const response = await editQualifications(
+        payload,
+        selectedQualificationId
+      );
+
       if (response.status === 200) {
         toast.success("Qualification updated");
         fetchPatientData?.(); // ✅ correct refresh
       }
-    })
-    .catch((err) => {
+    } catch (err) {
       console.error("Qualification edit error", err);
       toast.error("Update failed");
-    });
+    }
 
-  closeQualificationModal();
-  setEditIndex(null);
-};
-
+    closeQualificationModal();
+    setEditIndex(null);
+  };
 
   type Service = {
     id: number;
@@ -554,18 +575,7 @@ useEffect(() => {
                   className="profile-card-boeder profile-card-button bg-transparent"
                   variant="dark"
                 >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 18 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M18 9C18 9.19891 17.921 9.38968 17.7803 9.53033C17.6397 9.67098 17.4489 9.75 17.25 9.75H9.75V17.25C9.75 17.4489 9.67098 17.6397 9.53033 17.7803C9.38968 17.921 9.19891 18 9 18C8.80109 18 8.61032 17.921 8.46967 17.7803C8.32902 17.6397 8.25 17.4489 8.25 17.25V9.75H0.75C0.551088 9.75 0.360322 9.67098 0.21967 9.53033C0.0790178 9.38968 0 9.19891 0 9C0 8.80109 0.0790178 8.61032 0.21967 8.46967C0.360322 8.32902 0.551088 8.25 0.75 8.25H8.25V0.75C8.25 0.551088 8.32902 0.360322 8.46967 0.21967C8.61032 0.0790178 8.80109 0 9 0C9.19891 0 9.38968 0.0790178 9.53033 0.21967C9.67098 0.360322 9.75 0.551088 9.75 0.75V8.25H17.25C17.4489 8.25 17.6397 8.32902 17.7803 8.46967C17.921 8.61032 18 8.80109 18 9Z"
-                      fill="#2B4360"
-                    />
-                  </svg>
+                  <LuPlus color="#2B4360" />
                 </Button>
 
                 <Modal
@@ -634,12 +644,14 @@ useEffect(() => {
                                       value={q.fieldofstudy}
                                       onChange={(e) => {
                                         const updated = [...qualifications];
-                                        updated[index].fieldofstudy = e.target.value;
+                                        updated[index].fieldofstudy =
+                                          e.target.value;
                                         setQualifications(updated);
 
                                         const updatedErrors = [...formErrors];
                                         if (updatedErrors[index]) {
-                                          updatedErrors[index].fieldofstudy = "";
+                                          updatedErrors[index].fieldofstudy =
+                                            "";
                                         }
                                         setFormErrors(updatedErrors);
                                       }}
@@ -743,7 +755,6 @@ useEffect(() => {
                       //     qualifications[qualifications.length - 1]
                       //   )
                       // }
-
                     >
                       + Add Qualification
                     </Button>
@@ -923,7 +934,14 @@ useEffect(() => {
                       <Button
                         className="border p-2 rounded-2 edit-del-btn bg-transparent"
                         variant="outline"
-                        onClick={() => openDeleteModal(item._id!)}
+                        // onClick={() => openDeleteModal(item._id!)}
+                        onClick={() => {
+                          if (!item._id) {
+                            toast.error("Qualification ID not found");
+                            return;
+                          }
+                          openDeleteModal(item._id);
+                        }}
                       >
                         <Image
                           src={Delete}

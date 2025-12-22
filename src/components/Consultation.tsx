@@ -439,36 +439,50 @@ export default function Consultation() {
       },
     },
   ];
-  // useEffect(() => {
+
+  // const fetchallpatient = () => {
+  //   const tableobj = {
+  //     limit: 10,
+  //     page: activePage,
+  //   };
+
   //   setLoading(true); // start loader
-  //   getAll({ page: 1 })
-  //     .then((response) => {
-  //       console.log("response: ", response.data);
-  //       setGetAllPatients(response.data.data);
-  //       setPatientCoute(response.data.total);
-  //     })
-  //     .catch((err) => {
-  //       console.log("error", err?.response);
+  //   setTimeout(() => {
+  //     getAll(tableobj)
+  //       .then((response) => {
+  //         if (response.data.status) {
+  //           // console.log("response: ", response.data);
+  //           setGetAllPatients(response.data.data);
+  //           setPatientTotal(response.data.total);
+  //           setTotalPages(response.data.pages);
+  //         } else {
+  //           console.log("Error...");
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.log("error", err?.response);
 
-  //       const apiError = err?.response?.data;
+  //         const apiError = err?.response?.data;
 
-  //       // extract dynamic error message
-  //       const fieldError = apiError?.details?.errors
-  //         ? Object.values(apiError.details.errors)[0] // pick first field error
-  //         : null;
+  //         // extract dynamic error message
+  //         const fieldError = apiError?.details?.errors
+  //           ? Object.values(apiError.details.errors)[0] // pick first field error
+  //           : null;
 
-  //       const message =
-  //         fieldError ||
-  //         apiError?.details?.message ||
-  //         apiError?.message ||
-  //         "Something went wrong";
+  //         const message =
+  //           fieldError ||
+  //           apiError?.details?.message ||
+  //           apiError?.message ||
+  //           "Something went wrong";
 
-  //       toast.error(message);
-  //     })
-  //     .finally(() => {
-  //       setLoading(false); // stop loader
-  //     });
-  // }, []);
+  //         toast.error(message);
+  //       })
+  //       .finally(() => {
+  //         setLoading(false); // stop loader
+  //       });
+  //   }, 500);
+  // };
+
   const fetchallpatient = () => {
     const tableobj = {
       limit: 10,
