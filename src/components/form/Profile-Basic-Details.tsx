@@ -2,65 +2,59 @@ import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import "../../style/basetable.css";
 
-import arrowup from "../../assets/images/ArrowUpRight.png";
-
 import Pdfimg from "../../assets/images/Pdfimg.png";
-import Download from "../../assets/images/Download.png";
+
 import Image, { StaticImageData } from "next/image";
 
-import photo1 from "../../assets/images/profilephoto1.png";
-import photo2 from "../../assets/images/profilephoto2.png";
-import photo3 from "../../assets/images/profilephoto3.png";
-import photo4 from "../../assets/images/profilephoto4.png";
-import photo5 from "../../assets/images/profilephoto5.png";
 import ContentContainer from "../ui/ContentContainer";
 import img1 from "../../assets/images/Img-1.png";
-import img2 from "../../assets/images/Img-2.png";
-import img3 from "../../assets/images/Img-3.png";
-import img4 from "../../assets/images/Img-4.png";
-import img5 from "../../assets/images/Img-5.png";
 
 import phone from "../../assets/images/Phone.png";
 import email from "../../assets/images/Email.png";
 import stars from "../../assets/images/stars.png";
-// import "../../style/profile.css";
-import reviewimg from "../../assets/images/reviewimg.png";
 
 import verifiedreviewcard from "../../assets/images/verifiedreview.png";
 import reviewcardimg from "../../assets/images/reviewcardimg.png";
-import { clinicData } from "@/utlis/types/interfaces";
-import { profile } from "console";
-// import Button from "../ui/Button";
-import DummyPatientImage from "@/assets/images/Active Patients.png";
+import { clinicData, ProfileOperationalHour } from "@/utlis/types/interfaces";
 
+import DummyPatientImage from "@/assets/images/Active Patients.png";
+import { formatDateTime } from "@/utlis/Helper";
+
+export function formatReviewDate(isoDate: string): string {
+  const date = new Date(isoDate);
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}-${month}-${year}`;
+}
+
+interface OperationalHour {
+  _id: string;
+  day: string;
+  openTime: string;
+  closeTime: string;
+}
 const ProfileBasicDetails = ({
   profileData,
 }: {
   profileData?: clinicData | null;
 }) => {
-  type Service = {
-    id: number;
-    service: string;
-  };
-  interface OperationalHour {
-    _id: string;
-    day: string;
-    openTime: string;
-    closeTime: string;
-  }
-  type Detail_card = {
-    id: number;
-    img: string | StaticImageData;
-    name: string;
-  };
-  console.log("profileData:--", profileData);
+  type ApiReview = NonNullable<clinicData["reviews"]>[number];
 
-  const documents = [
-    { name: "Certificate.pdf", date: "October 20, 2024" },
-    { name: "Aadhar Card.pdf", date: "October 20, 2024" },
-    { name: "License.pdf", date: "October 20, 2024" },
-    { name: "Certificate.pdf", date: "October 20, 2024" },
-  ];
+  const allReviews =
+    profileData?.reviews?.map((review: ApiReview) => ({
+      id: review._id,
+      img: "/assets/images/default-user.png", // ✅ no patient
+      name: review.patient.personalDetails.name,
+      date: formatDateTime(review.date),
+      visiting_for: review.reason,
+      process_first: review.happyWith?.[0] ?? "Treatment",
+      process_second: review.happyWith?.[1] ?? "Doctor friendliness",
+      rating: review.rating,
+      text: review.comment,
+    })) || [];
 
   const handleDownload = (url: string, name: string) => {
     const link = document.createElement("a");
@@ -71,165 +65,12 @@ const ProfileBasicDetails = ({
     document.body.removeChild(link);
   };
 
-  const operationalHours = [
-    { days: "Mon to Fri", time: "10 AM – 5 PM" },
-    { days: "Sat & Sun", time: "10 AM – 2 PM" },
-  ];
+  const [displayedReviewCount, setDisplayedReviewCount] = useState(2);
 
-  //   servicess
-  const services: Service[] = [
-    {
-      id: 1,
-      service: "Fertility Support",
-    },
-    {
-      id: 2,
-      service: "IUI",
-    },
-    {
-      id: 3,
-      service: "IVF",
-    },
-    {
-      id: 4,
-      service: "Egg Freezing",
-    },
-    {
-      id: 5,
-      service: "ICSI",
-    },
-    {
-      id: 6,
-      service: "Sperm Freezing",
-    },
-    {
-      id: 7,
-      service: "Preimplantation Genetic Testing",
-    },
-    {
-      id: 8,
-      service: "Laparoscopy",
-    },
-    {
-      id: 9,
-      service: "Hysteroscopy",
-    },
-    {
-      id: 10,
-      service: "Tubal Surgery",
-    },
-    {
-      id: 11,
-      service: "Endometrial Biposy",
-    },
-    {
-      id: 12,
-      service: "Immunological Testing",
-    },
-  ];
-
-  // contact_person_detail_cards
-  const detail_card: Detail_card[] = [
-    {
-      id: 1,
-      img: img1,
-      name: "Rani Desai",
-    },
-    {
-      id: 2,
-      name: "Ruhi Sharma",
-      img: img2,
-    },
-    {
-      id: 3,
-      name: "Vishwa Desai",
-      img: img3,
-    },
-    {
-      id: 4,
-      name: "Zeel Shah",
-      img: img4,
-    },
-    {
-      id: 5,
-      name: "Reema Desai",
-      img: img5,
-    },
-  ];
-  type Review_data = {
-    id: number;
-    img: string | StaticImageData;
-    name: string;
-
-    date: string | number;
-    visiting_for: string;
-    process_first: string;
-    process_second: string;
-    text: string;
-  };
-  // review_data
-  const review_data: Review_data[] = [
-    {
-      id: 1,
-      img: reviewimg,
-      name: "Samriddhi Singh ",
-
-      date: "December 30, 2024",
-      visiting_for: "Visited For High-Risk Pregnancy Care",
-      process_first: "Fertility Support",
-      process_second: "IVF",
-      text: `Dr. Kort practices the exact opposite of a "one size fits all" approach to medicine. He took my fears seriously - primarily about the hormone injections - and worked with me to create a schedule that I was comfortable with, but that also got great results. He's one of the kindest and most knowledgeable doctors I've ever had.`,
-    },
-    {
-      id: 2,
-      img: reviewimg,
-      name: "Samriddhi Singh ",
-
-      date: "December 30, 2024",
-      visiting_for: "Visited For High-Risk Pregnancy Care",
-      process_first: "Fertility Support",
-      process_second: "Egg Freezing",
-      text: `Dr. Kort practices the exact opposite of a "one size fits all" approach to medicine. He took my fears seriously - primarily about the hormone injections - and worked with me to create a schedule that I was comfortable with, but that also got great results. He's one of the kindest and most knowledgeable doctors I've ever had.`,
-    },
-    {
-      id: 3,
-      img: reviewimg,
-      name: "Samriddhi Singh ",
-
-      date: "December 30, 2024",
-      visiting_for: "Visited For High-Risk Pregnancy Care",
-      process_first: "Fertility Support",
-      process_second: "Egg Freezing",
-      text: `Dr. Kort practices the exact opposite of a "one size fits all" approach to medicine. He took my fears seriously - primarily about the hormone injections - and worked with me to create a schedule that I was comfortable with, but that also got great results. He's one of the kindest and most knowledgeable doctors I've ever had.`,
-    },
-    {
-      id: 4,
-      img: reviewimg,
-      name: "Samriddhi Singh ",
-
-      date: "December 30, 2024",
-      visiting_for: "Visited For High-Risk Pregnancy Care",
-      process_first: "Fertility Support",
-      process_second: "Egg Freezing",
-      text: `Dr. Kort practices the exact opposite of a "one size fits all" approach to medicine. He took my fears seriously - primarily about the hormone injections - and worked with me to create a schedule that I was comfortable with, but that also got great results. He's one of the kindest and most knowledgeable doctors I've ever had.`,
-    },
-    {
-      id: 5,
-      img: reviewimg,
-      name: "Samriddhi Singh ",
-
-      date: "December 30, 2024",
-      visiting_for: "Visited For High-Risk Pregnancy Care",
-      process_first: "Fertility Support",
-      process_second: "Egg Freezing",
-      text: `Dr. Kort practices the exact opposite of a "one size fits all" approach to medicine. He took my fears seriously - primarily about the hormone injections - and worked with me to create a schedule that I was comfortable with, but that also got great results. He's one of the kindest and most knowledgeable doctors I've ever had.`,
-    },
-  ];
-  const [allReviews, setAllReviews] = useState(review_data);
-  const [displayedReviewCount, setDisplayedReviewCount] = useState(2); // Initial reviews to show
   const reviewsToShow = allReviews.slice(0, displayedReviewCount);
+
   const handleShowMore = () => {
-    setDisplayedReviewCount((prevCount) => prevCount + 4); // Add 5 more reviews
+    setDisplayedReviewCount(allReviews.length);
   };
   return (
     // <Container fluid className="mt-3">
@@ -257,7 +98,7 @@ const ProfileBasicDetails = ({
                 <div>
                   <div className="profiledetails_heading">Availability</div>
                   {profileData?.operationalHours?.map(
-                    (item: OperationalHour) => (
+                    (item: ProfileOperationalHour) => (
                       <p key={item._id} className="mb-0">
                         <span
                           className="maiacare-radio-label me-1"
@@ -320,24 +161,16 @@ const ProfileBasicDetails = ({
                   profileData.photos.map((photo, idx) =>
                     photo?.url ? (
                       <img
-                        src={photo.src || DummyPatientImage.src}
-                        alt="Profile"
+                        key={
+                          photo._id?.toString() ?? photo.url ?? `photo-${idx}`
+                        }
+                        src={photo.src || photo.url}
+                        alt="Clinic Photo"
                         width={100}
                         height={100}
-                        className="rounded"
-                        onError={({ currentTarget }) =>
-                          (currentTarget.src = DummyPatientImage.src)
-                        }
+                        // className=" profile-img"
                       />
-                    ) : // <Image
-                    //   key={idx}
-                    //   src={photo}
-                    //   alt="Clinic Photo"
-                    //   width={100}
-                    //   height={100}
-                    //   className="rounded"
-                    // />
-                    null
+                    ) : null
                   )
                 ) : (
                   <div>No photos uploaded</div>
@@ -435,7 +268,7 @@ const ProfileBasicDetails = ({
           <div>
             <h5 className="mb-4 profile-card-main-titile">Reviews</h5>
             <div className="fs-2 fw-bold d-flex align-items-center gap-2 mb-4">
-              <span>4.5</span>
+              <span>{profileData?.averageRating}</span>
               <Image
                 src={stars}
                 alt="stars"
@@ -445,62 +278,68 @@ const ProfileBasicDetails = ({
                 className=" fw-normal"
                 style={{ fontSize: "14px", color: "rgba(133, 139, 149, 1)" }}
               >
-                (653 reviews)
+                ({profileData?.reviewCount} reviews)
               </span>
             </div>
             {/* review text */}
+
             <div>
               {reviewsToShow.map((item, idx) => (
-                <div key={idx}>
+                <div key={item.id}>
+                  {/* Header */}
                   <div className="d-flex align-items-center justify-content-between">
                     <div className="d-flex gap-2 align-items-center">
                       <Image
                         src={item.img}
                         alt="image"
-                        style={{ width: "32px", height: "auto" }}
+                        width={32}
+                        height={32}
                       />
-                      <span className="fw-semibold ">{item.name}</span>
+                      <span className="fw-semibold">{item.name}</span>
                       <Image
                         src={verifiedreviewcard}
-                        alt="verifiedreviewcard"
-                        style={{ width: "22px", height: "auto" }}
+                        alt="verified"
+                        width={22}
+                        height={22}
                       />
                     </div>
                     <div
-                      style={{
-                        color: "rgba(133, 139, 149, 1)",
-                        fontSize: "13px",
-                      }}
+                      style={{ color: "rgba(133,139,149,1)", fontSize: "13px" }}
                     >
-                      9 months ago
+                      {item.date}
                     </div>
                   </div>
-                  <div>
+
+                  {/* Rating */}
+                  <div className="mt-1">
                     <Image
                       src={reviewcardimg}
-                      alt="star"
-                      style={{ width: "98px", height: "auto" }}
+                      alt="rating"
+                      width={98}
+                      height={18}
                     />
                     <span
                       className="ms-2"
-                      style={{
-                        color: "rgba(133, 139, 149, 1)",
-                        fontSize: "14px",
-                      }}
+                      style={{ color: "rgba(133,139,149,1)", fontSize: "14px" }}
                     >
+                      {/* {item.rating} */}
                       {item.date}
                     </span>
                   </div>
+
+                  {/* Visiting for */}
                   <div className="my-2">
                     <span
-                      style={{ color: "rgba(62, 74, 87, 1)", fontSize: "15px" }}
+                      style={{ color: "rgba(62,74,87,1)", fontSize: "15px" }}
                     >
-                      {item.visiting_for}
+                      Visiting for: {item.visiting_for}
                     </span>
                   </div>
+
+                  {/* Happy with */}
                   <div className="my-3">
                     <span
-                      style={{ color: "rgba(62, 74, 87, 1)", fontSize: "15px" }}
+                      style={{ color: "rgba(62,74,87,1)", fontSize: "15px" }}
                     >
                       Happy with:
                     </span>
@@ -511,24 +350,29 @@ const ProfileBasicDetails = ({
                       {item.process_second}
                     </span>
                   </div>
+
+                  {/* Comment */}
                   <div
                     className="w-75 mt-3"
-                    style={{ color: "rgba(62, 74, 87, 1)", fontSize: "13px" }}
+                    style={{ color: "rgba(62,74,87,1)", fontSize: "13px" }}
                   >
                     {item.text}
                   </div>
+
+                  {/* Divider */}
                   {idx !== reviewsToShow.length - 1 && (
                     <div
-                      style={{
-                        background: "rgba(221, 225, 232, 1)",
-                        padding: "1px",
-                      }}
                       className="my-4"
-                    ></div>
+                      style={{
+                        background: "rgba(221,225,232,1)",
+                        height: "1px",
+                      }}
+                    />
                   )}
                 </div>
               ))}
-              {/* shiw more & show less */}
+
+              {/* Show more / less */}
               {displayedReviewCount < allReviews.length ? (
                 <div className="allreviews" onClick={handleShowMore}>
                   Show All Reviews ({allReviews.length - displayedReviewCount})

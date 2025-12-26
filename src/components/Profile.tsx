@@ -20,7 +20,7 @@ import { AppDispatch } from "@/utlis/redux/store";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { getProfile } from "@/utlis/apis/apiHelper";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { clinicData } from "@/utlis/types/interfaces";
 
 const Profile: React.FC = () => {
@@ -51,15 +51,14 @@ const Profile: React.FC = () => {
         })
         .catch((err: unknown) => {
           console.error("API call failed", err);
-
-          if (err && typeof err === "object" && "response" in err) {
-            const error = err as any;
-            toast.error(
-              error.response?.data?.message || "Something went wrong!"
-            );
+          if (axios.isAxiosError(err)) {
+            toast.error(err.response?.data?.message || "Something went wrong!");
+          } else {
+            toast.error("Something went wrong!");
           }
         });
     };
+    console.log("clinicData?.clinicLogo", clinicData);
 
     useEffect(() => {
       fetchProfile();
@@ -75,13 +74,20 @@ const Profile: React.FC = () => {
               className="d-flex flex-md-row flex-column align-items-center"
             >
               <div className="col-4 col-md-3 col-lg-3  col-xl-2 position-relative">
-                <img
+                {/* <img
                   src={clinicData?.clinicLogo || cliniclogo.src}
                   alt="Profile"
                   className="profile-img"
                   onError={({ currentTarget }) =>
                     (currentTarget.src = cliniclogo.src)
                   }
+                /> */}
+                <img
+                  src={clinicData?.clinicLogo}
+                  alt={clinicData?.clinicLogo}
+                  // width={58}
+                  // height={58}
+                  className="rounded-circle profile-img"
                 />
                 {clinicData?.verified === true && (
                   <Image
@@ -105,7 +111,7 @@ const Profile: React.FC = () => {
                     <div className="detail-row profile-sub-title">
                       <span className="d-flex align-items-center gap-2">
                         <Image src={star} alt="star" width={17} height={16} />
-                        {clinicData?.__v}
+                        {clinicData?.averageRating}
                       </span>
                       <span className="d-flex align-items-center gap-1">
                         <Image src={Bed} alt="Bed" width={18} height={18} />

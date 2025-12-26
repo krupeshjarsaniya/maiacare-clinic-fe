@@ -47,7 +47,7 @@ export interface DoctorQualification {
   endYear: number | string;
 }
 export interface OperationalHour {
-  _id: string;
+  _id?: string;
   day: string;
   openTime: string;
   closeTime: string;

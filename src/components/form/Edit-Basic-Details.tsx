@@ -23,12 +23,22 @@ import Download from "../../assets/images/Uploadimg.png";
 import { useDoctorData } from "@/utlis/hooks/DoctorData";
 import AddDoctor from "../AddDoctor";
 import { clinicProfileData } from "@/utlis/StaticData";
+import { clinicData } from "@/utlis/types/interfaces";
 
-export default function Editbasicdetails({ onNext }: { onNext: () => void }) {
+export default function Editbasicdetails({
+  onNext,
+  onChange,
+  data,
+}: {
+  data: clinicData | null;
+  onChange: (data: Partial<clinicData>) => void;
+  onNext: () => void;
+}) {
   // Personal Details
   interface FormError {
     [key: string]: string;
   }
+  console.log("clinicBasic:", data);
 
   const initialFormError: FormError = {};
   const [showModal, setShowModal] = useState(false);
@@ -101,16 +111,52 @@ export default function Editbasicdetails({ onNext }: { onNext: () => void }) {
     return errors;
   };
   // nextpage
+  // const handleNextClick = () => {
+  //   const errors = validateForm(formData);
+  //   setFormError(errors);
+  //   if (Object.keys(errors).length === 0) {
+  //     onNext();
+  //   } else {
+  //     console.log("Form has errors:", errors);
+  //   }
+  // };
   const handleNextClick = () => {
     const errors = validateForm(formData);
     setFormError(errors);
-    if (Object.keys(errors).length === 0) {
-      onNext();
-    } else {
-      console.log("Form has errors:", errors);
-    }
-  };
 
+    if (Object.keys(errors).length !== 0) {
+      console.log("Form has errors:", errors);
+      return;
+    }
+
+    // ✅ Map form data → clinicData structure
+    const updatedClinicData: Partial<clinicData> = {
+      clinicName: formData.Name,
+      email: formData.Email,
+      contactNumber: formData.Contact,
+      address: formData.Address,
+      city: formData.City,
+      state: formData.State,
+      pincode: formData.Pincode,
+      mapLink: formData.MapLink,
+      beds: Number(formData.NumberofBeds),
+      doctorOnboard: Number(formData.doctorsonboard),
+
+      clinicLogo: selectedImage || "",
+
+      servicesOffered: selectedServices.map((s) => s.service),
+
+      photos: uploadedImages.map((url) => ({
+        url,
+        logo: false,
+      })),
+    };
+    console.log("editedBasicdat:-", updatedClinicData);
+
+    onChange(updatedClinicData);
+
+    onNext();
+  };
   //********* EDIT PROFILE MODAL *********//
   const fileInputRef = useRef<HTMLInputElement>(null); // file input programmatically open
   const cameraInputRef = useRef<HTMLInputElement>(null); // camera image select
@@ -247,30 +293,43 @@ export default function Editbasicdetails({ onNext }: { onNext: () => void }) {
 
   // clinic data
   useEffect(() => {
-    if (clinicprofie) {
-      setFormData({
-        Name: clinicprofie.name || "",
-        MapLink: clinicprofie.mapLink || "",
-        City: clinicprofie.city || "",
-        State: clinicprofie.state || "",
-        NumberofBeds: clinicprofie.numberOfBeds || "",
-        doctorsonboard: clinicprofie.doctorsOnboard || "",
-        Pincode: clinicprofie.pincode || "",
-        Address: clinicprofie.address || "",
-        Contact: clinicprofie.contact || "",
-        SecondaryNumber: clinicprofie.secondaryNumber || "",
-        Email: clinicprofie.email || "",
-      });
-      if (clinicprofie.image) {
-        const imageSrc =
-          typeof clinicprofie.image === "string"
-            ? clinicprofie.image
-            : clinicprofie.image.src;
-        setSelectedImage(imageSrc);
-      }
-    }
-  }, [clinicprofie]);
+    if (!data) return;
 
+    setFormData({
+      Name: data.clinicName || "",
+      MapLink: data.mapLink || "",
+      City: data.city || "",
+      State: data.state || "",
+      NumberofBeds: data.beds?.toString() || "",
+      doctorsonboard: data.doctorOnboard?.toString() || "",
+      Pincode: data.pincode || "",
+      Address: data.address || "",
+      Contact: data.contactNumber?.replace(/\D/g, "") || "",
+      SecondaryNumber: data.contactNumber?.replace(/\D/g, "") || "",
+      Email: data.email || "",
+    });
+
+    // Clinic logo
+    if (data.clinicLogo) {
+      setSelectedImage(data.clinicLogo);
+    }
+  }, [data]);
+  useEffect(() => {
+    if (!data?.servicesOffered) return;
+
+    const mappedServices = data.servicesOffered.map((service, index) => ({
+      id: index + 1,
+      service,
+    }));
+
+    setSelectedServices(mappedServices);
+  }, [data]);
+  // useEffect(() => {
+  //   if (!data?.photos) return;
+
+  //   const photoUrls = data.photos.map((p: any) => p.url);
+  //   setUploadedImages(photoUrls);
+  // }, [data]);
   //  servicess
   type Service = {
     id: number;
@@ -350,7 +409,9 @@ export default function Editbasicdetails({ onNext }: { onNext: () => void }) {
               <div className="profile-wrapper">
                 {/* Profile image */}
                 <Image
-                  src={selectedImage ? selectedImage : Simpleeditpro}
+                  src={Simpleeditpro}
+                  // src={selectedImage ? selectedImage : Simpleeditpro}
+
                   alt="Profile"
                   className="profile-image"
                   width={160}
@@ -812,9 +873,8 @@ export default function Editbasicdetails({ onNext }: { onNext: () => void }) {
             <Image src={photo3} alt="3" width={100} height={100} />
             <Image src={photo4} alt="4" width={100} height={100} />
             <Image src={photo1} alt="5" width={100} height={100} />
-            {/* Uploaded Images */}
+
             <div className="d-flex gap-3 flex-wrap">
-              {/* Existing Images */}
               {uploadedImages.map((img, idx) => (
                 <Image
                   key={`uploaded-${idx}`}
@@ -825,8 +885,6 @@ export default function Editbasicdetails({ onNext }: { onNext: () => void }) {
                   style={{ objectFit: "cover", borderRadius: "7px" }}
                 />
               ))}
-
-              {/* Add More Button */}
               <div
                 className="text-center uploadbtn"
                 onClick={handleUploadOpenModal}

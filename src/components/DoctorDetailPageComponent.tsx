@@ -12,13 +12,14 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ContentContainer from "./ui/ContentContainer";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import power from "../assets/images/Power.png"
+import power from "../assets/images/Power.png";
 import { DoctorDetails } from "@/utlis/types/interfaces";
 import DummyPatientImage from "@/assets/images/Active Patients.png";
 import {
   ActivateDeactivateProfile,
   SuccessModalActivateDeactivate,
 } from "./form/ActivateDeactivateModal";
+import { formatDateTime } from "@/utlis/Helper";
 
 const DoctorDetailPageComponent = ({
   DoctorData,
@@ -77,17 +78,14 @@ const DoctorDetailPageComponent = ({
                       width={16}
                       height={15}
                     />
-                    {doctor?.memberSince}
-                    <span className="me-2">
-                      {doctor?.memberSince ? "years" : "year"}{" "}
-                    </span>
+                    {formatDateTime(doctor?.memberSince || "")}
                   </span>
                 </div>
 
                 <div className="profile-sub-title">
                   <span className="d-flex align-items-center gap-1">
                     <Image src={Bithdate} alt="dob" width={18} height={18} />
-                    {doctor?.dob}
+                    {formatDateTime(doctor?.dob || "")}
                   </span>
                   <span className="d-flex align-items-center gap-1">
                     <Image src={Gender} alt="gender" width={18} height={18} />

@@ -37,6 +37,7 @@ import {
   addPatientPartnerPhysicalAssessment,
   updatePatientPartnerFertilityAssessment,
 } from "@/utlis/apis/apiHelper";
+import { formatDateTime } from "@/utlis/Helper";
 // import { Skeleton } from "@mui/material";
 interface Allergy {
   id?: number; // depending on your actual id type
@@ -1123,7 +1124,8 @@ export default function PartnerDetail({
                   >
                     <Accordion.Header className="phisical-assessment-accordion-title-showData">
                       <div className="phisical-assessment-accordion-title-showData">
-                        {item.createdAt}
+                        {/* {item.createdAt} */}
+                        {formatDateTime(item.createdAt || "")}
                       </div>
                     </Accordion.Header>
                     <Accordion.Body className="pt-0">

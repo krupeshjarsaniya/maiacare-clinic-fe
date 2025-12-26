@@ -133,11 +133,16 @@ const AddDoctor = () => {
     setDoctors((prev) => [...prev, newDoctor]);
     setCurrentStep("list"); // go to list page after add
   };
+   const handleTabClick = (key: string) => {
+    if (key === activeTab) {
+      return;
+    }
+  };
   return (
     <div>
       <CustomTabs
         activeKey={activeTab}
-        setActiveKey={setActiveTab}
+        setActiveKey={handleTabClick}
         tabOptions={tabOptions}
       />
       {activeTab === "basic" && (

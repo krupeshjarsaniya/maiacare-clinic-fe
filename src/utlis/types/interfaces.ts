@@ -651,7 +651,7 @@ export interface GroupOperationalHours {
   weekendClose: string;
 }
 export interface OperationalHour {
-  _id: string;
+  _id?: string;
   day: string;
   openTime: string;
   closeTime: string;
@@ -858,10 +858,21 @@ export interface CancelAppointment {
   appointmentId: string;
   reason: string;
 }
-
+export interface ClinicPhoto {
+  _id?: string;
+  src?: string;
+  url: string;
+  logo: boolean;
+}
+export interface ClinicDocument {
+  date?: string;
+  url: string;
+  type?: string;
+  name?: string;
+}
 export interface clinicData {
   _id: string;
-
+  is_24_7:boolean;
   clinicLogo: string;
   clinicName: string;
   clinicType: string;
@@ -878,18 +889,18 @@ export interface clinicData {
   mapLink: string;
 
   useCustomHours: boolean;
-  operationalHours: OperationalHour[];
+  operationalHours: ProfileOperationalHour[];
 
   contactPerson: ContactPerson;
 
-  documents: any[]; // Update when structure is known
+  documents?: ClinicDocument[];
 
   reviews: Review[];
   reviewCount: number;
   averageRating: number;
 
-  photos: any[];
-  servicesOffered: any[];
+  photos: ClinicPhoto[];
+  servicesOffered: string[];
 
   emergencyDoctorsAvailable_24_7: boolean;
   doctorOnboard: number;
@@ -907,18 +918,29 @@ export interface ContactPerson {
   aadharNumber: string;
 }
 
-export interface OperationalHour {
-  _id: string;
+export interface ProfileOperationalHour {
+  _id?: string;
   day: string;
   openTime: string;
   closeTime: string;
 }
-
+export interface PatientPersonalDetails {
+  name: string;
+  profileImage: string;
+}
+export interface Patient {
+  personalDetails: PatientPersonalDetails;
+}
 export interface Review {
   _id: string;
   rating: number;
   reason: string;
   comment: string;
+  date: string; // ISO string
+  happyWith: string[];
+  patient: Patient;
+
+  // optional backend fields
   createdAt?: string;
   updatedAt?: string;
 }

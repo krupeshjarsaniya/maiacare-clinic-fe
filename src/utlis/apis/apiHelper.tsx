@@ -22,6 +22,7 @@ export const login = (data: LoginRequest) => {
 };
 
 // ====: Profile :====
+// done get
 // get profile
 export const getProfile = () => {
   const token = localStorage.getItem("token");
@@ -30,7 +31,7 @@ export const getProfile = () => {
 
 // update profile
 export const updateProfile = (data: object) => {
-  return apiClient.put("/profile/update", data);
+  return apiClient.put("/clinic-update", data);
 };
 // ====: Patient :====
 // add Patient //done

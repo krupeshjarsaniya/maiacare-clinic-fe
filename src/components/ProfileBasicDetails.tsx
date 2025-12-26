@@ -135,8 +135,6 @@ const ProfileBasicDetail = ({
 
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  // const [editingMedicalHistory, setEditingMedicalHistory] =
-  //   useState<MedicalHistoryType | null>(null);
   const [editingMedicalHistory, setEditingMedicalHistory] =
     useState<MedicalHistoryShow | null>(null);
 
@@ -1096,10 +1094,10 @@ const ProfileBasicDetail = ({
                             Last Period Date
                           </span>
                           <span className="accordion-title-detail">
-                            {
+                            {formatDateTime(
                               modalFormFertilityData?.menstrualCycle
-                                ?.lastPeriodDate
-                            }
+                                ?.lastPeriodDate || ""
+                            )}
                           </span>
                         </div>
                       </Col>

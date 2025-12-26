@@ -42,6 +42,7 @@ import {
 import toast from "react-hot-toast";
 import { getAll } from "@/utlis/apis/apiHelper";
 import { GetAllPatient } from "@/utlis/types/interfaces";
+import DeleteConfirmModal from "./ui/DeleteConfirmModal";
 export interface ConsultationInfo {
   id: number; // <-- ADD ID
   name: string;
@@ -100,10 +101,37 @@ export default function Consultation() {
   const [showActivedeactive, setActivedeactive] = useState(false);
   const [showactivesuccess, setShowactivesuccess] = useState(false);
   const [patientCoute, setPatientCoute] = useState<number>(0);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePatientId, setDeletePatientId] = useState<string | null>(null);
 
   const [getAllPatients, setGetAllPatients] = useState<GetAllPatient[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
+  const handleOpenDeleteModal = (id: string) => {
+    setDeletePatientId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeletePatientId(null);
+  };
+
+  const handleDeletePatient = async () => {
+    if (!deletePatientId) return;
+
+    try {
+      // 🔥 Call your delete API here
+      // await deletePatient(deletePatientId);
+
+      toast.success("Patient deleted successfully");
+      fetchallpatient(); // refresh table
+    } catch (error) {
+      toast.error("Failed to delete patient");
+    } finally {
+      handleCloseDeleteModal();
+    }
+  };
 
   const handleAddPatient = () => {
     router.push("/addpatient"); // Route to your Add Patient screen
@@ -391,7 +419,7 @@ export default function Consultation() {
               <Button
                 className="profile-card-boeder delete_btn rounded-2 patient-profile-dot "
                 variant="dark"
-                // onClick={() => handleDelete(id)}
+                onClick={() => handleOpenDeleteModal(id)}
               >
                 <Image src={Delete} alt="Delete" width={20} height={20} />
               </Button>
@@ -578,6 +606,15 @@ export default function Consultation() {
       <SuccessModalReassignAppointment
         showSuccessModalBook={showSuccessModalBook}
         setShowSuccessModalBook={setShowSuccessModalBook}
+      />
+
+      {/* delete modal */}
+      <DeleteConfirmModal
+        show={showDeleteModal}
+        onClose={handleCloseDeleteModal}
+        onDelete={handleDeletePatient}
+        title="Delete"
+        message="Are you sure you want to delete this patient? This action cannot be undone."
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import { setHeaderData } from "../utlis/redux/slices/headerSlice";
 import { AppDispatch } from "../utlis/redux/store";
-import { AppointmentData, tableResponse } from "../utlis/StaticData";
+import { AppointmentData } from "../utlis/StaticData";
 import { Patient } from "../utlis/types/interfaces";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChangeEvent, useEffect, useState } from "react";

@@ -9,6 +9,7 @@ import CustomTabs from "../CustomTabs";
 import { PersonalDetails } from "@/utlis/types/interfaces";
 import profile from "@/assets/images/patient_profile.png";
 import { useRouter } from "next/navigation";
+import { formatDateTime } from "@/utlis/Helper";
 type ProfileProps = {
   profileData?: PersonalDetails | null;
   patientIdShow?: string;
@@ -98,8 +99,8 @@ export const ProfileCard: React.FC<ProfileProps> = ({
                     fill="#8A8D93"
                   />
                 </svg>
-
-                {profileData?.dob}
+                {formatDateTime(profileData?.dob || "")}
+                {/* {profileData?.dob} */}
               </div>
               <div className="doctor-profile-subheading d-flex gap-1 align-items-center">
                 <svg

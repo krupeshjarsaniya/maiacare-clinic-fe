@@ -17,8 +17,8 @@ export const getTokenFromCookie = (): string | undefined => {
  */
 export const setTokenInCookie = (token: string) => {
   cookies.set("token", token, {
-    path: "/",        // accessible throughout the site
-    sameSite: "lax",  // ✅ lowercase for TypeScript
+    path: "/", // accessible throughout the site
+    sameSite: "lax", // ✅ lowercase for TypeScript
     // secure: true,   // enable in HTTPS
     maxAge: 7 * 24 * 60 * 60, // optional - 7 days
   });
@@ -60,20 +60,20 @@ export function formatDateTime(isoDate: string | Date): string {
   if (!isoDate) return "";
 
   const date = typeof isoDate === "string" ? new Date(isoDate) : isoDate;
-  
-  if (isNaN(date.getTime())) return ""; // invalid date safeguard
-  
+  if (isNaN(date.getTime())) return "";
+
+  const weekday = date.toLocaleDateString("en-US", { weekday: "short" });
   const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const month = date.toLocaleDateString("en-US", { month: "short" });
   const year = date.getFullYear();
 
-  return `${day}-${month}-${year}`;
+  return `${weekday}, ${day} ${month} ${year}`;
 }
 export function parseDateDDMMYYYY(dateStr: string): Date | null {
   if (!dateStr) return null;
 
   // Accept both "-" or "/" as separators
-  const parts = dateStr.includes('-') ? dateStr.split('-') : dateStr.split('/');
+  const parts = dateStr.includes("-") ? dateStr.split("-") : dateStr.split("/");
 
   if (parts.length !== 3) return null;
 

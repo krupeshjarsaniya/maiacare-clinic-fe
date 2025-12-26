@@ -7,13 +7,18 @@ import { PhoneNumberInput } from "../ui/PhoneNumberInput";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { clinicConatctData } from "@/utlis/StaticData";
+import { ContactPerson } from "@/utlis/types/interfaces";
 
 export default function EditContactDetails({
   onNext,
   onPrevious,
+  data,
+  onChange,
 }: {
   onNext: () => void;
   onPrevious: () => void;
+  data: ContactPerson | null;
+  onChange: (data: ContactPerson) => void;
 }) {
   const router = useRouter();
 
@@ -71,29 +76,46 @@ export default function EditContactDetails({
     }
     return errors;
   };
+  // const handleSaveChange = () => {
+  //   const errors = validateForm(formData);
+  //   setFormError(errors);
+
+  //   if (Object.keys(errors).length === 0) {
+  //     console.log(" Form is valid, go to next step");
+  //     router.push("/profile");
+  //   } else {
+  //     console.log(" Form has errors:", errors);
+  //   }
+  // };
+  // contact data
+  // const clinic = clinicConatctData;
   const handleSaveChange = () => {
     const errors = validateForm(formData);
     setFormError(errors);
 
     if (Object.keys(errors).length === 0) {
-      console.log(" Form is valid, go to next step");
-      router.push("/profile");
+      // Call parent's onNext (which triggers API call and navigation)
+      onChange({
+        name: formData.Name,
+        contactNumber: formData.Contact,
+        email: formData.Email,
+        aadharNumber: formData.Adcard,
+      });
+      onNext();
     } else {
-      console.log(" Form has errors:", errors);
+      console.log("Form has errors:", errors);
     }
   };
-  // contact data
-  const clinic = clinicConatctData;
   useEffect(() => {
-    if (clinic) {
+    if (data) {
       setFormData({
-        Name: clinic.name || "",
-        Contact: clinic.contact || "",
-        Adcard: clinic.adhaar || "",
-        Email: clinic.email || "",
+        Name: data.name || "",
+        Contact: data.contactNumber || "",
+        Adcard: data.aadharNumber || "",
+        Email: data.email || "",
       });
     }
-  }, [clinic]);
+  }, [data]);
 
   return (
     <div>
