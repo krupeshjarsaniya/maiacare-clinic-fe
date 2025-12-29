@@ -36,10 +36,12 @@ import {
   ActivateDeactivateProfile,
   SuccessModalActivateDeactivate,
 } from "./form/ActivateDeactivateModal";
-export type ConsultationStatus = "Active" | "Inactive" | "On Leave";
+import { getDoctorsList } from "@/utlis/apis/apiHelper";
+import { formatDateTime, formatDate } from "@/utlis/Helper";
+export type ConsultationStatus = "Active" | "Deactive" | "On Leave";
 
 export type Doctor = {
-  id: number;
+  id?: string;
   name: string;
   email: string;
   mobile: string;
@@ -64,67 +66,112 @@ export default function Doctor() {
   const [showActivateDeactivateModal, setShowActivateDeactivateModal] =
     useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedDoctorId, setSelectedDoctorId] = useState<string | null>(null);
 
-  const doctorIdShow = "6943a7e6a55e888c3f9fa264";
-  useEffect(() => {
-    let data = DoctorData;
+  const [page, setPage] = useState(1);
+  const limit = 10;
+  // const doctorIdShow = "6943a7e6a55e888c3f9fa264";
+  // useEffect(() => {
+  //   let data = DoctorData;
 
-    // 🔹 filter by status (query param)
-    if (filter === "active") {
-      data = data.filter((item) => item.status === "Active");
-    } else if (filter === "cancelled") {
-      data = data.filter((item) => item.status === "Inactive");
-    }
+  //   // 🔹 filter by status (query param)
+  //   if (filter === "active") {
+  //     data = data.filter((item) => item.status === "Active");
+  //   } else if (filter === "cancelled") {
+  //     data = data.filter((item) => item.status === "Inactive");
+  //   }
 
-    // 🔹 filter by search
-    if (searchQuery.trim() !== "") {
-      const q = searchQuery.toLowerCase();
-      data = data.filter(
-        (item) =>
-          item.name.toLowerCase().includes(q) ||
-          item.email.toLowerCase().includes(q) ||
-          item.mobile.toLowerCase().includes(q)
-      );
-    }
+  //   // 🔹 filter by search
+  //   if (searchQuery.trim() !== "") {
+  //     const q = searchQuery.toLowerCase();
+  //     data = data.filter(
+  //       (item) =>
+  //         item.name.toLowerCase().includes(q) ||
+  //         item.email.toLowerCase().includes(q) ||
+  //         item.mobile.toLowerCase().includes(q)
+  //     );
+  //   }
 
-    // 🔹 filter by time
-    if (timeFilter !== "All Time") {
-      const now = new Date();
+  //   // 🔹 filter by time
+  //   if (timeFilter !== "All Time") {
+  //     const now = new Date();
 
-      data = data.filter((item) => {
-        if (!item.date) return false; // skip if no date
-        const itemDate = new Date(item.date);
-        if (isNaN(itemDate.getTime())) return false;
+  //     data = data.filter((item) => {
+  //       if (!item.date) return false; // skip if no date
+  //       const itemDate = new Date(item.date);
+  //       if (isNaN(itemDate.getTime())) return false;
 
-        if (timeFilter === "Today") {
-          return itemDate.toDateString() === now.toDateString();
-        }
+  //       if (timeFilter === "Today") {
+  //         return itemDate.toDateString() === now.toDateString();
+  //       }
 
-        if (timeFilter === "This Week") {
-          const weekStart = new Date(now);
-          weekStart.setDate(now.getDate() - now.getDay()); // Sunday
-          weekStart.setHours(0, 0, 0, 0);
+  //       if (timeFilter === "This Week") {
+  //         const weekStart = new Date(now);
+  //         weekStart.setDate(now.getDate() - now.getDay()); // Sunday
+  //         weekStart.setHours(0, 0, 0, 0);
 
-          const weekEnd = new Date(weekStart);
-          weekEnd.setDate(weekStart.getDate() + 7); // Next Sunday
+  //         const weekEnd = new Date(weekStart);
+  //         weekEnd.setDate(weekStart.getDate() + 7); // Next Sunday
 
-          return itemDate >= weekStart && itemDate < weekEnd;
-        }
+  //         return itemDate >= weekStart && itemDate < weekEnd;
+  //       }
 
-        if (timeFilter === "This Month") {
-          return (
-            itemDate.getMonth() === now.getMonth() &&
-            itemDate.getFullYear() === now.getFullYear()
-          );
-        }
+  //       if (timeFilter === "This Month") {
+  //         return (
+  //           itemDate.getMonth() === now.getMonth() &&
+  //           itemDate.getFullYear() === now.getFullYear()
+  //         );
+  //       }
 
-        return true;
+  //       return true;
+  //     });
+  //   }
+
+  //   setFilteredData(data);
+  // }, [filter, searchQuery, timeFilter]);
+  const fetchDoctors = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getDoctorsList({
+        limit,
+        page,
+        search: searchQuery || undefined,
+        status:
+          filter === "active"
+            ? "Active"
+            : filter === "cancelled"
+            ? "Deactive"
+            : undefined,
       });
+
+      const apiDoctors = response.data.data.doctors;
+
+      const mappedDoctors: Doctor[] = apiDoctors.map((doc: any) => ({
+        id: doc._id,
+        name: doc.name,
+        email: doc.email,
+        mobile: doc.contactNumber,
+        image: doc.profilePicture,
+        date: formatDate(doc.memberSince),
+        specialisation: doc.specialty,
+        status: doc.status,
+        verified: doc.verified,
+      }));
+
+      setDoctors(mappedDoctors);
+    } catch (error) {
+      console.error("Failed to fetch doctors", error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    setFilteredData(data);
-  }, [filter, searchQuery, timeFilter]);
-
+  useEffect(() => {
+    fetchDoctors();
+  }, [page, searchQuery, filter]);
   const columns: ColumnDef<Doctor>[] = [
     {
       header: "#",
@@ -203,11 +250,19 @@ export default function Doctor() {
       header: "Email",
       accessorKey: "email",
     },
+    // {
+    //   header: "Status",
+    //   cell: (info) => {
+    //     const status = info.row.original.status;
+    //     const statusClass = `status-${status.toLowerCase().replace(/\s/g, "")}`;
+    //     return <span className={`status-pill ${statusClass}`}>{status}</span>;
+    //   },
+    // },
     {
       header: "Status",
       cell: (info) => {
         const status = info.row.original.status;
-        const statusClass = `status-${status.toLowerCase().replace(/\s/g, "")}`;
+        const statusClass = `status-${status.toLowerCase()}`;
         return <span className={`status-pill ${statusClass}`}>{status}</span>;
       },
     },
@@ -251,7 +306,7 @@ export default function Doctor() {
                   />
                   Edit Profile
                 </Dropdown.Item>
-                <Dropdown.Item
+                {/* <Dropdown.Item
                   onClick={() => setShowActivateDeactivateModal(true)}
                 >
                   <Image
@@ -262,6 +317,21 @@ export default function Doctor() {
                     className="me-2"
                   />
                   Activate/Deactivate
+                </Dropdown.Item> */}
+                <Dropdown.Item
+                  onClick={() => {
+                    setSelectedDoctorId(id!);
+                    setShowActivateDeactivateModal(true);
+                  }}
+                >
+                  <Image
+                    src={Poweractivate}
+                    alt="Poweractivate"
+                    width={18}
+                    height={18}
+                    className="me-2"
+                  />
+                  Activate / Deactivate
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
@@ -342,16 +412,29 @@ export default function Doctor() {
       </div>
 
       {/* Table */}
-      <CommonTable data={filteredData} columns={columns} />
+      <CommonTable data={doctors} columns={columns} />
+
       <DoctorAddedModal />
-      <ActivateDeactivateProfile
+      {/* <ActivateDeactivateProfile
         show={showActivateDeactivateModal}
         onClose={() => setShowActivateDeactivateModal(false)}
         setShowSuccessModal={setShowSuccessModal}
         doctorIdShow={doctorIdShow} // pass real doctor id
         title="Activate / Deactivate Profile"
+      /> */}
+      <ActivateDeactivateProfile
+        show={showActivateDeactivateModal}
+        onClose={() => setShowActivateDeactivateModal(false)}
+        doctorIdShow={selectedDoctorId}
+        setShowSuccessModal={setShowSuccessModal}
+        onStatusChange={(newStatus) => {
+          setDoctors((prev) =>
+            prev.map((doc) =>
+              doc.id === selectedDoctorId ? { ...doc, status: newStatus } : doc
+            )
+          );
+        }}
       />
-
       <SuccessModalActivateDeactivate
         showSuccessModal={showSuccessModal}
         setShowSuccessModal={setShowSuccessModal}

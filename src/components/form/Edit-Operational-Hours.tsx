@@ -7,9 +7,25 @@ import ContentContainer from "../ui/ContentContainer";
 
 import { clinicData } from "@/utlis/types/interfaces";
 import { OperationalHour } from "@/utlis/types/interfaces";
+// type OperationalHoursPayload =
+//   | {
+//       useCustomHours: true;
+//       groupOperationalHours: {
+//         weekdayOpen: string;
+//         weekdayClose: string;
+//         weekendOpen: string;
+//         weekendClose: string;
+//       };
+//       emergencyDoctorsAvailable_24_7: boolean;
+//     }
+//   | {
+//       useCustomHours: true;
+//       operationalHours: OperationalHour[];
+//       emergencyDoctorsAvailable_24_7: boolean;
+//     };
 type OperationalHoursPayload =
   | {
-      useCustomHours: true;
+      useCustomHours: false;
       groupOperationalHours: {
         weekdayOpen: string;
         weekdayClose: string;
@@ -20,7 +36,7 @@ type OperationalHoursPayload =
     }
   | {
       useCustomHours: true;
-      operationalHours: OperationalHour[];
+      customOperationalHours: OperationalHour[];
       emergencyDoctorsAvailable_24_7: boolean;
     };
 export default function EditOperationalHours({
@@ -92,6 +108,7 @@ export default function EditOperationalHours({
     { key: "S", label: "Saturday" },
     { key: "Sun", label: "Sunday" },
   ];
+  const [emergency247, setEmergency247] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>(initialFormData);
   type DayKey = "M" | "T" | "W" | "Th" | "F" | "S" | "Sun";
 
@@ -224,33 +241,27 @@ export default function EditOperationalHours({
   const handleSaveAndNext = () => {
     let payload: OperationalHoursPayload;
     if (isOpen247) {
-      // 24/7 mode - treated as custom hours where all days are 00:00 - 23:59
-      const allDays = Object.values(dayMap).map((day) => ({
-        day,
-        openTime: "00:00",
-        closeTime: "23:59",
-      }));
-
       payload = {
         useCustomHours: true,
-        operationalHours: allDays,
-        emergencyDoctorsAvailable_24_7: isOpen247,
+        customOperationalHours: Object.values(dayMap).map((day) => ({
+          day,
+          openTime: "00:00",
+          closeTime: "23:59",
+        })),
+        emergencyDoctorsAvailable_24_7: emergency247,
       };
     } else if (custome === 0) {
-      // grouped operational hours mode - send groupOperationalHours object
       payload = {
-        useCustomHours: true,
+        useCustomHours: false,
         groupOperationalHours: {
           weekdayOpen: formData.MF,
           weekdayClose: formData.MF_end,
           weekendOpen: formData.SS,
           weekendClose: formData.SS_end,
         },
-        emergencyDoctorsAvailable_24_7: isOpen247,
+        emergencyDoctorsAvailable_24_7: emergency247,
       };
     } else {
-      // custom operational hours mode
-
       const hours: OperationalHour[] = Object.keys(dayMap)
         .map((key) => {
           const dayKey = key as DayKey;
@@ -260,17 +271,16 @@ export default function EditOperationalHours({
             day: dayMap[dayKey],
             openTime: formData[dayKey],
             closeTime: formData[`${dayKey}_end` as keyof FormData],
-          } as OperationalHour;
+          };
         })
         .filter((v): v is OperationalHour => v !== null);
 
       payload = {
         useCustomHours: true,
-        operationalHours: hours,
-        emergencyDoctorsAvailable_24_7: isOpen247,
+        customOperationalHours: hours,
+        emergencyDoctorsAvailable_24_7: emergency247,
       };
     }
-
     console.log("Sending payload to parent:", payload);
 
     onChange(payload);
@@ -290,8 +300,6 @@ export default function EditOperationalHours({
               label="Select custom Hours and Days?"
               checked={custome === 1}
               onChange={() => setCustome(custome === 0 ? 1 : 0)}
-              // onClick={handleSelect}
-              className="text-nowrap check-box input"
             />
             <Form.Check
               type="checkbox"
@@ -414,6 +422,8 @@ export default function EditOperationalHours({
           <Form.Check
             type="checkbox"
             label="Emergency Doctors Available 24/7"
+            checked={emergency247}
+            onChange={(e) => setEmergency247(e.target.checked)}
             className="text-nowrap check-box input"
           />
         </div>

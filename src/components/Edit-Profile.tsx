@@ -14,9 +14,9 @@ import { clinicData, ContactPerson } from "@/utlis/types/interfaces";
 import { OperationalHour } from "@/utlis/types/interfaces";
 import { useRouter } from "next/navigation";
 // import ContentContainer from './ui/ContentContainer';
-type OperationalHoursPayload =
+export type OperationalHoursPayload =
   | {
-      useCustomHours: true;
+      useCustomHours: false;
       groupOperationalHours: {
         weekdayOpen: string;
         weekdayClose: string;
@@ -27,7 +27,7 @@ type OperationalHoursPayload =
     }
   | {
       useCustomHours: true;
-      operationalHours: OperationalHour[];
+      customOperationalHours: OperationalHour[];
       emergencyDoctorsAvailable_24_7: boolean;
     };
 const EditProfile = () => {
@@ -129,7 +129,7 @@ const EditProfile = () => {
     getProfile()
       .then((response) => {
         if (response.status) {
-          setClinicDetails(response.data.data); // 👈 PREFILL EVERYTHING
+          setClinicDetails(response.data.data); 
         } else {
           toast.error(response.data?.message || "Something went wrong!");
         }
@@ -195,11 +195,6 @@ const EditProfile = () => {
       {activeTab === "operational" && clinicDetails && (
         <EditOperationalHours
           data={clinicDetails.operationalHours}
-          // onChange={(hours: OperationalHour[]) =>
-          //   setClinicDetails((prev) =>
-          //     prev ? { ...prev, operationalHours: hours } : prev
-          //   )
-          // }
           onChange={(payload: OperationalHoursPayload) =>
             setClinicDetails((prev) =>
               prev

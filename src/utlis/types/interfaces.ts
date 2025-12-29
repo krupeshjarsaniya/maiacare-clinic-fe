@@ -660,6 +660,7 @@ export interface ClinicDetails {
   _id?: string;
   // groupOperationalHours: any;
   clinicLogo: string;
+  clinicType?: string;
   clinicName: string;
   contactNumber: string;
   email: string;
@@ -679,6 +680,7 @@ export interface ClinicDetails {
 }
 
 export interface Qualification {
+  field?: string;
   _id?: string;
   doctorId?: string;
   degree: string;
@@ -872,7 +874,7 @@ export interface ClinicDocument {
 }
 export interface clinicData {
   _id: string;
-  is_24_7:boolean;
+  is_24_7: boolean;
   clinicLogo: string;
   clinicName: string;
   clinicType: string;

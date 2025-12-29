@@ -19,20 +19,24 @@ import { DoctorDetails } from "@/utlis/types/interfaces";
 
 const ProfileTabes = () => {
   const params = useParams<{ id?: string }>();
-  const DoctorId = "6943a7e6a55e888c3f9fa264";
-
+  const DoctorId = params.id;
+  const [DoctorData, setDoctorData] = useState<DoctorDetails | null>(null);
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
+    if (!DoctorData) return;
+
+    const doctorName = DoctorData?.name || "Doctor";
+
     dispatch(
       setHeaderData({
-        title: "Dr. Riya Dharang",
-        subtitle: "Doctors > Dr. Riya Dharang ",
+        title: `${doctorName}`,
+        subtitle: `Doctors > ${doctorName}`,
       })
     );
-  }, []);
+  }, [DoctorData, dispatch]);
   const [activeTab, setActiveTab] = useState<string>("basic");
   const [loading, setLoading] = useState(false);
-  const [DoctorData, setDoctorData] = useState<DoctorDetails | null>(null);
+  // const [DoctorData, setDoctorData] = useState<DoctorDetails | null>(null);
   const [doctorIdShow, setDoctorIdShow] = useState<string>("");
 
   const fetchPatientData = () => {
@@ -43,7 +47,6 @@ const ProfileTabes = () => {
         if (response.data.status) {
           setDoctorData(response.data.doctor);
           setDoctorIdShow(response.data.doctor?._id);
-        
         } else {
           toast.error("Failed to fetch patient data");
         }
@@ -68,7 +71,6 @@ const ProfileTabes = () => {
           <DoctorBasicDetails
             DoctorData={DoctorData}
             doctorIdShow={doctorIdShow}
-           
             fetchPatientData={fetchPatientData}
           />
         </>
@@ -82,10 +84,7 @@ const ProfileTabes = () => {
     {
       key: "assignedpatients",
       label: "Assigned Patients",
-      content: <>{<DoctorAssignedPatients  
-          doctorIdShow={doctorIdShow}
-        
-        />}</>,
+      content: <>{<DoctorAssignedPatients doctorIdShow={doctorIdShow} />}</>,
     },
     {
       key: "appointments",

@@ -114,18 +114,6 @@ const DoctorManageLeave = ({
     { id: 6, reason: "Family Thing" },
   ];
 
-  type Days = {
-    id: number;
-    days: string;
-  };
-  const days: Days[] = [
-    { id: 1, days: "1" },
-    { id: 2, days: "2" },
-    { id: 3, days: "3" },
-    { id: 4, days: "4" },
-    { id: 5, days: "5" },
-  ];
-
   type FormData = {
     id: string;
     startDate: string;
@@ -242,7 +230,9 @@ const DoctorManageLeave = ({
         }
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.message || "Something went wrong");
+        console.log("leave error:", err);
+
+        // toast.error(err?.response?.data?.message || "Something went wrong");
       })
       .finally(() => setLoading(false));
   };
@@ -691,7 +681,7 @@ const DoctorManageLeave = ({
                 // error={formError.startDate}
               />
             </Col>
-            <Col md={4} className="p-0">
+            <Col md={4} className="pe-0 p-lg-0">
               <DatePickerFieldGroup
                 label="To Date"
                 name="endDate"
@@ -703,7 +693,7 @@ const DoctorManageLeave = ({
                 error={formError.endDate}
               />
             </Col>
-            <Col md={3} className="p-0">
+            <Col md={3} className="pe-0 p-lg-0">
               <label className="maiacare-input-field-label mb-2">
                 No. of Days <span className="text-danger">*</span>
               </label>
@@ -711,20 +701,16 @@ const DoctorManageLeave = ({
                 className={`radio_options form-select fw-bold ${
                   formError.days ? "is-invalid" : ""
                 }`}
-                name="days"
                 value={formData.days}
-                onChange={handleChange}
-                required
+                // disabled
               >
-                <option value="" disabled>
-                  Select
-                </option>
-                {days.map((d) => (
-                  <option key={d.id} value={d.days}>
-                    {d.days}
-                  </option>
-                ))}
+                <option value="">Select</option>
+
+                {formData.days && (
+                  <option value={formData.days}>{formData.days}</option>
+                )}
               </Form.Select>
+
               {formError.days && (
                 <div className="text-danger mt-1 small">{formError.days}</div>
               )}
@@ -890,7 +876,7 @@ const DoctorManageLeave = ({
               />
             </Col>
             <Col md={4} className="p-0">
-              <DatePickerFieldGroup
+              {/* <DatePickerFieldGroup
                 label="To Date"
                 name="endDate"
                 placeholder="Select End Date"
@@ -898,6 +884,13 @@ const DoctorManageLeave = ({
                 onChange={handleChange}
                 required
                 error={formError.endDate}
+              /> */}
+              <DatePickerFieldGroup
+                label="To Date"
+                name="endDate"
+                value={formData.endDate}
+                onChange={handleChange}
+                disabled={!formData.startDate}
               />
             </Col>
             <Col md={3} className="p-0">
@@ -908,20 +901,19 @@ const DoctorManageLeave = ({
                 className={`radio_options form-select fw-bold ${
                   formError.days ? "is-invalid" : ""
                 }`}
-                name="days"
                 value={formData.days}
-                onChange={handleChange}
-                required
+                disabled
               >
-                <option value="" disabled>
-                  Select
-                </option>
-                {days.map((d) => (
-                  <option key={d.id} value={d.days}>
-                    {d.days}
-                  </option>
-                ))}
+                <option value="">Select</option>
+
+                {formData.days && (
+                  <option value={formData.days}>{formData.days}</option>
+                )}
               </Form.Select>
+
+              {formError.days && (
+                <div className="text-danger mt-1 small">{formError.days}</div>
+              )}
             </Col>
           </Row>
         </div>

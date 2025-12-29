@@ -41,35 +41,34 @@ export default function DoctorAssignedPatients({
   const [loading, setLoading] = useState<boolean>(true);
   const [allPatients, setAllPatients] = useState<AssignedPatients[]>([]);
 
-
   // delete function
   const handleDelete = (id: number) => {
     const updated = filteredData.filter((item) => item.id !== id);
     setFilteredData(updated);
   };
   const fetchallLeave = () => {
-  if (!doctorIdShow) return;
+    if (!doctorIdShow) return;
 
-  setLoading(true);
+    setLoading(true);
 
-  getAssigned({
-    doctorId: doctorIdShow,
-    limit: 10,
-    page: activePage,
-  })
-    .then((response) => {
-      if (response.data.status) {
-        setAllPatients(response.data.data);   // ✅ SOURCE DATA
-        setTotalPages(response.data.pages);
-      }
+    getAssigned({
+      doctorId: doctorIdShow,
+      limit: 10,
+      page: activePage,
     })
-    .catch((err) => {
-      toast.error(err?.response?.data?.message || "Something went wrong");
-    })
-    .finally(() => setLoading(false));
-};
+      .then((response) => {
+        if (response.data.status) {
+          setAllPatients(response.data.data); // ✅ SOURCE DATA
+          setTotalPages(response.data.pages);
+        }
+      })
+      .catch((err) => {
+        toast.error(err?.response?.data?.message || "Something went wrong");
+      })
+      .finally(() => setLoading(false));
+  };
   useEffect(() => {
-    let data = [...allPatients]; 
+    let data = [...allPatients];
 
     // 🔹 filter by status (query param)
     if (filter === "active") {
@@ -126,8 +125,6 @@ export default function DoctorAssignedPatients({
 
     setFilteredData(data);
   }, [filter, searchQuery, timeFilter]);
-
-
 
   useEffect(() => {
     if (
@@ -353,7 +350,6 @@ export default function DoctorAssignedPatients({
 
       {/* Table */}
       <CommonTable data={filteredData} columns={columns} />
-      
     </div>
   );
 }

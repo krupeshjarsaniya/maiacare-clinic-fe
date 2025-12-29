@@ -168,7 +168,10 @@ const ProfileBasicDetails = ({
                         alt="Clinic Photo"
                         width={100}
                         height={100}
-                        // className=" profile-img"
+                        style={{
+                          objectFit: "cover",
+                          borderRadius: "7px",
+                        }}
                       />
                     ) : null
                   )

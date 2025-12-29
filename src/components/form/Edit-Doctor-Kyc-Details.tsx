@@ -22,11 +22,14 @@ import Modal from "../ui/Modal";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useDoctor } from "../DoctorContext";
+import { DoctorDetails } from "@/utlis/types/interfaces";
 
 export default function EditDoctorKycDetails({
   onNext,
   onPrevious,
+  data,
 }: {
+  data: DoctorDetails | null;
   onNext: () => void;
   onPrevious: () => void;
 }) {

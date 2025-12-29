@@ -162,7 +162,7 @@ const DoctorBasicDetails = ({
           toast.success("Qualification deleted");
 
           closeDeleteModal();
-          fetchPatientData?.(); 
+          fetchPatientData?.();
         }
       })
       .catch((err) => {
@@ -484,7 +484,7 @@ const DoctorBasicDetails = ({
                 </h5>
               </div>
               {DoctorData?.clinics?.map((clinic: ClinicDetails) => (
-                <div className="clinic_second_card" key={clinic._id}>
+                <div className="clinic_second_card mb-3" key={clinic._id}>
                   <div className=" mb-2 mb-md-0">
                     <div className="d-flex align-items-center justify-content-between">
                       <div className=" mb-2 mb-md-0 d-flex align-items-center gap-3">

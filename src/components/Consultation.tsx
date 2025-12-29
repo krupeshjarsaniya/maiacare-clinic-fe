@@ -585,7 +585,7 @@ export default function Consultation() {
               ? "activate"
               : "activate"
           }
-          doctorIdShow={selectedPatient?.doctor?._id}
+          doctorIdShow={selectedPatient?.doctor?._id ?? null}
         />
       )}
 

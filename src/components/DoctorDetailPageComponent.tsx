@@ -133,7 +133,7 @@ const DoctorDetailPageComponent = ({
             <Dropdown.Menu className="dropdown-menu-end">
               <Dropdown.Item
                 onClick={() => {
-                  router.push("/editDoctor");
+                  router.push(`/doctors/editdoctor/${doctorIdShow}` );
                 }}
               >
                 <Image
@@ -168,7 +168,7 @@ const DoctorDetailPageComponent = ({
         onClose={() => setShowModal(false)}
         setShowSuccessModal={setShowSuccessModal}
         title="Activate / Deactivate Profile Request"
-        doctorIdShow={doctorIdShow}
+        doctorIdShow={doctorIdShow || null}
       />
       {/* Success Modal */}
       <SuccessModalActivateDeactivate

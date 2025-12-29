@@ -25,20 +25,14 @@ import { getProfileStatus } from "@/utlis/apis/apiHelper";
 interface ActivateDeactivateProfileProps {
   show: boolean;
   onClose: () => void;
-  setShowSuccessModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowSuccessModal?: React.Dispatch<React.SetStateAction<boolean>>;
   title?: string;
   initialStatus?: "deactivate" | "activate";
-  doctorIdShow?: string | number;
+  doctorIdShow?: string | null;
+  onStatusChange?: (status: "Active" | "Deactive") => void;
 }
 // doctor details interface
-interface DoctorInfo {
-  name: string;
-  image: string | StaticImageData;
-  phone: string;
-  email: string;
-  specialization: string;
-  patients: number;
-}
+
 
 // form
 interface ProfileStatusForm {
@@ -61,6 +55,7 @@ export function ActivateDeactivateProfile({
   setShowSuccessModal,
   doctorIdShow,
   title = "Profile Activation/Deactivation",
+  onStatusChange,
 }: ActivateDeactivateProfileProps) {
   const [formData, setFormData] = useState<ProfileStatusForm>({
     profile: "Active",
@@ -68,7 +63,7 @@ export function ActivateDeactivateProfile({
     note: "",
     notifyAdmin: false,
   });
- 
+
   const [formError, setFormError] = useState<FormError>({});
   type Reason = {
     id: number;
@@ -100,7 +95,7 @@ export function ActivateDeactivateProfile({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
   const handleCancel = () => {
-    setShowSuccessModal(false);
+    setShowSuccessModal?.(false);
     onClose();
   };
   // update input fields
@@ -130,56 +125,79 @@ export function ActivateDeactivateProfile({
 
     return errors;
   };
-
   const handleSubmit = async () => {
-    // e.preventDefault();
-    console.log("Submit clicked", formData);
     const errors = validateForm(formData);
     setFormError(errors);
 
     if (Object.keys(errors).length !== 0) return;
 
     try {
-      const payload = {
-        doctorId: String(doctorIdShow),
-        status: formData.profile, // activate | deactivate
+      await getProfileStatus({
+        doctorId: doctorIdShow,
+        status: formData.profile, // ✅ Active | Deactive
         reason: formData.reason,
         notes: formData.note,
         notifyAdmin: formData.notifyAdmin,
-      };
-
-      await getProfileStatus(payload);
-
-      toast.success(
-        formData.profile === "Active"
-          ? "Profile activated successfully!"
-          : "Profile deactivated successfully!"
-      );
-
-      // setShowModal(false);
-      setShowSuccessModal(true);
-      onClose();
-      setFormError({});
-      setFormData({
-        profile: "Active",
-        reason: "",
-        note: "",
-        notifyAdmin: false,
       });
-    } catch (error: unknown) {
-      console.error("Profile status error:", error);
 
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Something went wrong");
-      }
+      onStatusChange?.(formData.profile);
+      setShowSuccessModal?.(true);
+      onClose();
+    } catch (error) {
+      console.error("Profile status error:", error);
+      toast.error("Something went wrong");
     }
   };
 
+  // const handleSubmit = async () => {
+  //   // e.preventDefault();
+  //   console.log("Submit clicked", formData);
+  //   const errors = validateForm(formData);
+  //   setFormError(errors);
+
+  //   if (Object.keys(errors).length !== 0) return;
+
+  //   try {
+  //     const payload = {
+  //       doctorId: String(doctorIdShow),
+  //       status: formData.profile, // activate | deactivate
+  //       reason: formData.reason,
+  //       notes: formData.note,
+  //       notifyAdmin: formData.notifyAdmin,
+  //     };
+
+  //     await getProfileStatus(payload);
+
+  //     toast.success(
+  //       formData.profile === "Active"
+  //         ? "Profile activated successfully!"
+  //         : "Profile deactivated successfully!"
+  //     );
+
+  //     // setShowModal(false);
+  //     setShowSuccessModal(true);
+  //     onClose();
+  //     setFormError({});
+  //     setFormData({
+  //       profile: "Active",
+  //       reason: "",
+  //       note: "",
+  //       notifyAdmin: false,
+  //     });
+  //   } catch (error: unknown) {
+  //     console.error("Profile status error:", error);
+
+  //     if (error instanceof Error) {
+  //       toast.error(error.message);
+  //     } else {
+  //       toast.error("Something went wrong");
+  //     }
+  //   }
+  // };
+
   return (
     <Modal show={show} onHide={onClose} header={title} closeButton>
-      <Form >
+      <Form>
         <div className="kycmodal_info">
           <div className="d-flex align-items-center justify-content-between">
             <div className="kycmodal_profile">

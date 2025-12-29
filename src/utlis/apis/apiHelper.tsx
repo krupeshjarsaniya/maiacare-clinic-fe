@@ -13,7 +13,6 @@ import {
 } from "../types/interfaces";
 import { LoginRequest } from "../types/requestInterface";
 import apiClient from "./axiosInstance";
-import api from "./axiosInstance";
 
 // ====: Authentication :====
 // done
@@ -29,6 +28,7 @@ export const getProfile = () => {
   return apiClient.get("/clinic-info");
 };
 
+// done update
 // update profile
 export const updateProfile = (data: object) => {
   return apiClient.put("/clinic-update", data);
@@ -47,7 +47,8 @@ export const getAll = (data: object) => {
 export const getPatientInfo = (id: string | number) => {
   return apiClient.get(`/get-patient/${id}`);
 };
-// update patient   //not done data is get but not updated
+// update patient
+//not done data is get but not updated
 export const updatePatient = (id: string | number, data: object) => {
   return apiClient.put(`/update-patient/${id}`, data);
 };
@@ -175,9 +176,17 @@ export const editDoctor = (data: object) => {
 export const getDoctor = (id: string | number) => {
   return apiClient.get(`/get-doctor/${id}`);
 };
+// done doctors list
 //get-doctors-list
-export const getDoctorsList = (data: object) => {
-  return apiClient.get("/get-doctors-list", data);
+export const getDoctorsList = (params: {
+  limit?: number;
+  page?: number;
+  search?: string;
+  status?: string;
+}) => {
+  return apiClient.get("/get-doctors-list", {
+    params,
+  });
 };
 // done qualifications
 // Qualifications....

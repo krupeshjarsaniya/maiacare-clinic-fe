@@ -486,7 +486,7 @@ body {
   background: #fffac9;
   color: #c27803;
 }
-.status-inactive {
+.status-inactive,.status-deactive {
   background: #fdf2f2;
   color: #f05252;
 }

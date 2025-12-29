@@ -15,27 +15,19 @@ import Camera from "../../assets/images/Camera.png";
 import { PhoneNumberInput } from "../ui/PhoneNumberInput";
 import "../../style/ui.css";
 import { TimePickerFieldGroup } from "../ui/CustomTimePicker";
-import { useDoctor } from "../DoctorContext";
-import clinicimage from "../../assets/images/cliniccard.png";
-const convertTo24Hour = (time12h: string): string => {
-  if (!time12h) return "";
-  const match = time12h.match(/(\d+)(?::(\d+))?\s*(AM|PM)/i);
-  if (!match) return "";
-  let hours = parseInt(match[1], 10);
-  const minutes = parseInt(match[2] || "0", 10);
-  const ampm = match[3].toUpperCase();
-  if (ampm === "PM" && hours < 12) hours += 12;
-  if (ampm === "AM" && hours === 12) hours = 0;
-  return `${hours.toString().padStart(2, "0")}:${minutes
-    .toString()
-    .padStart(2, "0")}`;
-};
-export default function EditDoctorClinicdetails({
+
+import { ClinicDetails, DoctorDetails } from "@/utlis/types/interfaces";
+
+export default function EditDoctorClinicForm({
   onNext,
   onPrevious,
+  data,
+  clinic,
 }: {
   onNext: () => void;
   onPrevious: () => void;
+  data?: DoctorDetails | null;
+  clinic: ClinicDetails | null;
 }) {
   // Personal Details
   interface FormError {
@@ -45,7 +37,7 @@ export default function EditDoctorClinicdetails({
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState<FormError>(initialFormError);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const { doctor } = useDoctor();
+  // const { doctor } = useDoctor();
 
   type FormData = {
     Name: string;
@@ -110,72 +102,53 @@ export default function EditDoctorClinicdetails({
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
   useEffect(() => {
-    if (doctor && Array.isArray(doctor.clinic) && doctor.clinic.length > 0) {
-      const clinic = doctor.clinic[0];
-      console.log("Loaded clinic:", clinic);
+    if (!clinic) return;
+    const hours = clinic.operationalHours ?? [];
 
-      setFormData((prev) => ({
-        ...prev,
-        Name: clinic.name || "",
-        Contact: clinic.contact || "",
-        Email: clinic.email || "",
-        MapLink: clinic.map || "",
-        Pincode: clinic.pin || "",
-        City: clinic.city || "",
-        State: clinic.state || "",
-        Address: clinic.address || "",
-        MF: clinic.MF || "",
-        SS: clinic.SS || "",
-        imageclinic: clinic.imageclinic || "",
-        Time: clinic.Time || "",
-        Timer: clinic.Timer || "",
-      }));
+    const mfDays = hours.filter((h) =>
+      ["mon", "tue", "wed", "thu", "fri"].includes(h.day)
+    );
 
-      if (clinic.imageclinic) {
-        const imageSrc =
-          typeof clinic.imageclinic === "string"
-            ? clinic.imageclinic
-            : clinic.imageclinic.src;
-        setSelectedImage(imageSrc);
-      }
-    } else {
-      // fallback for demo
-      const demoClinic = {
-        name: "Sunrise Fertility",
-        contact: "+91 8987656874",
-        email: "goodhealth@gmail.com",
-        map: "https://www.google.com/maps/place/Mumbai,+India",
-        pin: "380003",
-        city: "Mumbai",
-        state: "Maharashtra",
-        address: "2nd Floor, Lakeview Complex, Hiranandani Gardens, Powai",
-        MF: "10:00",
-        SS: "10:00",
-        Time: "17:00",
-        Timer: "15:00",
-        imageclinic: clinicimage,
-      };
+    const ssDays = hours.filter((h) => ["sat", "sun"].includes(h.day));
+    // Aadhaar from documents
+    const aadharDoc = data?.documents?.find((doc: any) => doc.aadharNumber);
 
-      setFormData((prev) => ({
-        ...prev,
-        Name: demoClinic.name,
-        Contact: demoClinic.contact,
-        Email: demoClinic.email,
-        MapLink: demoClinic.map,
-        Pincode: demoClinic.pin,
-        City: demoClinic.city,
-        State: demoClinic.state,
-        Address: demoClinic.address,
-        MF: demoClinic.MF,
-        SS: demoClinic.SS,
-        imageclinic: demoClinic.imageclinic,
-        Time: demoClinic.Time,
-        Timer: demoClinic.Timer,
-      }));
+    setFormData({
+      Name: clinic.clinicName ?? "",
+      Contact: clinic.contactNumber ?? "",
+      Email: clinic.email ?? "",
+      MapLink: clinic.mapLink ?? "",
+      Pincode: clinic.pincode ?? "",
+      City: clinic.city ?? "",
+      State: clinic.state ?? "",
+      Address: clinic.address ?? "",
 
-      setSelectedImage(demoClinic.imageclinic.src);
+      MF: mfDays[0]?.openTime ?? "",
+      Time: mfDays[0]?.closeTime ?? "",
+      SS: ssDays[0]?.openTime ?? "",
+      Timer: ssDays[0]?.closeTime ?? "",
+
+      M: "",
+      T: "",
+      W: "",
+      Th: "",
+      F: "",
+      S: "",
+      Sun: "",
+
+      imageclinic: clinic.clinicLogo ?? "",
+
+      ContactName: clinic.contactPerson?.name ?? "",
+      ContactNo: clinic.contactPerson?.contactNumber ?? "",
+      ContactEmail: clinic.contactPerson?.email ?? "",
+
+      Adcard: aadharDoc?.aadharNumber ?? "",
+    });
+
+    if (clinic.clinicLogo) {
+      setSelectedImage(clinic.clinicLogo);
     }
-  }, [doctor]);
+  }, [clinic, data]);
 
   const formatAadhaar = (value: string) => {
     return value

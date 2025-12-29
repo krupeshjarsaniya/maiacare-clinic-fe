@@ -324,12 +324,12 @@ export default function Editbasicdetails({
 
     setSelectedServices(mappedServices);
   }, [data]);
-  // useEffect(() => {
-  //   if (!data?.photos) return;
+  useEffect(() => {
+    if (!data?.photos) return;
 
-  //   const photoUrls = data.photos.map((p: any) => p.url);
-  //   setUploadedImages(photoUrls);
-  // }, [data]);
+    const photoUrls = data.photos.map((p: any) => p.url);
+    setUploadedImages(photoUrls);
+  }, [data]);
   //  servicess
   type Service = {
     id: number;
@@ -868,14 +868,14 @@ export default function Editbasicdetails({
         <div>
           <h5 className="profile-card-main-titile">Clinic Photos</h5>
           <div className="d-flex gap-3 flex-wrap">
-            <Image src={photo1} alt="1" width={100} height={100} />
+            {/* <Image src={photo1} alt="1" width={100} height={100} />
             <Image src={photo2} alt="2" width={100} height={100} />
             <Image src={photo3} alt="3" width={100} height={100} />
             <Image src={photo4} alt="4" width={100} height={100} />
-            <Image src={photo1} alt="5" width={100} height={100} />
+            <Image src={photo1} alt="5" width={100} height={100} /> */}
 
             <div className="d-flex gap-3 flex-wrap">
-              {uploadedImages.map((img, idx) => (
+              {/* {uploadedImages.map((img, idx) => (
                 <Image
                   key={`uploaded-${idx}`}
                   src={img}
@@ -884,7 +884,26 @@ export default function Editbasicdetails({
                   height={100}
                   style={{ objectFit: "cover", borderRadius: "7px" }}
                 />
-              ))}
+              ))} */}
+              {uploadedImages.length > 0 ? (
+                uploadedImages.map((img, idx) => (
+                  <Image
+                    key={`clinic-photo-${idx}`}
+                    src={img}
+                    alt={`clinic-photo-${idx}`}
+                    width={100}
+                    height={100}
+                    style={{
+                      objectFit: "cover",
+                      borderRadius: "7px",
+                    }}
+                  />
+                ))
+              ) : (
+                <div className="text-muted small">
+                  No clinic photos uploaded
+                </div>
+              )}
               <div
                 className="text-center uploadbtn"
                 onClick={handleUploadOpenModal}

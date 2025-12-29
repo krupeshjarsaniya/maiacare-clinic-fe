@@ -22,7 +22,8 @@ import {
   InputSelectMultiSelect,
 } from "../../components/ui/InputSelect";
 // import { useDoctorData } from "@/utlis/hooks/DoctorData";
-import { useDoctor } from "../DoctorContext";
+// import { useDoctor } from "../DoctorContext";
+import { DoctorDetails } from "@/utlis/types/interfaces";
 interface ServiceOption {
   id?: string;
   value: string;
@@ -30,8 +31,10 @@ interface ServiceOption {
 }
 export default function EditDoctorBasicDetails({
   onNext,
+  data,
 }: {
   onNext: () => void;
+  data: DoctorDetails | null;
 }) {
   // Personal Details
   interface FormError {
@@ -42,8 +45,8 @@ export default function EditDoctorBasicDetails({
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState<FormError>(initialFormError);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [doctor, setDoctor] = useState<DoctorDetails | null>(null);
 
-  const { doctor } = useDoctor();
   type FormData = {
     Name: string;
     Speciality: string;
@@ -91,72 +94,58 @@ export default function EditDoctorBasicDetails({
   ]);
   ``;
   useEffect(() => {
-    if (doctor) {
-      if (doctor.image) {
-        const imageSrc =
-          typeof doctor.image === "string" ? doctor.image : doctor.image.src;
-        setSelectedImage(imageSrc);
-      }
+    if (!data) return;
 
-      setFormData((prev) => ({
-        ...prev,
-        Name: doctor.name || "",
-        Speciality: doctor.specialization || "",
-        Experience: doctor.experience || "",
-        date: doctor.dob
-          ? new Date(doctor.dob).toISOString().split("T")[0]
-          : "",
-        gender: doctor.gender?.toLowerCase() || "female",
-        Contact: doctor.phone || "",
-        Email: doctor.email || "",
-        About: doctor.about || "",
-        Fees: doctor.fees || "",
-        services: Array.isArray(doctor.services)
-          ? doctor.services.map((service) =>
-              typeof service === "string"
-                ? { value: service, label: service }
-                : service
-            )
-          : [],
-      }));
+    setFormData({
+      Name: data.name || "",
+      Speciality: data.specialty || "",
+      Experience: data.yearsOfExperience?.toString() || "",
+      date: data.dob ? data.dob.split("T")[0] : "",
+      gender: data.gender || "female",
+      Contact: data.contactNumber || "",
+      Email: data.email || "",
+      Fees: data.fees?.toString() || "",
+      About: data.about || "",
+      services:
+        data.servicesOffered?.map((s) => ({
+          label: s,
+          value: s,
+        })) || [],
+      degree: "",
+      field: "",
+      university: "",
+      startYear: "",
+      endYear: "",
+    });
 
-      //  Fix qualification prefill
-      if (
-        Array.isArray(doctor.qualifications) &&
-        doctor.qualifications.length
-      ) {
-        setQualifications(
-          doctor.qualifications.map((q) => ({
-            degree: q.degree || "",
-            field: q.field || "",
-            university: q.university || "",
-            startYear: q.startYear ? q.startYear.toString() : "",
-            endYear: q.endYear ? q.endYear.toString() : "",
-          }))
-        );
-        setFormErrors(
-          doctor.qualifications.map(() => ({
-            degree: "",
-            field: "",
-            university: "",
-            startYear: "",
-            endYear: "",
-          }))
-        );
-      } else {
-        // default one blank qualification row
-        setQualifications([
-          { degree: "", field: "", university: "", startYear: "", endYear: "" },
-        ]);
-        setFormErrors([
-          { degree: "", field: "", university: "", startYear: "", endYear: "" },
-        ]);
-      }
+    if (data.profilePicture) {
+      setSelectedImage(data.profilePicture);
     }
-  }, [doctor]);
+
+    if (data.qualifications && data.qualifications.length > 0) {
+      setQualifications(
+        data.qualifications.map((q) => ({
+          degree: q.degree ?? "",
+          field: q.fieldOfStudy ?? "",
+          university: q.university ?? "",
+          startYear: q.startYear ? String(q.startYear) : "",
+          endYear: q.endYear ? String(q.endYear) : "",
+        }))
+      );
+
+      setFormErrors(
+        data.qualifications.map(() => ({
+          degree: "",
+          field: "",
+          university: "",
+          startYear: "",
+          endYear: "",
+        }))
+      );
+    }
+  }, [data]);
 
   // All Validatation
-
   const validateForm = (data: FormData): FormError => {
     const errors: FormError = {};
 
@@ -475,10 +464,9 @@ export default function EditDoctorBasicDetails({
             </div>
           </Col>
         </Row>
-
         <div>
           <Row>
-            <Col className="mt-3 ">
+            <Col className="mt-3">
               <InputFieldGroup
                 label="Name"
                 name="Name"
