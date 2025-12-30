@@ -454,14 +454,13 @@ export default function AddDoctorKycDetails({
         reportName: file.reportName,
         originalName: file.name,
         filePath: file.preview || "",
-        fileSize: Number(file.actualSize || file.size.replace(" KB", "")), // ✅ FIX
+        fileSize: Number(file.actualSize || file.size.replace(" KB", "")),
       })),
-      createdAt: undefined,
     };
-   
+
     const finalDoctorPayload: DoctorDetails = {
       ...data,
-     
+
       kycDetails,
     };
     console.log("✅ FINAL PAYLOAD", finalDoctorPayload);

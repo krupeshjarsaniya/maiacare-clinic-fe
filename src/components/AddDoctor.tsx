@@ -60,16 +60,18 @@ const AddDoctor = () => {
 
     qualifications: [],
 
-    kycDetails: {
-      aadharNumber: "",
-      aadharFile: "",
-      panNumber: "",
-      panFile: "",
-      licenceNumber: "",
-      licenceFile: "",
-      otherDocuments: [],
-      createdAt: "",
-    },
+    kycDetails: 
+      {
+        aadharNumber: "",
+        aadharFile: "",
+        panNumber: "",
+        panFile: "",
+        licenceNumber: "",
+        licenceFile: "",
+        otherDocuments: [],
+        // createdAt: "",
+      },
+    
 
     createdAt: "", // ✅ ADD THIS
     updatedAt: "", // ✅ ADD THIS
@@ -133,7 +135,7 @@ const AddDoctor = () => {
     setDoctors((prev) => [...prev, newDoctor]);
     setCurrentStep("list"); // go to list page after add
   };
-   const handleTabClick = (key: string) => {
+  const handleTabClick = (key: string) => {
     if (key === activeTab) {
       return;
     }

@@ -89,23 +89,23 @@ export default function EditContactDetails({
   // };
   // contact data
   // const clinic = clinicConatctData;
+
   const handleSaveChange = () => {
     const errors = validateForm(formData);
     setFormError(errors);
 
     if (Object.keys(errors).length === 0) {
-      // Call parent's onNext (which triggers API call and navigation)
       onChange({
         name: formData.Name,
         contactNumber: formData.Contact,
         email: formData.Email,
         aadharNumber: formData.Adcard,
       });
+
       onNext();
-    } else {
-      console.log("Form has errors:", errors);
     }
   };
+
   useEffect(() => {
     if (data) {
       setFormData({

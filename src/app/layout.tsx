@@ -1,5 +1,3 @@
-
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -9,7 +7,7 @@ import "../style/globals.css";
 import "../style/font.css";
 import MasterHelper from "../utlis/MasterHelper";
 import { Toaster } from "react-hot-toast";
-import { DoctorProvider } from "@/components/DoctorContext";
+
 // import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const geistSans = Geist({
@@ -38,15 +36,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-   
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${popins.variable}`}
       >
-        <DoctorProvider>
-          <MasterHelper>{children}</MasterHelper>
-        </DoctorProvider>
+        <MasterHelper>{children}</MasterHelper>
+
         <Toaster
           position="top-right"
           toastOptions={{

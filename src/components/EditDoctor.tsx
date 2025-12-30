@@ -2,16 +2,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import CustomTabs from "./ui/CustomTabs";
-import EditDoctorClinicdetails from "./form/EditDoctorClinicForm";
+import EditDoctorClinicdetails from "./form/DoctorClinicForm";
 import EditDoctorKycDetails from "./form/Edit-Doctor-Kyc-Details";
 import EditDoctorBasicDetails from "./form/Edit-Doctor-Basic-Details";
 import { useDispatch } from "react-redux";
 import { setHeaderData } from "@/utlis/redux/slices/headerSlice";
 import { AppDispatch } from "@/utlis/redux/store";
-import { DoctorDetails } from "@/utlis/types/interfaces";
-import { getDoctor } from "@/utlis/apis/apiHelper";
+import {
+  ClinicDetails,
+  DoctorDetails,
+  KycDetails,
+} from "@/utlis/types/interfaces";
+import { editDoctor, getDoctor } from "@/utlis/apis/apiHelper";
 import toast from "react-hot-toast";
 import EditClinicDoctorDetails from "./form/EditClinicDoctorDetails";
+import { useRouter } from "next/navigation";
 const EditDoctor = () => {
   const params = useParams<{ id?: string }>();
   const DoctorId = params.id;
@@ -26,7 +31,7 @@ const EditDoctor = () => {
   }, []);
   const searchParams = useSearchParams();
   const tabFromQuery = searchParams.get("tab");
-
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<string>("basic");
   const [editdoctor, setEditdoctor] = useState<DoctorDetails>({
     profilePicture: "",
@@ -75,26 +80,143 @@ const EditDoctor = () => {
       licenceNumber: "",
       licenceFile: "",
       otherDocuments: [],
-      createdAt: "",
+      // createdAt: "",
     },
 
     createdAt: "",
     updatedAt: "",
   });
+
   const fetchProfile = () => {
     getDoctor(DoctorId!)
       .then((response) => {
         if (response.status) {
-          console.log("data.doctor:", response.data.doctor);
-          setEditdoctor(response.data.doctor);
+          const doctor = response.data.doctor;
+
+          setEditdoctor((prev) => ({
+            ...prev,
+
+            // BASIC
+            profilePicture: doctor.profilePicture ?? "",
+            name: doctor.name ?? "",
+            specialty: doctor.specialty ?? "",
+            yearsOfExperience: doctor.yearsOfExperience ?? 0,
+            dob: doctor.dob ? doctor.dob.split("T")[0] : "",
+            gender: doctor.gender ?? "",
+            fees: doctor.fees ?? 0,
+            servicesOffered: doctor.servicesOffered ?? [],
+            contactNumber: doctor.contactNumber ?? "",
+            email: doctor.email ?? "",
+            about: doctor.about ?? "",
+            // ✅ TAKE FIRST CLINIC (or selected one)
+            clinicDetails: doctor.clinics?.[0]
+              ? {
+                  clinicLogo: doctor.clinics[0].clinicLogo ?? "",
+                  clinicName: doctor.clinics[0].clinicName ?? "",
+                  contactNumber: doctor.clinics[0].contactNumber ?? "",
+                  email: doctor.clinics[0].email ?? "",
+                  address: doctor.clinics[0].address ?? "",
+                  mapLink: doctor.clinics[0].mapLink ?? "",
+                  pincode: doctor.clinics[0].pincode ?? "",
+                  city: doctor.clinics[0].city ?? "",
+                  state: doctor.clinics[0].state ?? "",
+                  useCustomHours: doctor.clinics[0].useCustomHours ?? false,
+                  groupOperationalHours: {
+                    weekdayOpen: "",
+                    weekdayClose: "",
+                    weekendOpen: "",
+                    weekendClose: "",
+                  },
+                  contactPerson: {
+                    name: doctor.clinics[0].contactPerson?.name ?? "",
+                    contactNumber:
+                      doctor.clinics[0].contactPerson?.contactNumber ?? "",
+                    email: doctor.clinics[0].contactPerson?.email ?? "",
+                    aadharNumber:
+                      doctor.clinics[0].contactPerson?.aadharNumber ?? "",
+                  },
+                }
+              : prev.clinicDetails,
+
+            // QUALIFICATIONS
+            qualifications: doctor.qualifications ?? [],
+
+            // KYC (take first item)
+            kycDetails: doctor.kycDetails?.[0]
+              ? {
+                  aadharNumber: doctor.kycDetails[0].aadharNumber ?? "",
+                  aadharFile: doctor.kycDetails[0].aadharFile ?? "",
+                  panNumber: doctor.kycDetails[0].panNumber ?? "",
+                  panFile: doctor.kycDetails[0].panFile ?? "",
+                  licenceNumber: doctor.kycDetails[0].licenceNumber ?? "",
+                  licenceFile: doctor.kycDetails[0].licenceFile ?? "",
+                  otherDocuments: doctor.kycDetails[0].otherDocuments ?? [],
+                }
+              : prev.kycDetails,
+          }));
         } else {
-          toast.error(response.data?.message || "Something went wrong!");
+          toast.error("Something went wrong!");
         }
       })
-      .catch(() => {
-        toast.error("Something went wrong!");
-      });
+      .catch(() => toast.error("Something went wrong!"));
   };
+
+  const handleClinicChange = (updatedClinic: Partial<ClinicDetails>) => {
+    setEditdoctor((prev) => {
+      if (!prev.clinicDetails) return prev; // safety
+
+      return {
+        ...prev,
+        clinicDetails: {
+          ...prev.clinicDetails,
+          ...updatedClinic,
+        },
+      };
+    });
+  };
+  const handleFinalSave = async () => {
+    try {
+      const payload = {
+        doctorId: DoctorId,
+
+        // BASIC DETAILS
+        profilePicture: editdoctor.profilePicture,
+        name: editdoctor.name,
+        specialty: editdoctor.specialty,
+        yearsOfExperience: editdoctor.yearsOfExperience,
+        dob: editdoctor.dob,
+        gender: editdoctor.gender,
+        fees: editdoctor.fees,
+        servicesOffered: editdoctor.servicesOffered,
+        contactNumber: editdoctor.contactNumber,
+        email: editdoctor.email,
+
+        // ✅ CLINIC (THIS IS WHAT BACKEND NEEDS)
+        clinicDetails: editdoctor.clinicDetails,
+
+        // QUALIFICATIONS
+        qualifications: editdoctor.qualifications,
+
+        // KYC
+        kycDetails: editdoctor.kycDetails,
+      };
+
+      const response = await editDoctor(payload);
+
+      if (response.status) {
+        toast.success("Doctor updated successfully!");
+        router.push(`/doctors/${DoctorId}`);
+      } else {
+        console.log("Failed to update doctor");
+
+        // toast.error(response?.message || "Failed to update doctor");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong while saving doctor");
+    }
+  };
+
   useEffect(() => {
     if (tabFromQuery) {
       setActiveTab(tabFromQuery);
@@ -106,11 +228,18 @@ const EditDoctor = () => {
   const handleNextClick = () => {
     setActiveTab("Clinic");
   };
-
+  const handleClinicNextClick = () => {
+    setActiveTab("KYC");
+  };
   const handlePrevious = () => {
     setActiveTab("basic");
   };
-
+  const handleSave = (finalKyc: KycDetails) => {
+    setEditdoctor((prev) => ({
+      ...prev,
+      kycDetails: finalKyc,
+    }));
+  };
   const tabOptions = [
     { key: "basic", label: "Basic Details", content: <></> },
     { key: "Clinic", label: "Clinic Details", content: <></> },
@@ -125,21 +254,30 @@ const EditDoctor = () => {
         tabOptions={tabOptions}
       />
       {activeTab === "basic" && (
-        <EditDoctorBasicDetails onNext={handleNextClick} data={editdoctor} />
+        <EditDoctorBasicDetails
+          doctorId={DoctorId!}
+          onNext={handleNextClick}
+          data={editdoctor}
+          onChange={(updatedBasicDetails) => {
+            setEditdoctor((prev) => ({ ...prev, ...updatedBasicDetails }));
+          }}
+        />
       )}
       {activeTab === "Clinic" && (
         <EditClinicDoctorDetails
-          // data={editdoctor}
           clinic={editdoctor.clinicDetails}
-          onNext={handleNextClick}
+          onChange={handleClinicChange}
+          onNext={handleClinicNextClick}
           onPrevious={handlePrevious}
         />
       )}
       {activeTab === "KYC" && (
         <EditDoctorKycDetails
           data={editdoctor}
-          onNext={handleNextClick}
           onPrevious={handlePrevious}
+          onSave={handleSave}
+          onNext={handleNextClick}
+          onFinalSave={handleFinalSave}
         />
       )}
     </div>

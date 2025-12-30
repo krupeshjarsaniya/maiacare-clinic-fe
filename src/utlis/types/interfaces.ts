@@ -691,21 +691,40 @@ export interface Qualification {
 }
 
 export interface OtherDocument {
-  reportName: string;
-  filePath: string;
-  originalName: string;
+  fileSize?: number;
+  updatedAt?: string;
+  reportName?: string;
+  filePath?: string;
+  originalName?: string;
 }
 
+// export interface KycDetails {
+//   createdAt: any;
+//   aadharNumber: string;
+//   aadharFile: string;
+//   panNumber: string;
+//   panFile: string;
+//   licenceNumber: string;
+//   licenceFile: string;
+//   otherDocuments: OtherDocument[];
+// }
 export interface KycDetails {
-  createdAt: any;
-  aadharNumber: string;
-  aadharFile: string;
-  panNumber: string;
-  panFile: string;
-  licenceNumber: string;
-  licenceFile: string;
+  aadharNumber?: string;
+  aadharFile?: string;
+  aadharSize?: string;
   otherDocuments: OtherDocument[];
+
+  panNumber?: string;
+  panFile?: string;
+  panSize?: string;
+
+  licenceNumber?: string;
+  licenceFile?: string;
+  licenceSize?: string;
+
+  updatedAt?: string;
 }
+
 export interface DoctorDocument {
   aadharNumber?: string;
   panNumber?: string;
@@ -736,24 +755,11 @@ export interface DoctorDetails {
 
   clinics?: ClinicDetails[];
   qualifications: Qualification[];
-  kycDetails: KycDetails;
+  kycDetails?: KycDetails ;
+
   _id?: string;
 }
-// export interface DoctorDetails {
-//   profilePicture: string;
-//   name: string;
-//   specialty: string;
-//   yearsOfExperience: number;
-//   dob: string;
-//   gender: string;
-//   fees: number;
-//   servicesOffered: string[];
-//   contactNumber: string;
-//   email: string;
-//   clinicDetails?: ClinicDetails;
-//   qualifications: Qualification[];
-//   kycDetails: KycDetails;
-// }
+
 export interface personalDetails {
   profileImage: string;
   name: string;

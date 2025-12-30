@@ -18,16 +18,18 @@ import { TimePickerFieldGroup } from "../ui/CustomTimePicker";
 
 import { ClinicDetails, DoctorDetails } from "@/utlis/types/interfaces";
 
-export default function EditDoctorClinicForm({
+export default function DoctorClinicForm({
   onNext,
   onPrevious,
   data,
   clinic,
+  onSave,
 }: {
   onNext: () => void;
   onPrevious: () => void;
   data?: DoctorDetails | null;
   clinic: ClinicDetails | null;
+  onSave: (updatedClinic: Partial<ClinicDetails>) => void;
 }) {
   // Personal Details
   interface FormError {
@@ -61,14 +63,57 @@ export default function EditDoctorClinicForm({
     F: string;
     S: string;
     Sun: string;
-    imageclinic: string | StaticImageData;
+    // imageclinic: string | StaticImageData;
 
     ContactName: string;
     ContactNo: string;
     ContactEmail: string;
     Adcard: string;
   };
+  const days = [
+    { key: "M", label: "Monday" },
+    { key: "T", label: "Tuesday" },
+    { key: "W", label: "Wednesday" },
+    { key: "Th", label: "Thursday" },
+    { key: "F", label: "Friday" },
+    { key: "S", label: "Saturday" },
+    { key: "Sun", label: "Sunday" },
+  ];
+  type DayKey = "M" | "T" | "W" | "Th" | "F" | "S" | "Sun";
+  type SelectedDays = Record<DayKey, boolean>;
+  const [selectedDays, setSelectedDays] = useState<SelectedDays>({
+    M: true,
+    T: true,
+    W: true,
+    Th: true,
+    F: true,
+    S: true,
+    Sun: true,
+  });
+  const [isOpen247, setIsOpen247] = useState(false);
+  const handle247Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
 
+    setIsOpen247(checked);
+    setCustome(false); // 🔴 turn OFF custom mode
+
+    if (checked) {
+      // Optional: auto-fill full day times
+      setFormData((prev) => ({
+        ...prev,
+        MF: "00:00",
+        Time: "23:59",
+        SS: "00:00",
+        Timer: "23:59",
+      }));
+    }
+  };
+  const toggleDay = (day: keyof typeof selectedDays) => {
+    setSelectedDays((prev) => ({
+      ...prev,
+      [day]: !prev[day],
+    }));
+  };
   const initialFormData: FormData = {
     Name: "",
     MapLink: "",
@@ -92,13 +137,14 @@ export default function EditDoctorClinicForm({
     S: "",
     Sun: "",
 
-    imageclinic: "",
+    // imageclinic: "",
 
     ContactName: "",
     ContactNo: "",
     ContactEmail: "",
     Adcard: "",
   };
+  const [custome, setCustome] = useState(false);
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
   useEffect(() => {
@@ -136,17 +182,21 @@ export default function EditDoctorClinicForm({
       S: "",
       Sun: "",
 
-      imageclinic: clinic.clinicLogo ?? "",
+      // imageclinic: clinic.clinicLogo ?? "",
 
       ContactName: clinic.contactPerson?.name ?? "",
       ContactNo: clinic.contactPerson?.contactNumber ?? "",
       ContactEmail: clinic.contactPerson?.email ?? "",
-
-      Adcard: aadharDoc?.aadharNumber ?? "",
+      Adcard: clinic.contactPerson?.aadharNumber ?? "",
+      // Adcard: aadharDoc?.aadharNumber ?? "",
     });
 
     if (clinic.clinicLogo) {
-      setSelectedImage(clinic.clinicLogo);
+      setSelectedImage(
+        clinic.clinicLogo.startsWith("/")
+          ? clinic.clinicLogo
+          : `/${clinic.clinicLogo}`
+      );
     }
   }, [clinic, data]);
 
@@ -207,7 +257,58 @@ export default function EditDoctorClinicForm({
   const handleNextClick = () => {
     const errors = validateForm(formData);
     setFormError(errors);
+
     if (Object.keys(errors).length === 0) {
+      const buildClinicPayload = (): Partial<ClinicDetails> => {
+        return {
+          clinicLogo: selectedImage ?? clinic?.clinicLogo,
+          clinicName: formData.Name,
+          contactNumber: formData.Contact,
+          email: formData.Email,
+          address: formData.Address,
+          mapLink: formData.MapLink,
+          pincode: formData.Pincode,
+          city: formData.City,
+          state: formData.State,
+          useCustomHours: custome,
+
+          // ✅ BACKEND FORMAT
+          groupOperationalHours: {
+            weekdayOpen: formData.MF,
+            weekdayClose: formData.Time,
+            weekendOpen: formData.SS,
+            weekendClose: formData.Timer,
+          },
+
+          contactPerson: {
+            name: formData.ContactName,
+            contactNumber: formData.ContactNo,
+            email: formData.ContactEmail,
+            aadharNumber: formData.Adcard,
+          },
+        };
+      };
+
+      // ✅ Build COMPLETE kycDetails from doctor data
+      const buildKycDetails = () => {
+        const kyc = data?.kycDetails || {
+          aadharNumber: "",
+          panNumber: "",
+          licenceNumber: "",
+          aadharFile: "",
+          panFile: "",
+          licenceFile: "",
+          otherDocuments: [],
+        };
+
+        // ✅ Preserve existing otherDocuments or create empty array
+        kyc.otherDocuments = kyc.otherDocuments || [];
+
+        return kyc;
+      };
+
+      const clinicPayload = buildClinicPayload();
+      onSave(clinicPayload); // ✅ ONLY clinic details
       onNext();
     } else {
       console.log("Form has errors:", errors);
@@ -215,10 +316,6 @@ export default function EditDoctorClinicForm({
   };
 
   //   operational component
-  const [custome, setCustome] = useState(0);
-  const handleSelect = () => {
-    setCustome(custome === 0 ? 1 : 0);
-  };
 
   //********* EDIT PROFILE MODAL *********//
   const fileInputRef = useRef<HTMLInputElement>(null); // file input programmatically open
@@ -285,7 +382,18 @@ export default function EditDoctorClinicForm({
     setSelectedImage(previewImage); // save modal preview to actual profile
     setShowModal(false);
   };
+  const getImageSrc = (src?: string | null) => {
+    if (!src) return Simpleeditpro;
 
+    // already absolute
+    if (src.startsWith("http")) return src;
+
+    // already valid relative
+    if (src.startsWith("/")) return src;
+
+    // fix invalid relative path
+    return `/${src}`;
+  };
   const handleDelete = () => {
     setPreviewImage(null); // delete only in modal
   };
@@ -306,13 +414,21 @@ export default function EditDoctorClinicForm({
             <div className="d-flex align-items-center gap-4 mt-3 flex-wrap justify-content-center justify-content-sm-start text-center text-md-start">
               <div className="profile-wrapper ">
                 {/* Profile image */}
-                <Image
+                {/* <Image
                   src={selectedImage ? selectedImage : Simpleeditpro}
                   alt="Profile"
                   className="profile-image rounded-circle"
                   width={160}
                   height={160}
+                /> */}
+                <Image
+                  src={getImageSrc(selectedImage as string)}
+                  alt="Profile"
+                  className="profile-image rounded-circle"
+                  width={160}
+                  height={160}
                 />
+
                 {/* Camera Icon */}
                 <div
                   className="camera-icon"
@@ -652,14 +768,34 @@ export default function EditDoctorClinicForm({
             Operational hours & Days
           </h5>
 
-          <Form.Check
+          {/* <Form.Check
             type="checkbox"
             label="Select custom Hours and Days?"
-            onClick={handleSelect}
+            checked={custome}
+            onChange={(e) => setCustome(e.target.checked)}
             className="text-nowrap check-box input"
-          />
+          /> */}
+          <div className="d-flex gap-3">
+            <Form.Check
+              type="checkbox"
+              label="Select custom Hours and Days?"
+              checked={custome}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setCustome(checked);
+                if (checked) setIsOpen247(false);
+              }}
+            />
+            <Form.Check
+              type="checkbox"
+              label="Open 24/7"
+              checked={isOpen247}
+              onChange={handle247Change}
+              className="text-nowrap check-box input"
+            />
+          </div>
         </div>
-        {custome === 0 ? (
+        {!custome ? (
           <>
             {/* monday-friday */}
             <Row className="mb-3">
@@ -668,6 +804,7 @@ export default function EditDoctorClinicForm({
                   label="Monday–Friday"
                   name="MF"
                   value={formData.MF}
+                  disabled={isOpen247}
                   onChange={(e) => {
                     setFormData({ ...formData, MF: e.target.value });
                   }}
@@ -678,6 +815,7 @@ export default function EditDoctorClinicForm({
                 <TimePickerFieldGroup
                   name="Time"
                   value={formData.Time}
+                  disabled={isOpen247}
                   onChange={(e) => {
                     setFormData({ ...formData, Time: e.target.value });
                   }}
@@ -691,6 +829,7 @@ export default function EditDoctorClinicForm({
                   label="Saturday–Sunday"
                   name="SS"
                   value={formData.SS}
+                  disabled={isOpen247}
                   onChange={(e) => {
                     setFormData({ ...formData, SS: e.target.value });
                   }}
@@ -701,6 +840,7 @@ export default function EditDoctorClinicForm({
                 <TimePickerFieldGroup
                   name="Timer"
                   value={formData.Timer}
+                  disabled={isOpen247}
                   onChange={(e) => {
                     setFormData({ ...formData, Timer: e.target.value });
                   }}
@@ -710,196 +850,55 @@ export default function EditDoctorClinicForm({
           </>
         ) : (
           <>
-            <Row className="mb-3">
-              <Col md={6}>
-                {/* <Form.Check
-                                    type="checkbox"
-                                    className="text-nowrap check-box input"
-                                  /> */}
+            {days.map((day) => (
+              <div key={day.key} className="mb-3">
+                {/* Checkbox + Day Name */}
+                <div className="d-flex align-items-center gap-2 ">
+                  <Form.Check
+                    type="checkbox"
+                    checked={selectedDays[day.key as keyof typeof selectedDays]}
+                    disabled={isOpen247 || !selectedDays[day.key as DayKey]}
+                    onChange={() =>
+                      toggleDay(day.key as keyof typeof selectedDays)
+                    }
+                  />
+                  <div className="maiacare-input-field-label">{day.label}</div>
+                </div>
 
-                <TimePickerFieldGroup
-                  label="Monday"
-                  name="M"
-                  value={formData.M}
-                  onChange={(e: { target: { value: string } }) => {
-                    setFormData({ ...formData, M: e.target.value });
-                  }}
-                  style={{ margintop: "8px" }}
-                />
-              </Col>
+                {/* Time fields */}
+                <Row>
+                  <Col md={6}>
+                    <TimePickerFieldGroup
+                      placeholder="Start Time"
+                      value={formData[day.key as keyof FormData]}
+                      disabled={
+                        !selectedDays[day.key as keyof typeof selectedDays]
+                      }
+                      onChange={(e: { target: { value: string } }) =>
+                        setFormData({
+                          ...formData,
+                          [day.key]: e.target.value,
+                        })
+                      }
+                    />
+                  </Col>
 
-              <Col md={6} className="mt-2">
-                <TimePickerFieldGroup
-                  name="Time"
-                  value={formData.Time}
-                  onChange={(e) => {
-                    setFormData({ ...formData, Time: e.target.value });
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row className="mb-3">
-              <Col md={6}>
-                {/* <Form.Check
-                              type="checkbox"
-                              className="text-nowrap check-box input"
-                            /> */}
-
-                <TimePickerFieldGroup
-                  label="Tuesday"
-                  name="T"
-                  value={formData.T}
-                  onChange={(e: { target: { value: string } }) => {
-                    setFormData({ ...formData, T: e.target.value });
-                  }}
-                />
-              </Col>
-
-              <Col md={6} className="mt-2">
-                <TimePickerFieldGroup
-                  name="Time"
-                  value={formData.Time}
-                  onChange={(e) => {
-                    setFormData({ ...formData, Time: e.target.value });
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row className="mb-3">
-              <Col md={6}>
-                {/* <Form.Check
-                              type="checkbox"
-                              className="text-nowrap check-box input"
-                            /> */}
-
-                <TimePickerFieldGroup
-                  label="Wednesday"
-                  name="W"
-                  value={formData.W}
-                  onChange={(e: { target: { value: string } }) => {
-                    setFormData({ ...formData, W: e.target.value });
-                  }}
-                />
-              </Col>
-
-              <Col md={6} className="mt-2">
-                <TimePickerFieldGroup
-                  name="Time"
-                  value={formData.Time}
-                  onChange={(e) => {
-                    setFormData({ ...formData, Time: e.target.value });
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row className="mb-3">
-              <Col md={6}>
-                {/* <Form.Check
-                              type="checkbox"
-                              className="text-nowrap check-box input"
-                            /> */}
-
-                <TimePickerFieldGroup
-                  label="Thursday"
-                  name="Th"
-                  value={formData.Th}
-                  onChange={(e: { target: { value: string } }) => {
-                    setFormData({ ...formData, Th: e.target.value });
-                  }}
-                />
-              </Col>
-
-              <Col md={6} className="mt-2">
-                <TimePickerFieldGroup
-                  name="Time"
-                  value={formData.Time}
-                  onChange={(e) => {
-                    setFormData({ ...formData, Time: e.target.value });
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row className="mb-3">
-              <Col md={6}>
-                {/* <Form.Check
-                              type="checkbox"
-                              className="text-nowrap check-box input"
-                            /> */}
-
-                <TimePickerFieldGroup
-                  label="Friday"
-                  name="F"
-                  value={formData.F}
-                  onChange={(e: { target: { value: string } }) => {
-                    setFormData({ ...formData, F: e.target.value });
-                  }}
-                />
-              </Col>
-
-              <Col md={6} className="mt-2">
-                <TimePickerFieldGroup
-                  name="Time"
-                  value={formData.Time}
-                  onChange={(e) => {
-                    setFormData({ ...formData, Time: e.target.value });
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row className="mb-3">
-              <Col md={6}>
-                {/* <Form.Check
-                              type="checkbox"
-                              className="text-nowrap check-box input"
-                            /> */}
-
-                <TimePickerFieldGroup
-                  label="Saturday"
-                  name="S"
-                  value={formData.S}
-                  onChange={(e: { target: { value: string } }) => {
-                    setFormData({ ...formData, S: e.target.value });
-                  }}
-                />
-              </Col>
-
-              <Col md={6} className="mt-2">
-                <TimePickerFieldGroup
-                  name="Time"
-                  value={formData.Time}
-                  onChange={(e) => {
-                    setFormData({ ...formData, Time: e.target.value });
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row className="mb-3">
-              <Col md={6}>
-                {/* <Form.Check
-                              type="checkbox"
-                              className="text-nowrap check-box input"
-                            /> */}
-
-                <TimePickerFieldGroup
-                  label="Sunday"
-                  name="Sun"
-                  value={formData.Sun}
-                  onChange={(e: { target: { value: string } }) => {
-                    setFormData({ ...formData, Sun: e.target.value });
-                  }}
-                />
-              </Col>
-
-              <Col md={6} className="mt-2">
-                <TimePickerFieldGroup
-                  name="Time"
-                  value={formData.Time}
-                  onChange={(e) => {
-                    setFormData({ ...formData, Time: e.target.value });
-                  }}
-                />
-              </Col>
-            </Row>
+                  <Col md={6}>
+                    <TimePickerFieldGroup
+                      placeholder="End Time"
+                      value={formData[`${day.key}_end` as keyof FormData]}
+                      disabled={!selectedDays[day.key as DayKey]}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          [`${day.key}_end`]: e.target.value,
+                        })
+                      }
+                    />
+                  </Col>
+                </Row>
+              </div>
+            ))}
           </>
         )}
       </ContentContainer>

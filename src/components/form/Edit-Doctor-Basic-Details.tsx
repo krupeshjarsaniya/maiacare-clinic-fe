@@ -32,9 +32,13 @@ interface ServiceOption {
 export default function EditDoctorBasicDetails({
   onNext,
   data,
+  onChange,
+  doctorId,
 }: {
   onNext: () => void;
+  doctorId:string | number;
   data: DoctorDetails | null;
+  onChange: (updatedBasicDetails: Partial<DoctorDetails>) => void;
 }) {
   // Personal Details
   interface FormError {
@@ -97,6 +101,7 @@ export default function EditDoctorBasicDetails({
     if (!data) return;
 
     setFormData({
+      // _id:doctorId,
       Name: data.name || "",
       Speciality: data.specialty || "",
       Experience: data.yearsOfExperience?.toString() || "",

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import ContentContainer from "./ui/ContentContainer";
-import cliniclogo from "../assets/images/clinic logo.png";
 import Image from "next/image";
 import { Col, Row } from "react-bootstrap";
 import Stethoscope from "../assets/images/Stethoscope.png";
@@ -84,7 +83,7 @@ const Profile: React.FC = () => {
                 /> */}
                 <img
                   src={clinicData?.clinicLogo}
-                  alt={clinicData?.clinicLogo}
+                  alt="ProfileImage"
                   // width={58}
                   // height={58}
                   className="rounded-circle profile-img"

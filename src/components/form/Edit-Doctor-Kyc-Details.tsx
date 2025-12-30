@@ -21,17 +21,21 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Modal from "../ui/Modal";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { useDoctor } from "../DoctorContext";
-import { DoctorDetails } from "@/utlis/types/interfaces";
+
+import { DoctorDetails, KycDetails } from "@/utlis/types/interfaces";
 
 export default function EditDoctorKycDetails({
   onNext,
   onPrevious,
   data,
+  onSave,
+  onFinalSave,
 }: {
   data: DoctorDetails | null;
   onNext: () => void;
   onPrevious: () => void;
+  onSave: (kyc: KycDetails) => void;
+  onFinalSave: () => void;
 }) {
   interface FormError {
     [key: string]: string;
@@ -63,89 +67,87 @@ export default function EditDoctorKycDetails({
   };
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
-  const { doctor } = useDoctor();
+  const normalizedKyc: KycDetails | undefined = React.useMemo(() => {
+    if (!data?.kycDetails) return undefined;
+    console.log(data.kycDetails);
 
+    return Array.isArray(data.kycDetails)
+      ? data.kycDetails[0]
+      : data.kycDetails;
+  }, [data]);
   useEffect(() => {
-    if (doctor != null) {
-      doctor.kyc = [
-        {
-          aadhaar: "1234 5678 9123",
-          aadhaarFile: "/uploads/kyc/aadhaar.pdf",
-          pan: "ABCDE1234F",
-          panFile: "/uploads/kyc/pan.png",
-          license: "1234567890",
-          licenseFile: "/uploads/kyc/license.jpg",
-        },
-      ];
-      if (Array.isArray(doctor.kyc) && doctor.kyc.length > 0) {
-        const kyc = doctor.kyc[0];
-        setFormData((prev) => ({
-          ...prev,
-          Adcard: kyc.aadhaar || "",
-          Pancard: kyc.pan || "",
-          LicNumber: kyc.license || "",
-        }));
-        // adhaarcard
-        if (kyc.aadhaarFile) {
-          const aadhaarFilePath =
-            typeof kyc.aadhaarFile === "string"
-              ? kyc.aadhaarFile
-              : kyc.aadhaarFile.src;
+    if (!normalizedKyc) return;
 
-          setAadharFile({
-            name: aadhaarFilePath.split("/").pop() || "Aadhar Card",
-            size: "—",
-            date: new Date().toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            }),
-            preview: aadhaarFilePath,
-            status: "completed",
-            reportName: "Aadhar Card",
-          });
-        }
-        // pan
-        if (kyc.panFile) {
-          const panFilePath =
-            typeof kyc.panFile === "string" ? kyc.panFile : kyc.panFile.src;
+    setFormData({
+      Adcard: normalizedKyc.aadharNumber || "",
+      Pancard: normalizedKyc.panNumber || "",
+      LicNumber: normalizedKyc.licenceNumber || "",
+    });
 
-          setPanFile({
-            name: panFilePath.split("/").pop() || "Pan Card",
-            size: "—",
-            date: new Date().toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            }),
-            preview: panFilePath,
-            status: "completed",
-            reportName: "Pan Card",
-          });
-        }
-        // licenseFile
-        if (kyc.licenseFile) {
-          const licenseFilePath =
-            typeof kyc.licenseFile === "string"
-              ? kyc.licenseFile
-              : kyc.licenseFile.src;
+    const formatDate = (date?: string) =>
+      date
+        ? new Date(date).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })
+        : "";
 
-          setLicenceFile({
-            name: licenseFilePath.split("/").pop() || "License",
-            size: "—",
-            date: new Date().toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            }),
-            preview: licenseFilePath,
-            status: "completed",
-            reportName: "Licence",
-          });
-        }
-      }
+    const makeFile = (filePath: string, size: string, reportName: string) => ({
+      name: filePath.split("/").pop()!,
+      size,
+      date: formatDate(normalizedKyc.updatedAt),
+      preview: `/${filePath}`,
+      status: "completed" as const,
+      reportName,
+    });
+
+    if (normalizedKyc.aadharFile) {
+      setAadharFile(
+        makeFile(
+          normalizedKyc.aadharFile,
+          normalizedKyc.aadharSize || "",
+          "Aadhar Card"
+        )
+      );
     }
-  }, [doctor]);
+
+    if (normalizedKyc.panFile) {
+      setPanFile(
+        makeFile(normalizedKyc.panFile, normalizedKyc.panSize || "", "Pan Card")
+      );
+    }
+
+    if (normalizedKyc.licenceFile) {
+      setLicenceFile(
+        makeFile(
+          normalizedKyc.licenceFile,
+          normalizedKyc.licenceSize || "",
+          "Licence"
+        )
+      );
+    }
+
+    if (normalizedKyc.otherDocuments?.length) {
+      const formattedOtherDocs: UploadedFile[] =
+        normalizedKyc.otherDocuments.map((doc) => {
+          const filePath = doc.filePath ?? "";
+
+          return {
+            name: filePath.split("/").pop() ?? "",
+            size: doc.fileSize ? `${doc.fileSize} KB` : "", // ✅ STRING
+            reportName: doc.reportName ?? "",
+            status: "completed",
+            preview: filePath ? `/${filePath}` : undefined,
+            uploadedAt: doc.updatedAt
+              ? new Date(doc.updatedAt).getTime()
+              : undefined,
+          };
+        });
+
+      setCompletedFiles(formattedOtherDocs);
+    }
+  }, [normalizedKyc]);
 
   const formatAadhaar = (value: string) => {
     return value
@@ -196,16 +198,36 @@ export default function EditDoctorKycDetails({
 
     return errors;
   };
-
   const handleSaveChange = () => {
     const errors = validateForm(formData);
     setFormError(errors);
 
-    if (Object.keys(errors).length === 0) {
-      router.push(`/doctors/[id]`);
-    } else {
-      console.log("Form has errors:", errors);
-    }
+    if (Object.keys(errors).length !== 0) return false;
+
+    const finalKyc: KycDetails = {
+      aadharNumber: formData.Adcard,
+      panNumber: formData.Pancard,
+      licenceNumber: formData.LicNumber,
+
+      aadharFile: aadharFile?.preview || aadharFile?.name || "",
+      panFile: panFile?.preview || panFile?.name || "",
+      licenceFile: licenceFile?.preview || licenceFile?.name || "",
+
+      // ✅ FIXED otherDocuments
+      otherDocuments: completedFiles.map((f) => ({
+        reportName: f.reportName || "Document",
+        filePath: f.preview?.replace(/^blob:/, "") || f.name || "",
+        fileSize: f.actualSize ? Number(f.actualSize) : 0, // ✅ NUMBER
+        originalName: f.name || "document.pdf",
+        uploadedAt: f.uploadedAt
+          ? new Date(f.uploadedAt).toISOString()
+          : new Date().toISOString(),
+      })),
+    };
+    
+    console.log("KYC Payload:", finalKyc);
+    onSave(finalKyc);
+    return true;
   };
 
   // Aadhar Card image select //
@@ -1166,7 +1188,12 @@ export default function EditDoctorKycDetails({
         <Button
           variant="dark"
           className="maiacare-button common-btn-blue"
-          onClick={handleSaveChange} // navigate
+          onClick={() => {
+            const isValid = handleSaveChange();
+            if (isValid) {
+              onFinalSave();
+            }
+          }}
         >
           Save Changes
         </Button>

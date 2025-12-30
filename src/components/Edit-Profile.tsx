@@ -84,7 +84,15 @@ const EditProfile = () => {
   const handlePrevious = () => {
     setActiveTab("basic");
   };
-
+  const handleContactChange = (updated: ContactPerson) => {
+    setClinicDetails((prev) => ({
+      ...prev,
+      contactPerson: {
+        ...prev.contactPerson,
+        ...updated,
+      },
+    }));
+  };
   const tabOptions = [
     {
       key: "basic",
@@ -129,7 +137,7 @@ const EditProfile = () => {
     getProfile()
       .then((response) => {
         if (response.status) {
-          setClinicDetails(response.data.data); 
+          setClinicDetails(response.data.data);
         } else {
           toast.error(response.data?.message || "Something went wrong!");
         }
@@ -238,11 +246,7 @@ const EditProfile = () => {
       {activeTab === "contact" && clinicDetails && (
         <EditContactDetails
           data={clinicDetails.contactPerson}
-          onChange={(updatedContact: ContactPerson) =>
-            setClinicDetails((prev) =>
-              prev ? { ...prev, contactPerson: updatedContact } : prev
-            )
-          }
+          onChange={handleContactChange}
           onNext={handleSave}
           onPrevious={handleContactPrevious}
         />

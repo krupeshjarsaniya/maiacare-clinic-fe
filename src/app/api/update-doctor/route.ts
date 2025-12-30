@@ -7,7 +7,6 @@ export async function PUT(req: Request) {
   const BASE_URL = "/update-doctor";
 
   try {
-    // ✅ Parse the body once (let parseRequestBody handle it)
     const body = await parseRequestBody(req);
     console.log("body", body);  
     const response = await apiServer.put(BASE_URL, body);
