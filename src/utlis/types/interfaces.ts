@@ -755,7 +755,7 @@ export interface DoctorDetails {
 
   clinics?: ClinicDetails[];
   qualifications: Qualification[];
-  kycDetails?: KycDetails ;
+  kycDetails?: KycDetails;
 
   _id?: string;
 }
@@ -885,7 +885,7 @@ export interface clinicData {
   clinicName: string;
   clinicType: string;
   verified: boolean;
-
+  secondaryContactNumber?: string;
   contactNumber: string;
   email: string;
 
@@ -907,7 +907,7 @@ export interface clinicData {
   reviewCount: number;
   averageRating: number;
 
-  photos: ClinicPhoto[];
+  photos: string[];
   servicesOffered: string[];
 
   emergencyDoctorsAvailable_24_7: boolean;

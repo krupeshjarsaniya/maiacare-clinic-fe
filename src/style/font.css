@@ -1344,6 +1344,12 @@
   cursor: pointer;
 }
 
+.about-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 7;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .camera-icon {
   right: 0%;
   top: 60%;

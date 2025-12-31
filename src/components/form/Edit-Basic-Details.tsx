@@ -24,7 +24,9 @@ import { useDoctorData } from "@/utlis/hooks/DoctorData";
 import AddDoctor from "../AddDoctor";
 import { clinicProfileData } from "@/utlis/StaticData";
 import { clinicData } from "@/utlis/types/interfaces";
-
+type Photo = {
+  url: string;
+};
 export default function Editbasicdetails({
   onNext,
   onChange,
@@ -38,7 +40,7 @@ export default function Editbasicdetails({
   interface FormError {
     [key: string]: string;
   }
-  console.log("clinicBasic:", data);
+
 
   const initialFormError: FormError = {};
   const [showModal, setShowModal] = useState(false);
@@ -90,7 +92,7 @@ export default function Editbasicdetails({
       errors.doctorsonboard = "Doctors Onboard is required";
     if (!data.MapLink.trim()) errors.MapLink = "Map Link is required";
     if (!data.Address.trim()) errors.Address = "Address is required";
-    const contactRegex = /^[0-9]{10}$/;
+    const contactRegex = /^(91)?[6-9]\d{9}$/;
     if (!data.Contact.trim()) {
       errors.Contact = "Contact number is required";
     } else if (!contactRegex.test(data.Contact)) {
@@ -129,12 +131,14 @@ export default function Editbasicdetails({
       return;
     }
 
+
     // ✅ Map form data → clinicData structure
     const updatedClinicData: Partial<clinicData> = {
       clinicName: formData.Name,
       email: formData.Email,
       contactNumber: formData.Contact,
       address: formData.Address,
+      secondaryContactNumber: formData.SecondaryNumber,
       city: formData.City,
       state: formData.State,
       pincode: formData.Pincode,
@@ -145,13 +149,9 @@ export default function Editbasicdetails({
       clinicLogo: selectedImage || "",
 
       servicesOffered: selectedServices.map((s) => s.service),
-
-      photos: uploadedImages.map((url) => ({
-        url,
-        logo: false,
-      })),
+      photos: uploadedImages,
     };
-    console.log("editedBasicdat:-", updatedClinicData);
+
 
     onChange(updatedClinicData);
 
@@ -179,6 +179,7 @@ export default function Editbasicdetails({
 
   // upload photo
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [tempSelectedImages, setTempSelectedImages] = useState<string[]>([]);
   const [showuploadModal, setShowUploadModal] = useState(false);
 
@@ -218,6 +219,7 @@ export default function Editbasicdetails({
       }
       const imageURL = URL.createObjectURL(file);
       newImages.push(imageURL);
+      setUploadedFiles((prev) => [...prev, file]);
     }
 
     setTempSelectedImages((prev) => [...prev, ...newImages]);
@@ -228,6 +230,7 @@ export default function Editbasicdetails({
   const handleUploadSave = () => {
     setUploadedImages((prev) => [...prev, ...tempSelectedImages]);
     setTempSelectedImages([]);
+
     setShowUploadModal(false);
   };
 
@@ -304,8 +307,11 @@ export default function Editbasicdetails({
       doctorsonboard: data.doctorOnboard?.toString() || "",
       Pincode: data.pincode || "",
       Address: data.address || "",
-      Contact: data.contactNumber?.replace(/\D/g, "") || "",
-      SecondaryNumber: data.contactNumber?.replace(/\D/g, "") || "",
+      Contact: data.contactNumber || "",
+
+      // Contact: data.contactNumber?.replace(/\D/g, "") || "",
+      SecondaryNumber: data.secondaryContactNumber?.replace(/\D/g, "") || "",
+
       Email: data.email || "",
     });
 
@@ -324,12 +330,13 @@ export default function Editbasicdetails({
 
     setSelectedServices(mappedServices);
   }, [data]);
-  useEffect(() => {
-    if (!data?.photos) return;
 
-    const photoUrls = data.photos.map((p: any) => p.url);
-    setUploadedImages(photoUrls);
+  useEffect(() => {
+    if (!data?.photos || data.photos.length === 0) return;
+
+    setUploadedImages(data.photos);
   }, [data]);
+
   //  servicess
   type Service = {
     id: number;
@@ -608,8 +615,11 @@ export default function Editbasicdetails({
                   let value = phone.replace(/\D/g, "");
 
                   // ✅ Allow only max 10 digits
-                  if (value.length > 10) {
-                    value = value.slice(0, 10);
+                  // if (value.length > 10) {
+                  //   value = value.slice(0, 10);
+                  // }
+                  if (value.length > 12) {
+                    value = value.slice(0, 12);
                   }
 
                   // ✅ Update formData
@@ -643,7 +653,7 @@ export default function Editbasicdetails({
                   setFormData({ ...formData, SecondaryNumber: value });
 
                   // ✅ Hide error while typing
-                  if (formError.Contact) {
+                  if (formError.SecondaryNumber) {
                     setFormError({ ...formError, SecondaryNumber: "" });
                   }
                 }}

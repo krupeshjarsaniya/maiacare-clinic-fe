@@ -387,8 +387,7 @@ export default function PartnerDetail({
     <>
       {showData === null ? (
         <>
-          "hy"
-          : (
+          "hy" : (
           <div className="d-flex align-items-center justify-content-center partner-detail-main ">
             <div className="text-center">
               <svg

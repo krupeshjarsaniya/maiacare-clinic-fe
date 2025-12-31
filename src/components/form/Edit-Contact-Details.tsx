@@ -15,7 +15,7 @@ export default function EditContactDetails({
   data,
   onChange,
 }: {
-  onNext: () => void;
+  onNext: (payload: ContactPerson) => void;
   onPrevious: () => void;
   data: ContactPerson | null;
   onChange: (data: ContactPerson) => void;
@@ -76,46 +76,50 @@ export default function EditContactDetails({
     }
     return errors;
   };
+
   // const handleSaveChange = () => {
   //   const errors = validateForm(formData);
   //   setFormError(errors);
 
   //   if (Object.keys(errors).length === 0) {
-  //     console.log(" Form is valid, go to next step");
-  //     router.push("/profile");
-  //   } else {
-  //     console.log(" Form has errors:", errors);
+  //     onChange({
+  //       name: formData.Name,
+  //       contactNumber: formData.Contact,
+  //       email: formData.Email,
+  //       aadharNumber: formData.Adcard,
+  //     });
+  //     console.log("contact:-", onchange);
+
+  //     onNext();
   //   }
   // };
-  // contact data
-  // const clinic = clinicConatctData;
-
   const handleSaveChange = () => {
     const errors = validateForm(formData);
     setFormError(errors);
 
     if (Object.keys(errors).length === 0) {
-      onChange({
+      const payload: ContactPerson = {
         name: formData.Name,
         contactNumber: formData.Contact,
         email: formData.Email,
         aadharNumber: formData.Adcard,
-      });
+      };
 
-      onNext();
+      onChange(payload);
+      onNext(payload); // ✅ pass data directly
     }
   };
 
   useEffect(() => {
-    if (data) {
-      setFormData({
-        Name: data.name || "",
-        Contact: data.contactNumber || "",
-        Adcard: data.aadharNumber || "",
-        Email: data.email || "",
-      });
-    }
-  }, [data]);
+    if (!data) return;
+
+    setFormData({
+      Name: data.name ?? "",
+      Contact: data.contactNumber ?? "",
+      Adcard: data.aadharNumber ?? "",
+      Email: data.email ?? "",
+    });
+  }, [data?.name, data?.contactNumber, data?.email, data?.aadharNumber]);
 
   return (
     <div>

@@ -87,15 +87,15 @@ const DoctorBasicDetails = ({
   const [endTime, setEndTime] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAllQualifications, setShowAllQualifications] = useState(false);
+  const [showAllDocuments, setShowAllDocuments] = useState(false);
+  const [showFullAbout, setShowFullAbout] = useState(false);
 
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
     setSelectedId(null);
   };
-  // const openDeleteModal = (id: string) => {
-  //   setSelectedId(id);
-  //   setShowDeleteModal(true);
-  // };
+
   const openDeleteModal = (id?: string) => {
     if (!id) {
       toast.error("Invalid qualification ID");
@@ -108,6 +108,9 @@ const DoctorBasicDetails = ({
     QualificationUI[]
   >([]);
   const [showQualificationModal, setShowQualificationModal] = useState(false);
+  const visibleQualifications = showAllQualifications
+    ? defaultQualifications
+    : defaultQualifications.slice(0, 2);
 
   type FormData = {
     MF: string;
@@ -317,11 +320,6 @@ const DoctorBasicDetails = ({
   };
 
   // + add Qualification button diable data show after unable
-  const isQualificationComplete = (q: Qualification) => {
-    return (
-      q.degree && q.fieldOfStudy && q.university && q.startYear && q.endYear
-    );
-  };
 
   // ===== Edit button click in modal open ================
   const [selectedQualificationId, setSelectedQualificationId] = useState<
@@ -467,6 +465,7 @@ const DoctorBasicDetails = ({
       });
     }
   });
+  const visibleDocuments = showAllDocuments ? documents : documents.slice(0, 4);
   return (
     // <Container fluid className="mt-3">
     <div>
@@ -780,7 +779,7 @@ const DoctorBasicDetails = ({
                   Data not found. Please Add Data
                 </div>
               ) : (
-                defaultQualifications.map((item, idx) => (
+                visibleQualifications.map((item, idx) => (
                   <div
                     key={idx}
                     className="d-flex justify-content-between align-items-start p-3 mb-3 bg-white border rounded-4 profile-card-boeder"
@@ -956,6 +955,16 @@ const DoctorBasicDetails = ({
                   </div>
                 ))
               )}
+              {defaultQualifications.length > 2 && (
+                <div
+                  className=" mt-3 allreviews"
+                  onClick={() =>
+                    setShowAllQualifications(!showAllQualifications)
+                  }
+                >
+                  {showAllQualifications ? "Show less" : "Show more"}
+                </div>
+              )}
             </ContentContainer>
           </div>
         </Col>
@@ -968,14 +977,19 @@ const DoctorBasicDetails = ({
           <div>
             <ContentContainer className="mt-4">
               <h5 className="profile-card-main-titile">About</h5>
-              <p className="mb-0 about-text">
-                I{"'"}m Dr. Riya Dharang, a fertility specialist with over 12
-                years of experience in reproductive medicine. I specialize in
-                IVF, IUI, and fertility preservation, providing personalized,
-                compassionate care to help individuals and couples achieve their
-                parenthood dreams. Your well-being and trust are my top
-                priorities.
+              <p
+                className={`mb-0 about-text ${
+                  !showFullAbout ? "about-clamp" : ""
+                }`}
+              >
+                {DoctorData?.about ? DoctorData?.about : ""}
               </p>
+              <div
+                className="mt-2 allreviews"
+                onClick={() => setShowFullAbout(!showFullAbout)}
+              >
+                {showFullAbout ? "Show less" : "Show more"}
+              </div>
             </ContentContainer>
           </div>
           {/* services provides */}
@@ -1013,7 +1027,7 @@ const DoctorBasicDetails = ({
               <div>
                 <h5 className="mb-4 profile-card-main-titile">Documents</h5>
 
-                {documents.map((doc, index) => (
+                {visibleDocuments.map((doc, index) => (
                   <div
                     className="d-flex justify-content-between align-items-center border profile-card-boeder p-3 mb-3 document-main-border"
                     key={index}
@@ -1048,6 +1062,14 @@ const DoctorBasicDetails = ({
                     </button>
                   </div>
                 ))}
+                {documents.length > 4 && (
+                  <div
+                    className="mt-2 allreviews"
+                    onClick={() => setShowAllDocuments(!showAllDocuments)}
+                  >
+                    {showAllDocuments ? "Show less" : "Show more"}
+                  </div>
+                )}
               </div>
             </ContentContainer>
           </div>

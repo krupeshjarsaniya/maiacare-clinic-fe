@@ -33,9 +33,9 @@ export type OperationalHoursPayload =
 const EditProfile = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<string>("basic");
-  const [BasicDetails, setBasicDetails] = useState<clinicData | null>(null);
-  const [operational, setOperational] = useState<OperationalHour[]>([]);
-  const [contact, setContact] = useState<ContactPerson | null>(null);
+  // const [BasicDetails, setBasicDetails] = useState<clinicData | null>(null);
+  // const [operational, setOperational] = useState<OperationalHour[]>([]);
+  // const [contact, setContact] = useState<ContactPerson | null>(null);
   const [clinicDetails, setClinicDetails] = useState<clinicData>({
     _id: "",
     clinicLogo: "",
@@ -111,28 +111,6 @@ const EditProfile = () => {
       content: <></>,
     },
   ];
-
-  // const fetchProfile = () => {
-  //   getProfile()
-  //     .then((response) => {
-  //       if (response.status) {
-  //         setBasicDetails(response.data.data);
-  //         setOperational(response.data.data.operationalHours);
-  //         setContact(response.data.data.contactPerson);
-  //       } else {
-  //         toast.error(response.data?.message || "Something went wrong!");
-  //         console.error("Error fetching profile");
-  //       }
-  //     })
-  //     .catch((err: unknown) => {
-  //       console.error("API call failed", err);
-  //       if (axios.isAxiosError(err)) {
-  //         toast.error(err.response?.data?.message || "Something went wrong!");
-  //       } else {
-  //         toast.error("Something went wrong!");
-  //       }
-  //     });
-  // };
   const fetchProfile = () => {
     getProfile()
       .then((response) => {
@@ -146,21 +124,43 @@ const EditProfile = () => {
         toast.error("Something went wrong!");
       });
   };
+  const handleSaveWithContact = async (contactPerson: ContactPerson) => {
+    try {
+      const payload = {
+        ...clinicDetails,
+        contactPerson,
+      };
+
+      await updateProfile(payload);
+      toast.success("Profile updated successfully");
+      router.push("/profile");
+    } catch {
+      toast.error("Error updating profile");
+    }
+  };
+
   useEffect(() => {
     fetchProfile();
   }, []);
   const handleContactPrevious = () => {
     setActiveTab("operational");
   };
+
   const handleSave = async () => {
     try {
-      await updateProfile(clinicDetails);
+      const payload = {
+        ...clinicDetails,
+      };
+      console.log("All data:=====>", payload.contactPerson);
+
+      await updateProfile(payload);
       toast.success("Profile updated successfully");
-      router.push("/profile"); // or wherever
+      router.push("/profile");
     } catch (e) {
       toast.error("Error updating profile");
     }
   };
+
   const handleTabClick = (key: string) => {
     if (key === activeTab) {
       return;
@@ -183,16 +183,6 @@ const EditProfile = () => {
 
       {activeTab === "basic" && (
         <div>
-          {/* <Editbasicdetails
-            data={BasicDetails}
-            onChange={(updatedBasic: Partial<clinicData>) =>
-              setClinicDetails((prev) => ({
-                ...prev,
-                ...updatedBasic,
-              }))
-            }
-            onNext={handleNextClick}
-          /> */}
           <Editbasicdetails
             data={clinicDetails}
             onChange={handleChange}
@@ -217,37 +207,18 @@ const EditProfile = () => {
           onPrevious={handlePrevious}
         />
       )}
-      {/* {activeTab === "operational" && (
-        <div>
-          <EditOperationalHours
-            data={operational}
-            onChange={(hours: OperationalHour[]) =>
-              setClinicDetails((prev) => ({
-                ...prev,
-                operationalHours: hours,
-              }))
-            }
-            onNext={handleoperationalNextClick}
-            onPrevious={handlePrevious}
-            // onNext={handleoperationalNextClick}
-            // onPrevious={handlePrevious}
-          />
-        </div>
-      )} */}
-      {/* {activeTab === "contact" && (
-        <div>
-          <EditContactDetails
-            data={contact}
-            onNext={handleSave}
-            onPrevious={handleContactPrevious}
-          />
-        </div>
-      )} */}
+
       {activeTab === "contact" && clinicDetails && (
         <EditContactDetails
           data={clinicDetails.contactPerson}
-          onChange={handleContactChange}
-          onNext={handleSave}
+          onChange={(payload: ContactPerson) => {
+            setClinicDetails((prev) =>
+              prev ? { ...prev, contactPerson: payload } : prev
+            );
+          }}
+          onNext={(payload: ContactPerson) => {
+            handleSaveWithContact(payload);
+          }}
           onPrevious={handleContactPrevious}
         />
       )}

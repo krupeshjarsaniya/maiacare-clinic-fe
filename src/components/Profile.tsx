@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
       getProfile()
         .then((response) => {
           if (response.status) {
-            console.log("USER DATA FROM API:", response.data.data);
+          
             setClinicData(response.data.data);
             setProfileData(response.data.data);
           } else {

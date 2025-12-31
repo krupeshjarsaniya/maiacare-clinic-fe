@@ -68,6 +68,8 @@ export default function Consultation() {
   const [patientTotal, setPatientTotal] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [activePage, setActivePage] = useState<number>(1);
+  const start = (activePage - 1) * 10;
+  const end = start + 10;
 
   const router = useRouter();
   // const [selectedPatient, setSelectedPatient] = useState<ConsultationInfo | null>(null);
@@ -195,6 +197,7 @@ export default function Consultation() {
     setFilteredData(data);
   }, [filter, searchQuery, timeFilter]);
   // delete function
+  const paginatedData = getAllPatients.slice(start, end);
 
   const handleClose = () => setShowModal(false);
   const handleresultclose = () => {
@@ -561,11 +564,20 @@ export default function Consultation() {
       </div>
 
       {/* Table */}
-      <CommonTable
+      {/* <CommonTable
         data={getAllPatients}
         columns={columns}
         tableTotal={patientTotal}
         totalPages={totalPages}
+        loading={loading}
+        setActivePage={setActivePage}
+        activePage={activePage}
+      /> */}
+      <CommonTable
+        data={paginatedData}
+        columns={columns}
+        tableTotal={patientTotal}
+        totalPages={Math.ceil(patientTotal / 10)}
         loading={loading}
         setActivePage={setActivePage}
         activePage={activePage}

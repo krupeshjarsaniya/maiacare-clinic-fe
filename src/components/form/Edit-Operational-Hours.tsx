@@ -281,7 +281,6 @@ export default function EditOperationalHours({
         emergencyDoctorsAvailable_24_7: emergency247,
       };
     }
-    console.log("Sending payload to parent:", payload);
 
     onChange(payload);
     onNext();

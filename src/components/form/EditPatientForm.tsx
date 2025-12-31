@@ -35,7 +35,7 @@ type FormError = Partial<Record<keyof AddPatientFormData, string>>;
 const initialFormData: AddPatientFormData = {
   name: "",
   patientId: "",
-  gender: "Male", // default to male if you want
+  gender: "Female", // default to male if you want
   date: "",
   age: "",
   phone: "",
@@ -60,7 +60,8 @@ function EditPatientForm() {
   const router = useRouter();
   const params = useParams();
   const rawId = params?.id;
-  const patientId = Array.isArray(rawId) ? rawId[0] : rawId; // ✅ always a string
+  const patientId = Array.isArray(rawId) ? rawId[0] : rawId;
+  console.log("patientID:", patientId);
 
   // const patientId = params?.id; // URL → /patients/edit/[id]
 
@@ -182,7 +183,7 @@ function EditPatientForm() {
         setFormData({
           name: data?.personalDetails?.name || "",
           patientId: data?.patientId || "",
-          gender: data?.personalDetails?.gender || "Male",
+          gender: data?.personalDetails?.gender || "Female",
           date: data?.personalDetails?.dob || "",
           age: data?.personalDetails?.age || "",
           phone: data?.personalDetails?.contactNumber || "",
@@ -502,12 +503,23 @@ function EditPatientForm() {
               />
             </Col>
             <Col md={6}>
-              <RadioButtonGroup
+              {/* <RadioButtonGroup
                 label="Gender"
                 name="gender"
                 value={formData.gender || ""}
-                defaultValue="Male"
+                defaultValue="Female"
                 onChange={(e) => handleChange(e)}
+                required
+                options={[
+                  { label: "Male", value: "Male" },
+                  { label: "Female", value: "Female" },
+                ]}
+              /> */}
+              <RadioButtonGroup
+                label="Gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
                 required
                 options={[
                   { label: "Male", value: "Male" },
