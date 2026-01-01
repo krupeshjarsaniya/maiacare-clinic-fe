@@ -72,6 +72,9 @@ const ProfileBasicDetails = ({
   const handleShowMore = () => {
     setDisplayedReviewCount(allReviews.length);
   };
+  const INITIAL_COUNT = 2;
+  const hasMoreThanInitial = allReviews.length > INITIAL_COUNT;
+  const isExpanded = displayedReviewCount >= allReviews.length;
   return (
     // <Container fluid className="mt-3">
     <div>
@@ -158,23 +161,19 @@ const ProfileBasicDetails = ({
               </div>
               <div className="d-flex gap-3 flex-wrap">
                 {profileData?.photos?.length ? (
-                  profileData.photos.map((photo, idx) =>
-                    photo?.url ? (
-                      <img
-                        key={
-                          photo._id?.toString() ?? photo.url ?? `photo-${idx}`
-                        }
-                        src={photo.src || photo.url}
-                        alt="Clinic Photo"
-                        width={100}
-                        height={100}
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: "7px",
-                        }}
-                      />
-                    ) : null
-                  )
+                  profileData.photos.map((photoUrl, idx) => (
+                    <img
+                      key={photoUrl ?? `photo-${idx}`}
+                      src={photoUrl}
+                      alt="Clinic Photo"
+                      width={100}
+                      height={100}
+                      style={{
+                        objectFit: "cover",
+                        borderRadius: "7px",
+                      }}
+                    />
+                  ))
                 ) : (
                   <div>No photos uploaded</div>
                 )}
@@ -287,6 +286,11 @@ const ProfileBasicDetails = ({
             {/* review text */}
 
             <div>
+              {allReviews.length === 0 && (
+                <div style={{ color: "rgba(133,139,149,1)", fontSize: "14px" }}>
+                  No reviews available
+                </div>
+              )}
               {reviewsToShow.map((item, idx) => (
                 <div key={item.id}>
                   {/* Header */}
@@ -376,18 +380,22 @@ const ProfileBasicDetails = ({
               ))}
 
               {/* Show more / less */}
-              {displayedReviewCount < allReviews.length ? (
-                <div className="allreviews" onClick={handleShowMore}>
-                  Show All Reviews ({allReviews.length - displayedReviewCount})
-                </div>
-              ) : (
-                <div
-                  className="allreviews"
-                  onClick={() => setDisplayedReviewCount(2)}
-                >
-                  Show Less
-                </div>
-              )}
+              {hasMoreThanInitial &&
+                (!isExpanded ? (
+                  <div
+                    className="allreviews"
+                    onClick={() => setDisplayedReviewCount(allReviews.length)}
+                  >
+                    Show All Reviews ({allReviews.length - INITIAL_COUNT})
+                  </div>
+                ) : (
+                  <div
+                    className="allreviews"
+                    onClick={() => setDisplayedReviewCount(INITIAL_COUNT)}
+                  >
+                    Show Less
+                  </div>
+                ))}
             </div>
           </div>
         </ContentContainer>

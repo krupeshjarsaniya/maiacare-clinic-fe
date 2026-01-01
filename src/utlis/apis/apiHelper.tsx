@@ -130,7 +130,7 @@ export const getPatientPartnerMedicalHistory = (id: string | number) => {
 
 // update
 export const updatePatientPartnerMedicalHistory = (data: object) => {
-  return apiClient.put("/patient/partner/medicalHistory", data);
+  return apiClient.put("/patient/partner/medicalHistory/", data);
 };
 // done
 // Partner Physical Assessment
@@ -294,4 +294,10 @@ export const addReassignAppointment = (data: ReassignDoctor) => {
 // add Cancel Appointment
 export const addCancelAppointment = (data: CancelAppointment) => {
   return apiClient.post("/appointments/cancel-appointment", data);
+};
+
+// ====:Get Appointments :====
+// get Appointments
+export const getAppointments = (data: object) => {
+  return apiClient.post("/appointments/get-appointments", data);
 };

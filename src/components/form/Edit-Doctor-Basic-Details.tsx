@@ -36,7 +36,7 @@ export default function EditDoctorBasicDetails({
   doctorId,
 }: {
   onNext: () => void;
-  doctorId:string | number;
+  doctorId: string | number;
   data: DoctorDetails | null;
   onChange: (updatedBasicDetails: Partial<DoctorDetails>) => void;
 }) {
@@ -49,7 +49,7 @@ export default function EditDoctorBasicDetails({
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState<FormError>(initialFormError);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [doctor, setDoctor] = useState<DoctorDetails | null>(null);
+  // const [doctor, setDoctor] = useState<DoctorDetails | null>(null);
 
   type FormData = {
     Name: string;
@@ -89,11 +89,11 @@ export default function EditDoctorBasicDetails({
   };
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
-  const [qualifications, setQualifications] = useState([
+  const [qualifications, setQualifications] = useState<Qualification[]>([
     { degree: "", field: "", university: "", startYear: "", endYear: "" },
   ]);
 
-  const [formErrors, setFormErrors] = useState([
+  const [formErrors, setFormErrors] = useState<Qualification[]>([
     { degree: "", field: "", university: "", startYear: "", endYear: "" },
   ]);
   ``;
@@ -184,6 +184,8 @@ export default function EditDoctorBasicDetails({
     setFormError(errors);
     setFormErrors(qualErrors);
     if (Object.keys(errors).length === 0) {
+      console.log("setFormData:-", setFormData);
+
       // localStorage.setItem("doctorData", JSON.stringify(formData));
       onNext();
     } else {
@@ -191,12 +193,31 @@ export default function EditDoctorBasicDetails({
     }
   };
 
+  // const handleChange = (
+  //   e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  //   setFormError((prev) => ({ ...prev, [name]: "" }));
+  // };
+
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setFormError((prev) => ({ ...prev, [name]: "" }));
+
+    onChange({
+      ...(name === "Name" && { name: value }),
+      ...(name === "Speciality" && { specialty: value }),
+      ...(name === "Experience" && { yearsOfExperience: Number(value) }),
+      ...(name === "date" && { dob: value }),
+      ...(name === "gender" && { gender: value }),
+      ...(name === "Email" && { email: value }),
+      ...(name === "About" && { about: value }),
+      ...(name === "Fees" && { fees: Number(value) }),
+    });
   };
 
   const yearOptions = Array.from({ length: 51 }, (_, i) => {
@@ -276,8 +297,19 @@ export default function EditDoctorBasicDetails({
     }
   };
 
+  // const handleSave = () => {
+  //   setSelectedImage(previewImage); // save modal preview to actual profile
+  //   setShowModal(false);
+  // };
   const handleSave = () => {
-    setSelectedImage(previewImage); // save modal preview to actual profile
+    if (!previewImage) return;
+
+    setSelectedImage(previewImage);
+
+    onChange({
+      profilePicture: previewImage,
+    });
+
     setShowModal(false);
   };
 
@@ -310,15 +342,41 @@ export default function EditDoctorBasicDetails({
   };
 
   //   qualification
+  // const handleAddQualification = () => {
+  //   setQualifications([
+  //     ...qualifications,
+  //     { degree: "", field: "", university: "", startYear: "", endYear: "" },
+  //   ]);
+  //   setFormErrors([
+  //     ...formErrors,
+  //     { degree: "", field: "", university: "", startYear: "", endYear: "" },
+  //   ]);
+  // };
+  const mapQualificationsForApi = (quals: Qualification[]) => {
+    return quals.map((q) => ({
+      degree: q.degree,
+      fieldOfStudy: q.field,
+      university: q.university,
+      startYear: Number(q.startYear),
+      endYear: Number(q.endYear),
+    }));
+  };
+
   const handleAddQualification = () => {
-    setQualifications([
+    const updatedQuals = [
       ...qualifications,
       { degree: "", field: "", university: "", startYear: "", endYear: "" },
-    ]);
+    ];
+
+    setQualifications(updatedQuals);
     setFormErrors([
       ...formErrors,
       { degree: "", field: "", university: "", startYear: "", endYear: "" },
     ]);
+
+    onChange({
+      qualifications: mapQualificationsForApi(updatedQuals),
+    });
   };
 
   return (
@@ -477,13 +535,7 @@ export default function EditDoctorBasicDetails({
                 name="Name"
                 type="text"
                 value={formData.Name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setFormData({ ...formData, Name: e.target.value });
-                  if (formError.Name) {
-                    // typing in hide error
-                    setFormError({ ...formError, Name: "" });
-                  }
-                }}
+                onChange={handleChange}
                 onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
                 placeholder="Name"
                 required={true}
@@ -502,13 +554,7 @@ export default function EditDoctorBasicDetails({
                 name="Speciality"
                 type="text"
                 value={formData.Speciality}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setFormData({ ...formData, Speciality: e.target.value });
-                  if (formError.Speciality) {
-                    // typing in hide error
-                    setFormError({ ...formError, Speciality: "" });
-                  }
-                }}
+                onChange={handleChange}
                 onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
                 placeholder="Speciality"
                 required={true}
@@ -525,13 +571,7 @@ export default function EditDoctorBasicDetails({
                 name="Experience"
                 type="text"
                 value={formData.Experience}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setFormData({ ...formData, Experience: e.target.value });
-                  if (formError.Experience) {
-                    // typing in hide error
-                    setFormError({ ...formError, Experience: "" });
-                  }
-                }}
+                onChange={handleChange}
                 onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
                 placeholder="Year Of Experience"
                 required={true}
@@ -549,13 +589,7 @@ export default function EditDoctorBasicDetails({
                 label="DOB"
                 name="date"
                 value={formData.date}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  handleChange(e);
-                  if (formError.date) {
-                    // typing in hide error
-                    setFormError({ ...formError, date: "" });
-                  }
-                }}
+                onChange={handleChange}
                 onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
                 required={true}
                 disabled={false}
@@ -568,13 +602,7 @@ export default function EditDoctorBasicDetails({
                 name="gender"
                 value={formData.gender}
                 // defaultValue="female"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  handleChange(e);
-                  if (formError.gender) {
-                    // typing in hide error
-                    setFormError({ ...formError, gender: "" });
-                  }
-                }}
+                onChange={handleChange}
                 error={formError.gender}
                 required
                 options={[
@@ -591,20 +619,25 @@ export default function EditDoctorBasicDetails({
                 label="Contact Number"
                 value={formData.Contact}
                 inputMode="numeric"
+                // onChange={(phone: string) => {
+                //   let value = phone.replace(/\D/g, "");
+
+                //   if (value.length > 10) {
+                //     value = value.slice(0, 10);
+                //   }
+
+                //   setFormData({ ...formData, Contact: value });
+
+                //   if (formError.Contact) {
+                //     setFormError({ ...formError, Contact: "" });
+                //   }
+                // }}
                 onChange={(phone: string) => {
-                  let value = phone.replace(/\D/g, "");
+                  let value = phone.replace(/\D/g, "").slice(0, 10);
 
-                  if (value.length > 10) {
-                    value = value.slice(0, 10);
-                  }
-
-                  // ✅ Update formData
                   setFormData({ ...formData, Contact: value });
 
-                  // ✅ Hide error while typing
-                  if (formError.Contact) {
-                    setFormError({ ...formError, Contact: "" });
-                  }
+                  onChange({ contactNumber: value });
                 }}
                 required
                 error={formError.Contact}
@@ -617,13 +650,14 @@ export default function EditDoctorBasicDetails({
                 name="Email"
                 type="text"
                 value={formData.Email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setFormData({ ...formData, Email: e.target.value });
-                  if (formError.Email) {
-                    // typing in hide error
-                    setFormError({ ...formError, Email: "" });
-                  }
-                }}
+                // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                //   setFormData({ ...formData, Email: e.target.value });
+                //   if (formError.Email) {
+                //     // typing in hide error
+                //     setFormError({ ...formError, Email: "" });
+                //   }
+                // }}
+                onChange={handleChange}
                 onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
                 placeholder="Email"
                 required={true}
@@ -640,13 +674,14 @@ export default function EditDoctorBasicDetails({
                 label="About"
                 name="About"
                 value={formData.About}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                  handleChange(e);
-                  if (formError.About) {
-                    // typing in hide error
-                    setFormError({ ...formError, About: "" });
-                  }
-                }}
+                // onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                //   handleChange(e);
+                //   if (formError.About) {
+                //     // typing in hide error
+                //     setFormError({ ...formError, About: "" });
+                //   }
+                // }}
+                onChange={handleChange}
                 onBlur={(e: React.FocusEvent<HTMLTextAreaElement>) => {}}
                 // placeholder="About"
                 required={true}
@@ -668,12 +703,19 @@ export default function EditDoctorBasicDetails({
             <InputSelectMultiSelect
               name="services"
               values={formData.services}
+              // onChange={(values: ServiceOption[]) => {
+              //   setFormData((prev) => ({
+              //     ...prev,
+              //     services: values,
+              //   }));
+              //   setFormError((prev) => ({ ...prev, services: "" }));
+              // }}
               onChange={(values: ServiceOption[]) => {
-                setFormData((prev) => ({
-                  ...prev,
-                  services: values,
-                }));
-                setFormError((prev) => ({ ...prev, services: "" }));
+                setFormData((prev) => ({ ...prev, services: values }));
+
+                onChange({
+                  servicesOffered: values.map((v) => v.value),
+                });
               }}
               options={[
                 {
@@ -699,13 +741,14 @@ export default function EditDoctorBasicDetails({
               name="Fees"
               type="text"
               value={formData.Fees}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setFormData({ ...formData, Fees: e.target.value });
-                if (formError.Fees) {
-                  // typing in hide error
-                  setFormError({ ...formError, Fees: "" });
-                }
-              }}
+              // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              //   setFormData({ ...formData, Fees: e.target.value });
+              //   if (formError.Fees) {
+              //     // typing in hide error
+              //     setFormError({ ...formError, Fees: "" });
+              //   }
+              // }}
+              onChange={handleChange}
               onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
               placeholder="Enter Amount"
               required={true}
@@ -736,9 +779,15 @@ export default function EditDoctorBasicDetails({
                     );
                     const updatedErrors = formErrors.filter(
                       (_, i) => i !== index
-                    ); // keep errors in sync
+                    );
+
                     setQualifications(updatedQuals);
                     setFormErrors(updatedErrors);
+
+                    // 🔥 SYNC WITH API / PARENT
+                    onChange({
+                      qualifications: mapQualificationsForApi(updatedQuals),
+                    });
                   }}
                 >
                   -
@@ -761,15 +810,28 @@ export default function EditDoctorBasicDetails({
                     name="degree"
                     type="text"
                     value={q.degree}
+                    // onChange={(e) => {
+                    //   const updatedQuals = [...qualifications];
+                    //   updatedQuals[index].degree = e.target.value;
+                    //   setQualifications(updatedQuals);
+
+                    //   // clear error only for this field/index
+                    //   const updatedErrors = [...formErrors];
+                    //   updatedErrors[index].degree = "";
+                    //   setFormErrors(updatedErrors);
+                    // }}
                     onChange={(e) => {
                       const updatedQuals = [...qualifications];
                       updatedQuals[index].degree = e.target.value;
                       setQualifications(updatedQuals);
 
-                      // clear error only for this field/index
                       const updatedErrors = [...formErrors];
                       updatedErrors[index].degree = "";
                       setFormErrors(updatedErrors);
+
+                      onChange({
+                        qualifications: mapQualificationsForApi(updatedQuals),
+                      });
                     }}
                     placeholder="Degree"
                     required

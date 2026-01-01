@@ -31,6 +31,7 @@ import {
   SuccessModalBookAppointment,
 } from "./BookAppointment";
 import DeleteConfirmModal from "../ui/DeleteConfirmModal";
+import { getAppointments } from "@/utlis/apis/apiHelper";
 export type ConsultationStatus =
   | "Confirmed"
   | "Completed"
@@ -64,14 +65,16 @@ export default function DoctorAppointment() {
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
   //   const [filteredData, setFilteredData] = useState(appointement);
-  const [filteredData, setFilteredData] =
-    useState<AppointmentData[]>(initialAppointments);
+  // const [filteredData, setFilteredData] =
+  //   useState<AppointmentData[]>(initialAppointments);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("All Time");
   const [BookAppointmentModal, setBookAppointmentModal] = useState(false);
   const [showSuccessModalBook, setShowSuccessModalBook] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [appointments, setAppointments] = useState<AppointmentData[]>([]);
+  const [filteredData, setFilteredData] = useState<AppointmentData[]>([]);
+
   const [editData, setEditData] = useState<AppointmentData | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -96,22 +99,14 @@ export default function DoctorAppointment() {
     setSelectedId(null);
   };
   useEffect(() => {
-    // First filter on raw appointement array
-    let data = appointement;
+    let data = appointments;
 
-    if (filter === "active") {
-      data = data.filter((item) => item.status === "Active");
-    } else if (filter === "cancelled") {
-      data = data.filter((item) => item.status === "Inactive");
-    }
-
-    if (searchQuery.trim() !== "") {
+    if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       data = data.filter(
         (item) =>
           item.name.toLowerCase().includes(q) ||
-          item.time.toLowerCase().includes(q) ||
-          item.mobile.toLowerCase().includes(q)
+          item.phone.toLowerCase().includes(q)
       );
     }
 
@@ -119,59 +114,79 @@ export default function DoctorAppointment() {
       const now = new Date();
 
       data = data.filter((item) => {
-        if (!item.date) return false;
-        const itemDate = new Date(item.date);
+        const itemDate = new Date(item.appointmentDate);
         if (isNaN(itemDate.getTime())) return false;
 
         if (timeFilter === "Today") {
           return itemDate.toDateString() === now.toDateString();
         }
-        if (timeFilter === "This Week") {
-          const weekStart = new Date(now);
-          weekStart.setDate(now.getDate() - now.getDay());
-          weekStart.setHours(0, 0, 0, 0);
 
-          const weekEnd = new Date(weekStart);
-          weekEnd.setDate(weekStart.getDate() + 7);
-
-          return itemDate >= weekStart && itemDate < weekEnd;
-        }
         if (timeFilter === "This Month") {
           return (
             itemDate.getMonth() === now.getMonth() &&
             itemDate.getFullYear() === now.getFullYear()
           );
         }
+
         return true;
       });
     }
 
-    // Map raw data to AppointmentData[] here before setting state!
-    const mappedData: AppointmentData[] = data.map((item) => ({
-      status: item.status,
-      visit: item.visit ?? [],
-      name: item.name,
-      image: item.image,
-      id: item.id,
-      appointmentId: String(item.id),
-      type: item.type ?? "",
-      reasonForVisit: item.visit ?? [],
-      appointmentDate: item.date ?? "",
-      appointmentTime: item.time ?? "",
-      forTime: item.for ?? "",
-      additionalNote: item.additionalNote ?? "",
-      patientName: item.name,
-      phone: item.mobile,
-      email: item.email ?? "",
-    }));
+    setFilteredData(data);
+  }, [appointments, searchQuery, timeFilter]);
 
-    setFilteredData(mappedData);
-  }, [filter, searchQuery, timeFilter]);
+  const fetchAppointments = async () => {
+    try {
+      const res = await getAppointments({
+        view: "list",
+        doctorId: "68b5723f5e662f13011c00ff",
+      });
+
+      const mappedData: AppointmentData[] = res.data.data.map(
+        (item: any): AppointmentData => ({
+          id: item.appointId,
+          appointmentId: String(item.appointId),
+
+          status: item.status,
+          visit: item.reason ?? [],
+
+          name: item.patient.name,
+          patientName: item.patient.name,
+          phone: item.patient.contactNumber,
+          email: item.patient.contactEmail,
+
+          // image: item.patient.profileImage || "",
+          image: item.patient.profileImage?.trim() || null,
+
+          appointmentDate: item.appointmentDate,
+          appointmentTime: item.appointmentTime,
+
+          type: "",
+          forTime: "",
+          additionalNote: item.additionalNote ?? "",
+          reasonForVisit: [],
+        })
+      );
+
+      setAppointments(mappedData);
+      setFilteredData(mappedData);
+    } catch (error) {
+      console.error("Failed to fetch appointments", error);
+    }
+  };
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
   const openDeleteModal = (id: number) => {
     console.log("DELETE CLICKED", id);
     setSelectedId(id);
     setShowDeleteModal(true);
   };
+  // Check if string is a valid non-empty URL or path
+  const isValidImageSrc = (src: unknown): src is string => {
+    return typeof src === "string" && src.trim() !== "";
+  };
+
   const columns: ColumnDef<AppointmentData>[] = [
     {
       header: "#",
@@ -193,7 +208,7 @@ export default function DoctorAppointment() {
           >
             <div className="d-flex align-items-center gap-2">
               {/* Profile image wrapper */}
-              <div
+              {/* <div
                 className="position-relative"
                 style={{ width: "36px", height: "36px" }}
               >
@@ -212,6 +227,41 @@ export default function DoctorAppointment() {
                     width={40}
                     height={40}
                     className="rounded-circle position-relative border"
+                  />
+                )}
+              </div> */}
+              <div
+                className="position-relative"
+                style={{ width: "36px", height: "36px" }}
+              >
+                {isValidImageSrc(imgSrc) ? (
+                  // If string and non-empty, render regular <img> tag (or Next.js Image if you prefer)
+                  <img
+                    src={imgSrc}
+                    alt={name}
+                    width={36}
+                    height={36}
+                    className="rounded-circle border"
+                  />
+                ) : imgSrc ? (
+                  // If not string but truthy (assume StaticImageData), render Next.js <Image>
+                  <Image
+                    src={imgSrc}
+                    alt={name}
+                    width={36}
+                    height={36}
+                    className="rounded-circle border"
+                  />
+                ) : (
+                  // If no valid image source, render nothing or a placeholder
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: "50%",
+                      backgroundColor: "#ccc",
+                    }}
+                    aria-label="No image available"
                   />
                 )}
               </div>

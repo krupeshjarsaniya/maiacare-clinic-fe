@@ -694,7 +694,7 @@ export interface OtherDocument {
   fileSize?: number;
   updatedAt?: string;
   reportName?: string;
-  filePath?: string;
+  filePath: string;
   originalName?: string;
 }
 

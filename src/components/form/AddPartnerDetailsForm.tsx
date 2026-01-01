@@ -81,7 +81,14 @@ type FormError = Partial<Record<keyof FertilityAssessmentType, string>>;
 
 type FertilityAssessmentProps = {
   formData: FertilityAssessmentPartner | EditFertilityAssessment;
-  setFormData: React.Dispatch<React.SetStateAction<FertilityAssessmentPartner>> | React.Dispatch<React.SetStateAction<EditFertilityAssessment>> | ((value: React.SetStateAction<FertilityAssessmentPartner | EditFertilityAssessment>) => void);
+  setFormData:
+    | React.Dispatch<React.SetStateAction<FertilityAssessmentPartner>>
+    | React.Dispatch<React.SetStateAction<EditFertilityAssessment>>
+    | ((
+        value: React.SetStateAction<
+          FertilityAssessmentPartner | EditFertilityAssessment
+        >
+      ) => void);
   setFormError: React.Dispatch<React.SetStateAction<FormError>>;
   formError?: FormError;
 };
@@ -231,31 +238,31 @@ export function BasicDetailsForm({
     return errors;
   };
 
- const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  const errors = validateForm(formData);
-  setFormError(errors);
+    const errors = validateForm(formData);
+    setFormError(errors);
 
-  if (Object.keys(errors).length === 0) {
-    const updatedFormData: PartnerBasicDetailsForm = {
-      patientId,
-      partnerName: formData.basic_detail_name,
-      partnerGender: formData.basic_detail_gender,
-      partnerAge: formData.basic_detail_age,
-      partnerContactNumber: formData.basic_detail_phone,
-      partnerEmail: formData.basic_detail_email,
-      partnerImage: formData.profileImage,
-    };
+    if (Object.keys(errors).length === 0) {
+      const updatedFormData: PartnerBasicDetailsForm = {
+        patientId,
+        partnerName: formData.basic_detail_name,
+        partnerGender: formData.basic_detail_gender,
+        partnerAge: formData.basic_detail_age,
+        partnerContactNumber: formData.basic_detail_phone,
+        partnerEmail: formData.basic_detail_email,
+        partnerImage: formData.profileImage,
+      };
 
-    console.log("Partner Basic Details:", updatedFormData);
+      console.log("Partner Basic Details:", updatedFormData);
 
-    setPartnerBasicDetails?.(updatedFormData);
-    setFormError(initialFormError);
-    setActiveTab("medical history");
-    onSuccess?.();
-  }
-};
+      setPartnerBasicDetails?.(updatedFormData);
+      setFormError(initialFormError);
+      setActiveTab("medical history");
+      onSuccess?.();
+    }
+  };
 
   return (
     <>
@@ -458,40 +465,28 @@ export function MedicalHistoryForm({
     medication: formDataMedicalHistory?.medications?.status || "No",
     medicationcontent:
       formDataMedicalHistory?.medications?.medicationsDetails || "",
-    surgeries: formDataMedicalHistory?.surgeries?.status || "Yes",
-
-    // surgeriesContent: initialData?.surgeries?.surgeriesDetails || "",
+    surgeries: formDataMedicalHistory?.surgeries?.status || "No",
     surgeriescontent: formDataMedicalHistory?.surgeries?.surgeriesDetails || "",
 
-    // medicalCondition: initialData?.conditions || [],
-    // medicalCondition: Array.isArray(formDataMedicalHistory?.conditions)
-    //   ? formDataMedicalHistory.conditions.map((item: any) => ({
-    //       id:
-    //         medicalConditionOptions.find((opt) => opt.value === item)?.id ||
-    //         item,
-    //       value: item,
-    //       label: item,
-    //     }))
-    //   : [],
     medicalCondition: Array.isArray(formDataMedicalHistory?.conditions)
-  ? formDataMedicalHistory.conditions.map((item: string) => ({
-      id:
-        medicalConditionOptions.find((opt) => opt.value === item)?.id ?? item,
-      value: item,
-      label: item,
-    }))
-  : [],
-
+      ? formDataMedicalHistory.conditions.map((item: string) => ({
+          id:
+            medicalConditionOptions.find((opt) => opt.value === item)?.id ??
+            item,
+          value: item,
+          label: item,
+        }))
+      : [],
 
     familyMedicalHistory: formDataMedicalHistory?.familyHistory || "",
     // lifestyle: initialData?.lifestyle || [],
     lifestyle: Array.isArray(formDataMedicalHistory?.lifestyle)
-  ? formDataMedicalHistory.lifestyle.map((item: string) => ({
-      id: lifestyleOptions.find((opt) => opt.value === item)?.id ?? item,
-      value: item,
-      label: item,
-    }))
-  : [],
+      ? formDataMedicalHistory.lifestyle.map((item: string) => ({
+          id: lifestyleOptions.find((opt) => opt.value === item)?.id ?? item,
+          value: item,
+          label: item,
+        }))
+      : [],
 
     stress: formDataMedicalHistory?.stressLevel || "High",
     exercise: formDataMedicalHistory?.exerciseFrequency || "Rarely",
@@ -506,10 +501,13 @@ export function MedicalHistoryForm({
   const validateForm = (data: MedicalHistoryType): FormError => {
     const errors: FormError = {};
 
-    if (data.medication === "yes" && !data.medicationcontent.trim())
+    if (data.medication === "Yes" && !data.medicationcontent.trim()) {
       errors.medicationcontent = "Medication Content is required";
-    if (data.surgeries === "yes" && !data.surgeriescontent.trim())
+    }
+
+    if (data.surgeries === "Yes" && !data.surgeriescontent.trim()) {
       errors.surgeriescontent = "Surgeries Content is required";
+    }
     if (!data.medicalCondition.length)
       errors.medicalCondition = "Medical Condition is required";
     if (!data.lifestyle.length) errors.lifestyle = "Lifestyle is required";
@@ -621,56 +619,34 @@ export function MedicalHistoryForm({
         ]),
       };
 
-      if (formDataMedicalHistory && formDataMedicalHistory?.clinicId) {
-        // console.log("edit api call", updatedFormDataForEdit);
+      const isEditMode = Boolean(formDataMedicalHistory?._id);
 
+      if (isEditMode) {
         updatePatientPartnerMedicalHistory(updatedFormDataForEdit)
           .then((response) => {
             if (response.data.status) {
-              // console.log("PUT medical history response:", response);
-
               toast.success(response.data.message, {
                 icon: <BsInfoCircle size={22} color="white" />,
               });
 
               fetchPatientData?.();
               setEditMedicalHistory?.(false);
-            } else {
-              console.log("error");
             }
           })
           .catch((err) => {
-            console.log("error", err?.response);
-
-            const apiError = err?.response?.data;
-
-            // extract dynamic error message
-            const fieldError = apiError?.details?.errors
-              ? Object.values(apiError.details.errors)[0] // pick first field error
-              : null;
-
-            const message =
-              fieldError ||
-              apiError?.details?.message ||
-              apiError?.message ||
-              "Something went wrong";
-
-            toast.error(message);
+            toast.error(err?.response?.data?.message || "Something went wrong");
           });
       } else {
-        console.log("FormData", updatedFormData);
-        // setActiveTab("physical & fertility assessment");
-
-        setPartnerMedicalHistory?.(updatedFormData); // set form object and call api last form
+        setPartnerMedicalHistory?.(updatedFormData);
         setActiveTab("physical & fertility assessment");
-        setMedicalHistoryFormError(MedicalHistoryFormError);
+        setMedicalHistoryFormError({});
         onSuccess?.();
       }
     }
   };
   return (
     <>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Row className="g-md-2 g-1">
           <Col md={12}>
             <RadioButtonGroup
@@ -702,7 +678,8 @@ export function MedicalHistoryForm({
             <RadioButtonGroup
               label="Have you had any surgeries?"
               name="surgeries"
-              value={FormData.surgeries || "Yes"}
+              value={FormData.surgeries}
+              // value={FormData.surgeries || "Yes"}
               onChange={(e) => handleChange(e)}
               required={true}
               error={medicalHistoryFormError.surgeries}
@@ -716,7 +693,7 @@ export function MedicalHistoryForm({
               <InputFieldGroup
                 type="text"
                 value={FormData.surgeriescontent}
-                name="surgeriesContent"
+                name="surgeriescontent"
                 onChange={handleChange}
                 error={medicalHistoryFormError.surgeriescontent}
                 placeholder="Enter surgeries"
@@ -873,10 +850,10 @@ export function MedicalHistoryForm({
               variant="default"
               disabled={false}
               type="submit"
-              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                e.preventDefault();
-                handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
-              }}
+              // onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              //   e.preventDefault();
+              //   handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
+              // }}
             >
               Save
             </Button>
@@ -1131,7 +1108,7 @@ export function FertilityAssessment({
               <InputFieldGroup
                 type="text"
                 value={formData.semenAnalysisDetails}
-                name="semenAnalysisContent"
+                name="semenAnalysisDetails"
                 onChange={handleChange}
                 error={formError?.semenAnalysisContent}
                 placeholder="If yes, provide details if available"
@@ -1157,7 +1134,7 @@ export function FertilityAssessment({
               <InputFieldGroup
                 type="text"
                 value={formData.fertilityIssuesDetails}
-                name="fertilityIssuesContent"
+                name="fertilityIssuesDetails"
                 onChange={handleChange}
                 error={formError?.fertilityIssuesContent}
                 placeholder="If yes, provide details if available"
@@ -1183,7 +1160,7 @@ export function FertilityAssessment({
               <InputFieldGroup
                 type="text"
                 value={formData.fertilityTreatmentsDetails}
-                name="fertilityTreatmentContent"
+                name="fertilityTreatmentsDetails"
                 onChange={handleChange}
                 error={formError?.fertilityTreatmentContent}
                 placeholder="If yes, provide details if available"
@@ -1209,7 +1186,7 @@ export function FertilityAssessment({
               <InputFieldGroup
                 type="text"
                 value={formData.surgeriesDetails}
-                name="surgeriesContent"
+                name="surgeriesDetails"
                 onChange={handleChange}
                 error={formError?.surgeriesContent}
                 placeholder="If yes, provide details if available"

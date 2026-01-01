@@ -22,7 +22,11 @@ import Modal from "../ui/Modal";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-import { DoctorDetails, KycDetails } from "@/utlis/types/interfaces";
+import {
+  DoctorDetails,
+  KycDetails,
+  OtherDocument,
+} from "@/utlis/types/interfaces";
 
 export default function EditDoctorKycDetails({
   onNext,
@@ -55,6 +59,8 @@ export default function EditDoctorKycDetails({
   const panFileRef = useRef<HTMLInputElement | null>(null);
   const aadharFileRef = useRef<HTMLInputElement>(null);
   const licenceFileRef = useRef<HTMLInputElement>(null);
+  const [deletedDocs, setDeletedDocs] = useState<string[]>([]);
+
   type FormData = {
     Adcard: string;
     Pancard: string;
@@ -75,11 +81,12 @@ export default function EditDoctorKycDetails({
       ? data.kycDetails[0]
       : data.kycDetails;
   }, [data]);
+
   useEffect(() => {
     if (!normalizedKyc) return;
 
     setFormData({
-      Adcard: normalizedKyc.aadharNumber || "",
+      Adcard: normalizedKyc.aadharNumber?.replace(/\s/g, "") || "",
       Pancard: normalizedKyc.panNumber || "",
       LicNumber: normalizedKyc.licenceNumber || "",
     });
@@ -155,6 +162,13 @@ export default function EditDoctorKycDetails({
       .slice(0, 12) // max 12 digits
       .replace(/(\d{4})(?=\d)/g, "$1 "); // add space after every 4 digits
   };
+  const [editedKycDetails, setEditedKycDetails] = useState<KycDetails | null>(
+    null
+  );
+
+  const handleKycSave = (kyc: KycDetails) => {
+    setEditedKycDetails(kyc);
+  };
 
   const validateForm = (data: FormData): FormError => {
     const errors: FormError = {};
@@ -205,26 +219,23 @@ export default function EditDoctorKycDetails({
     if (Object.keys(errors).length !== 0) return false;
 
     const finalKyc: KycDetails = {
-      aadharNumber: formData.Adcard,
-      panNumber: formData.Pancard,
-      licenceNumber: formData.LicNumber,
+      aadharNumber: formData.Adcard.replace(/\s/g, ""),
+      panNumber: formData.Pancard.trim(),
+      licenceNumber: formData.LicNumber.trim(),
 
       aadharFile: aadharFile?.preview || aadharFile?.name || "",
       panFile: panFile?.preview || panFile?.name || "",
       licenceFile: licenceFile?.preview || licenceFile?.name || "",
-
-      // ✅ FIXED otherDocuments
+      //  deletedOtherDocuments: deletedDocs,
       otherDocuments: completedFiles.map((f) => ({
-        reportName: f.reportName || "Document",
-        filePath: f.preview?.replace(/^blob:/, "") || f.name || "",
-        fileSize: f.actualSize ? Number(f.actualSize) : 0, // ✅ NUMBER
-        originalName: f.name || "document.pdf",
-        uploadedAt: f.uploadedAt
-          ? new Date(f.uploadedAt).toISOString()
-          : new Date().toISOString(),
+        reportName: f.reportName,
+        filePath: f.size, // returned after upload
+        fileSize: Number(f.actualSize),
+        originalName: f.name,
+        uploadedAt: new Date().toISOString(),
       })),
     };
-    
+
     console.log("KYC Payload:", finalKyc);
     onSave(finalKyc);
     return true;
@@ -489,37 +500,57 @@ export default function EditDoctorKycDetails({
     }, 300);
   };
 
-  const handleSave = () => {
-    const newErrors: { [key: number]: string } = {};
+  // const handleSave = () => {
+  //   const newErrors: { [key: number]: string } = {};
 
-    // ✅ Validation: Required + unique report names
-    const reportNames: string[] = [];
-    uploadedFiles.forEach((file, index) => {
-      if (!file.reportName.trim()) {
-        newErrors[index] = "Report Name is required";
-      } else if (reportNames.includes(file.reportName.trim())) {
-        newErrors[index] = "Report Name must be unique";
-      } else {
-        reportNames.push(file.reportName.trim());
-      }
+  //   // ✅ Validation: Required + unique report names
+  //   const reportNames: string[] = [];
+  //   uploadedFiles.forEach((file, index) => {
+  //     if (!file.reportName.trim()) {
+  //       newErrors[index] = "Report Name is required";
+  //     } else if (reportNames.includes(file.reportName.trim())) {
+  //       newErrors[index] = "Report Name must be unique";
+  //     } else {
+  //       reportNames.push(file.reportName.trim());
+  //     }
+  //   });
+
+  //   setErrors(newErrors);
+
+  //   if (Object.keys(newErrors).length > 0) {
+  //     return;
+  //   }
+  //   // ✅ Move completed files
+  //   const completed = uploadedFiles.filter((f) => f.status === "completed");
+  //   // setCompletedFiles((prev) => [...prev, ...completed]);
+  //   setCompletedFiles(completed);
+  //   setUploadedFiles([]);
+  //   setShowModal(false);
+
+  //   // ✅ Toast success message
+  //   toast.success("Files saved successfully!", {
+  //     position: "top-right", // ✅ Right side
+  //     // autoClose: 3000,
+  //   });
+  // };
+  const handleSave = () => {
+    const completed = uploadedFiles.filter((f) => f.status === "completed");
+
+    // ✅ Merge safely with existing UI docs
+    setCompletedFiles((prev) => {
+      const map = new Map<string, UploadedFile>();
+
+      [...prev, ...completed].forEach((file) => {
+        map.set(file.name, file); // unique by name
+      });
+
+      return Array.from(map.values());
     });
 
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length > 0) {
-      return; // stop saving
-    }
-    // ✅ Move completed files
-    const completed = uploadedFiles.filter((f) => f.status === "completed");
-    setCompletedFiles((prev) => [...prev, ...completed]);
     setUploadedFiles([]);
     setShowModal(false);
 
-    // ✅ Toast success message
-    toast.success("Files saved successfully!", {
-      position: "top-right", // ✅ Right side
-      // autoClose: 3000,
-    });
+    toast.success("Files saved successfully!");
   };
 
   const handleClose = () => {
@@ -888,11 +919,12 @@ export default function EditDoctorKycDetails({
                     border: "none",
                     cursor: "pointer",
                   }}
-                  onClick={() =>
+                  onClick={() => {
+                    setDeletedDocs((prev) => [...prev, file.preview || ""]);
                     setCompletedFiles((prev) =>
                       prev.filter((_, i) => i !== idx)
-                    )
-                  }
+                    );
+                  }}
                 >
                   <div className="border profile-card-boeder rounded-2 d-inline-flex p-1">
                     <Image src={Trash} alt="delete" width={18} height={18} />

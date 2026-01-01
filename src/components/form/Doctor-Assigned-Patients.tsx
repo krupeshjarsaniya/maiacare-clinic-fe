@@ -46,38 +46,63 @@ export default function DoctorAssignedPatients({
     const updated = filteredData.filter((item) => item.id !== id);
     setFilteredData(updated);
   };
-  const fetchallLeave = () => {
+
+  const fetchallassignedpatients = async (): Promise<void> => {
     if (!doctorIdShow) return;
 
     setLoading(true);
 
-    getAssigned({
-      doctorId: doctorIdShow,
-      limit: 10,
-      page: activePage,
-    })
-      .then((response) => {
-        if (response.data.status) {
-          setAllPatients(response.data.data); // ✅ SOURCE DATA
-          setTotalPages(response.data.pages);
-        }
-      })
-      .catch((err) => {
-        toast.error(err?.response?.data?.message || "Something went wrong");
-      })
-      .finally(() => setLoading(false));
+    try {
+      const response = await getAssigned({
+        doctorId: doctorIdShow,
+        limit: 10,
+        page: activePage,
+      });
+
+      const apiData = response.data;
+
+      console.log("FULL RESPONSE:", apiData);
+
+      if (apiData.success && Array.isArray(apiData.data)) {
+        const normalized: AssignedPatients[] = apiData.data.map(
+          (item: any): AssignedPatients => ({
+            id: item.id,
+            name: item.patient.name,
+            mobile: String(item.patient.contactNumber),
+            email: item.patient.email,
+            pin: item.patient.pincode,
+            image: item.patient.profileImage || patient,
+            status: item.status === 1 ? "Active" : "Inactive",
+            visit: item.appointmentDate ?? "--",
+            treatmenttype: item.reason ?? [],
+            date: item.appointmentDate ?? "",
+          })
+        );
+
+        setAllPatients(normalized);
+        setTotalPages(apiData.totalPages);
+      } else {
+        setAllPatients([]);
+      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
+
   useEffect(() => {
     let data = [...allPatients];
 
-    // 🔹 filter by status (query param)
+    // Filter by query param status
     if (filter === "active") {
       data = data.filter((item) => item.status === "Active");
     } else if (filter === "cancelled") {
       data = data.filter((item) => item.status === "Inactive");
     }
 
-    // 🔹 filter by search
+    // Filter by search query
     if (searchQuery.trim() !== "") {
       const q = searchQuery.toLowerCase();
       data = data.filter(
@@ -88,12 +113,12 @@ export default function DoctorAssignedPatients({
       );
     }
 
-    // 🔹 filter by time
+    // Filter by time
     if (timeFilter !== "All Time") {
       const now = new Date();
 
       data = data.filter((item) => {
-        if (!item.date) return false; // skip if no date
+        if (!item.date) return false;
         const itemDate = new Date(item.date);
         if (isNaN(itemDate.getTime())) return false;
 
@@ -103,11 +128,11 @@ export default function DoctorAssignedPatients({
 
         if (timeFilter === "This Week") {
           const weekStart = new Date(now);
-          weekStart.setDate(now.getDate() - now.getDay()); // Sunday
+          weekStart.setDate(now.getDate() - now.getDay());
           weekStart.setHours(0, 0, 0, 0);
 
           const weekEnd = new Date(weekStart);
-          weekEnd.setDate(weekStart.getDate() + 7); // Next Sunday
+          weekEnd.setDate(weekStart.getDate() + 7);
 
           return itemDate >= weekStart && itemDate < weekEnd;
         }
@@ -124,17 +149,14 @@ export default function DoctorAssignedPatients({
     }
 
     setFilteredData(data);
-  }, [filter, searchQuery, timeFilter]);
+  }, [allPatients, filter, searchQuery, timeFilter]);
 
   useEffect(() => {
-    if (
-      doctorIdShow !== undefined &&
-      doctorIdShow !== null &&
-      doctorIdShow !== ""
-    ) {
-      fetchallLeave();
+    if (doctorIdShow) {
+      fetchallassignedpatients();
     }
   }, [doctorIdShow, activePage]);
+
   const columns: ColumnDef<AssignedPatients>[] = [
     {
       header: "#",
@@ -205,7 +227,9 @@ export default function DoctorAssignedPatients({
       header: "Treatment Type",
       accessorKey: "treatmenttype",
       cell: (info) => {
-        const treatments = info.getValue() as string[]; // array of strings
+        // const treatments = info.getValue() as string[];
+        // // array of strings
+        const treatments = (info.getValue() ?? []) as string[];
         return (
           <div className="d-flex align-items-center gap-1">
             {treatments.map((treat, index) => (
