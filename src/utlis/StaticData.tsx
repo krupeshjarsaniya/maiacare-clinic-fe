@@ -24,7 +24,7 @@ import patient3 from "../assets/images/patient3.png";
 import patient4 from "../assets/images/patient4.png";
 import patient5 from "../assets/images/patient5.png";
 import patient6 from "../assets/images/patient6.png";
-import clinicimg from "../assets/images/clinic logo.png";
+import clinicimg from "../assets/images/cliniclogo.png";
 import patient from "../assets/images/patient_com.png";
 import patientprofile from "../assets/images/patient_2.png";
 // export type ConsultationStatus = "Active" | "Inactive" | "On Leave";
@@ -615,7 +615,7 @@ export const consultationData: ConsultationEntry[] = [
     status: "Active",
     image: patient,
     date: "2025-09-15",
-    id: 0
+    id: 0,
   },
   {
     _id: 2,
@@ -1092,16 +1092,16 @@ export const TempTreatmentSteps = [
   },
 ];
 export interface PatientPaymentData {
-   transactionId: string;
-    serviceType: string;
-    date:string;
-    time: string;
-    paymentMode: string;
-    amount: string;
-    status: "Refunded" | "Pending" | "Paid";
-    actions: string;
+  transactionId: string;
+  serviceType: string;
+  date: string;
+  time: string;
+  paymentMode: string;
+  amount: string;
+  status: "Refunded" | "Pending" | "Paid";
+  actions: string;
 }
-export const PaymentHistoryData:PatientPaymentData[]  = [
+export const PaymentHistoryData: PatientPaymentData[] = [
   {
     transactionId: "TXN1234567890",
     serviceType: "Treatment",
@@ -1111,7 +1111,6 @@ export const PaymentHistoryData:PatientPaymentData[]  = [
     amount: "₹1,200",
     status: "Pending",
     actions: "View",
- 
   },
   {
     transactionId: "TXN1234567891",
@@ -1165,7 +1164,11 @@ export const partnerDetailData = {
       { value: "Lactose Intolerant", label: "Lactose Intolerant" },
     ],
     familyMedicalHistory: "Mother had endometriosis",
-    lifestyle: [{label: "Non-smoker" , value:"Non-smoker"}, {label: "Occasional alcohol", value:"Occasional alcohol"}, {label: "Vegetarian diet", value:"Vegetarian diet"}],
+    lifestyle: [
+      { label: "Non-smoker", value: "Non-smoker" },
+      { label: "Occasional alcohol", value: "Occasional alcohol" },
+      { label: "Vegetarian diet", value: "Vegetarian diet" },
+    ],
     exercise: "rarely",
     stress: "high",
   },
@@ -2380,14 +2383,14 @@ export const AppointmentsWeekData = [
   },
 ];
 export interface AppointmentsMonthType {
- id: string;
-    patient: {
-      _id: string,
-      name: string,
-      profileImage: string | StaticImageData,
-      contactNumber: string,
-    },
-    date: string,
+  id: string;
+  patient: {
+    _id: string;
+    name: string;
+    profileImage: string | StaticImageData;
+    contactNumber: string;
+  };
+  date: string;
 }
 export const AppointmentsMonthData: AppointmentsMonthType[] = [
   {

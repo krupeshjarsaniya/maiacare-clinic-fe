@@ -20,15 +20,6 @@ import {
 } from "@/utlis/apis/apiHelper";
 
 interface MedicalHistoryProps {
-  // setMedicalHistoryFormData: React.Dispatch<
-  //   React.SetStateAction<MedicalHistoryType>
-  // >;
-  // setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  // initialData?: MedicalHistoryShow | null;
-  // onClose?: () => void;
-  // patientId?: string;
-  // fetchPatientData?: () => void;
-
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   initialData?: MedicalHistoryShow | null;
   patientId?: string | number | undefined;
@@ -71,9 +62,9 @@ export default function MedicalHistory({
 
   const validateForm = (data: MedicalHistoryType): FormError => {
     const errors: FormError = {};
-    if (data.medication === "yes" && !data.medicationcontent.trim())
+    if (data.medication === "Yes" && !data.medicationcontent.trim())
       errors.medicationcontent = "Medication Content is required";
-    if (data.surgeries === "yes" && !data.surgeriescontent.trim())
+    if (data.surgeries === "Yes" && !data.surgeriescontent.trim())
       errors.surgeriescontent = "Surgeries Content is required";
     if (!data.surgeries.trim()) errors.surgeries = "Surgeries is required";
 
@@ -147,7 +138,7 @@ export default function MedicalHistory({
         surgeries: {
           status: formData.surgeries?.toLowerCase() === "yes" ? "Yes" : "No",
           surgeriesDetails:
-            formData.surgeries?.toLowerCase() === "yes"
+            formData.surgeries?.toLowerCase() === "Yes"
               ? formData.surgeriescontent || ""
               : "", // remove if No
         },
@@ -188,7 +179,7 @@ export default function MedicalHistory({
         surgeries: {
           status: formData.surgeries?.toLowerCase() === "yes" ? "Yes" : "No",
           surgeriesDetails:
-            formData.surgeries?.toLowerCase() === "yes"
+            formData.surgeries?.toLowerCase() === "Yes"
               ? formData.surgeriescontent || ""
               : "", // remove if No
         },
@@ -344,7 +335,7 @@ export default function MedicalHistory({
               <InputFieldGroup
                 type="text"
                 value={formData.surgeriescontent}
-                name="surgeriesContent"
+                name="surgeriescontent"
                 onChange={handleChange}
                 error={formError.surgeriescontent}
                 placeholder="Enter surgeries"
@@ -360,11 +351,11 @@ export default function MedicalHistory({
               onChange={(values) => {
                 setFormData((prev) => ({
                   ...prev,
-                  MedicalconditionAllergies: values,
+                  medicalCondition: values,
                 }));
                 setFormError((prev) => ({
                   ...prev,
-                  MedicalconditionAllergies: "",
+                  medicalCondition: "",
                 }));
               }}
               options={[

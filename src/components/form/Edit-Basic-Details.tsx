@@ -41,7 +41,6 @@ export default function Editbasicdetails({
     [key: string]: string;
   }
 
-
   const initialFormError: FormError = {};
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState<FormError>(initialFormError);
@@ -122,6 +121,10 @@ export default function Editbasicdetails({
   //     console.log("Form has errors:", errors);
   //   }
   // };
+  type Photo = string | { url: string };
+
+  const getPhotoUrl = (photo: Photo) =>
+    typeof photo === "string" ? photo : photo.url;
   const handleNextClick = () => {
     const errors = validateForm(formData);
     setFormError(errors);
@@ -130,7 +133,6 @@ export default function Editbasicdetails({
       console.log("Form has errors:", errors);
       return;
     }
-
 
     // ✅ Map form data → clinicData structure
     const updatedClinicData: Partial<clinicData> = {
@@ -151,7 +153,6 @@ export default function Editbasicdetails({
       servicesOffered: selectedServices.map((s) => s.service),
       photos: uploadedImages,
     };
-
 
     onChange(updatedClinicData);
 
@@ -878,12 +879,6 @@ export default function Editbasicdetails({
         <div>
           <h5 className="profile-card-main-titile">Clinic Photos</h5>
           <div className="d-flex gap-3 flex-wrap">
-            {/* <Image src={photo1} alt="1" width={100} height={100} />
-            <Image src={photo2} alt="2" width={100} height={100} />
-            <Image src={photo3} alt="3" width={100} height={100} />
-            <Image src={photo4} alt="4" width={100} height={100} />
-            <Image src={photo1} alt="5" width={100} height={100} /> */}
-
             <div className="d-flex gap-3 flex-wrap">
               {/* {uploadedImages.map((img, idx) => (
                 <Image
@@ -899,7 +894,7 @@ export default function Editbasicdetails({
                 uploadedImages.map((img, idx) => (
                   <Image
                     key={`clinic-photo-${idx}`}
-                    src={img}
+                    src={getPhotoUrl(img)}
                     alt={`clinic-photo-${idx}`}
                     width={100}
                     height={100}

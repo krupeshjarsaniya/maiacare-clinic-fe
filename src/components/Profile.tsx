@@ -21,7 +21,9 @@ import toast from "react-hot-toast";
 import { getProfile } from "@/utlis/apis/apiHelper";
 import axios, { AxiosError } from "axios";
 import { clinicData } from "@/utlis/types/interfaces";
-
+import dummyclinic from "@/assets/images/cliniclogo.png";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 const Profile: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
@@ -34,13 +36,14 @@ const Profile: React.FC = () => {
   };
 
   const Clinic: React.FC = () => {
+    const [loading, setLoading] = useState(true);
+
     const [clinicData, setClinicData] = useState<clinicData | null>(null);
     const [profileData, setProfileData] = useState<clinicData | null>(null);
     const fetchProfile = () => {
       getProfile()
         .then((response) => {
           if (response.status) {
-          
             setClinicData(response.data.data);
             setProfileData(response.data.data);
           } else {
@@ -55,6 +58,9 @@ const Profile: React.FC = () => {
           } else {
             toast.error("Something went wrong!");
           }
+        })
+        .finally(() => {
+          setLoading(false);
         });
     };
     console.log("clinicData?.clinicLogo", clinicData);
@@ -73,21 +79,30 @@ const Profile: React.FC = () => {
               className="d-flex flex-md-row flex-column align-items-center"
             >
               <div className="col-4 col-md-3 col-lg-3  col-xl-2 position-relative">
+                {loading ? (
+                  <Skeleton height={100} width={100} />
+                ) : (
+                  <img
+                    src={
+                      clinicData?.clinicLogo?.trim()
+                        ? clinicData.clinicLogo
+                        : dummyclinic.src
+                    }
+                    alt="ProfileImage"
+                    className=" profile-img"
+                    onError={(e) => {
+                      e.currentTarget.src = dummyclinic.src;
+                    }}
+                  />
+                )}
+
                 {/* <img
-                  src={clinicData?.clinicLogo || cliniclogo.src}
-                  alt="Profile"
-                  className="profile-img"
-                  onError={({ currentTarget }) =>
-                    (currentTarget.src = cliniclogo.src)
-                  }
-                /> */}
-                <img
                   src={clinicData?.clinicLogo}
                   alt="ProfileImage"
                   // width={58}
                   // height={58}
                   className="rounded-circle profile-img"
-                />
+                /> */}
                 {clinicData?.verified === true && (
                   <Image
                     src={verified}
@@ -102,80 +117,149 @@ const Profile: React.FC = () => {
                 <div>
                   <div className="d-flex flex-md-row align-items-start align-items-md-center gap-1 ">
                     <div className="fw-semibold profile-headings">
-                      {clinicData?.clinicName}
+                      {loading ? (
+                        <Skeleton width={120} height={20} />
+                      ) : (
+                        clinicData?.clinicName || ""
+                      )}
                     </div>
                   </div>
 
                   <div className="profile-details">
                     <div className="detail-row profile-sub-title">
                       <span className="d-flex align-items-center gap-2">
-                        <Image src={star} alt="star" width={17} height={16} />
-                        {clinicData?.averageRating}
+                        {loading ? (
+                          <Skeleton width={17} height={16} />
+                        ) : (
+                          <>
+                            <Image
+                              src={star}
+                              alt="star"
+                              width={17}
+                              height={16}
+                            />
+                          </>
+                        )}
+                        {loading ? (
+                          <Skeleton width={17} height={16} />
+                        ) : (
+                          clinicData?.averageRating || ""
+                        )}
                       </span>
                       <span className="d-flex align-items-center gap-1">
-                        <Image src={Bed} alt="Bed" width={18} height={18} />
-                        {clinicData?.beds}
+                        {loading ? (
+                          <Skeleton width={17} height={16} />
+                        ) : (
+                          <Image src={Bed} alt="Bed" width={18} height={18} />
+                        )}
+                        {loading ? (
+                          <Skeleton width={17} height={16} />
+                        ) : (
+                          clinicData?.beds || ""
+                        )}
                       </span>
                       <span className="d-flex align-items-center gap-1">
-                        <Image
-                          src={Stethoscope}
-                          alt="Stethoscope"
-                          width={18}
-                          height={18}
-                        />
-                        {clinicData?.doctorOnboard}
+                        {loading ? (
+                          <Skeleton width={18} height={18} />
+                        ) : (
+                          <Image
+                            src={Stethoscope}
+                            alt="Stethoscope"
+                            width={18}
+                            height={18}
+                          />
+                        )}
+                        {loading ? (
+                          <Skeleton width={17} height={16} />
+                        ) : (
+                          clinicData?.doctorOnboard || ""
+                        )}
                       </span>
                     </div>
 
                     <div className="detail-row profile-sub-title">
-                      <span className="d-flex align-items-center gap-2">
-                        <Image src={Phone} alt="phone" width={21} height={21} />
-                        {clinicData?.contactNumber}
+                      <span className="d-flex align-items-center gap-2 ">
+                        {loading ? (
+                          <Skeleton width={17} height={16} />
+                        ) : (
+                          <Image
+                            src={Phone}
+                            alt="phone"
+                            width={21}
+                            height={21}
+                          />
+                        )}
+                        {loading ? (
+                          <Skeleton width={100} height={16} />
+                        ) : (
+                          clinicData?.contactNumber || ""
+                        )}
                       </span>
-                      <span>
-                        <Image
-                          src={Email}
-                          alt="email"
-                          className="me-2"
-                          width={21}
-                          height={21}
-                        />
-                        {clinicData?.email}
+
+                      <span className="d-flex align-items-center gap-1">
+                        {loading ? (
+                          <Skeleton width={18} height={18} />
+                        ) : (
+                          <Image
+                            src={Email}
+                            alt="email"
+                            className="me-2"
+                            width={21}
+                            height={21}
+                          />
+                        )}
+                        {loading ? (
+                          <Skeleton width={100} height={16} />
+                        ) : (
+                          clinicData?.email || ""
+                        )}
                       </span>
                     </div>
 
                     <div
-                      className="  profile-sub-title"
+                      className="profile-sub-title"
                       style={{ marginLeft: "3px" }}
                     >
-                      <Image
-                        src={Location}
-                        alt="location"
-                        width={16}
-                        height={20}
-                      />
-                      {clinicData?.address}
+                      {loading ? (
+                        <Skeleton width={16} height={20} />
+                      ) : (
+                        <Image
+                          src={Location}
+                          alt="location"
+                          width={16}
+                          height={20}
+                        />
+                      )}
+                      {loading ? (
+                        <Skeleton width={100} height={20} />
+                      ) : (
+                        clinicData?.address || ""
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             </Col>
             <Col lg={5} md={3} className="text-md-end text-center mt-4 mt-md-0">
-              <Button
-                variant="outline"
-                className="edit-profile-btn"
-                onClick={handleEditProfile}
-              >
-                <span className="me-2">
-                  <Image
-                    src={EditProfile}
-                    alt="EditProfile-btn"
-                    width={20}
-                    height={22}
-                  />
-                </span>
-                Edit Profile
-              </Button>
+              {loading ? (
+                <Skeleton height={40} width={150} />
+              ) : (
+                <Button
+                  variant="outline"
+                  className="edit-profile-btn"
+                  onClick={handleEditProfile}
+                >
+                  <span className="me-2">
+                    <Image
+                      src={EditProfile}
+                      alt="EditProfile-btn"
+                      width={20}
+                      height={22}
+                    />
+                  </span>
+                  Edit Profile
+                </Button>
+              )}
             </Col>
           </Row>
         </ContentContainer>

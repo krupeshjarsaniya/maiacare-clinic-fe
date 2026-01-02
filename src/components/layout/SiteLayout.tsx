@@ -14,6 +14,7 @@ import {
   MdOutlineCalendarToday,
   MdOutlineLogout,
 } from "react-icons/md";
+import { useDispatch } from "react-redux";
 import { BsPeople } from "react-icons/bs";
 import { FaChevronDown } from "react-icons/fa";
 import { RiChat3Line, RiNotificationLine } from "react-icons/ri";
@@ -26,6 +27,11 @@ import { RootState } from "../../utlis/redux/store";
 import { PiStethoscopeBold } from "react-icons/pi";
 import { LuScrollText } from "react-icons/lu";
 import "../../style/siteLayout.css";
+import Button from "../ui/Button";
+import toast from "react-hot-toast";
+import { ClearData } from "@/utlis/Helper";
+import { setToken } from "@/utlis/redux/slices/tokenSlice";
+import { logout } from "@/utlis/apis/apiHelper";
 
 interface Props {
   collapsed: boolean;
@@ -36,6 +42,8 @@ interface Props {
 const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useDispatch();
+
   const navRef = useRef<HTMLDivElement | null>(null);
 
   const headerValue = useSelector((state: RootState) => state.header.value);
@@ -76,8 +84,19 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
     }
   };
   const handleLogout = () => {
-    console.log("logout");
+    logout()
+      .then(() => {
+        ClearData();
+        toast.success("Logout successfully");
+        localStorage.clear();
+        dispatch(setToken(""));
+        router.push("/login");
+      })
+      .catch(() => {
+        toast.error("Logout failed");
+      });
   };
+
   return (
     <div className="layout">
       {/* ====== DESKTOP SIDEBAR ====== */}
@@ -100,7 +119,6 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
 
         <div className="sidebar__top">
           <Link href="/" className="sidebar__logo-link">
-            {/* <img src={Logo.src} alt="Logo" className="sidebar__logo" /> */}
             {collapsed ? (
               <img
                 src={Logo.src}
@@ -132,12 +150,12 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
             })}
           </Nav>
         </div>
-        <div
+        {/* <div
           className="sidebar__nav-item d-flex align-items-center justify-content-center mb-2"
           onClick={handleLogout}
         >
           <MdOutlineLogout size={20} />
-        </div>
+        </div> */}
         <div className="sidebar__bottom">
           <div
             role="button"
@@ -181,7 +199,6 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
             className="sidebar__logo-link"
             onClick={() => setShowOffcanvas(false)}
           >
-            {/* <img src={Logo.src} alt="Logo" className="sidebar__logo" /> */}
             <img src={Maia.src} alt="Expanded Logo" className="sidebar__logo" />
           </Link>
           <hr className="sidebar__divider" />
@@ -202,13 +219,13 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
             })}
           </Nav>
         </div>
-        <div
+        {/* <div
           className="sidebar__nav-item d-flex align-items-center justify-content-start mb-2"
           onClick={handleLogout}
         >
           <MdOutlineLogout size={20} />
           <span className="sidebar__text">Logout</span>
-        </div>
+        </div> */}
         <div className="sidebar__bottom">
           <div
             role="button"
@@ -247,17 +264,6 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
             </div>
           </div>
           <div className="d-flex align-items-center gap-2">
-            {/* Chat */}
-            <Link
-              href="/chat"
-              className={`header-icon-container ${
-                pathname === "/chat" ? "active" : ""
-              }`}
-              style={{ cursor: "pointer" }}
-            >
-              <RiChat3Line size={18} />
-            </Link>
-
             {/* Notification */}
             <Link
               href="/notifications"
@@ -268,6 +274,21 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
             >
               <RiNotificationLine size={18} />
             </Link>
+            {/* logout */}
+            <Button
+              className="sidebar__nav-item text-white d-flex align-items-center justify-content-center consultation-button "
+              onClick={handleLogout}
+            >
+              <MdOutlineLogout size={20} />
+              Logout
+            </Button>
+            {/* <div
+              className="sidebar__nav-item d-flex align-items-center justify-content-start"
+              onClick={handleLogout}
+            >
+              <MdOutlineLogout size={20} />
+              <span className="sidebar__text">Logout</span>
+            </div> */}
           </div>
         </header>
         <div className="layout__body">{children}</div>

@@ -17,7 +17,7 @@ import toast from "react-hot-toast";
 import { getDoctor } from "@/utlis/apis/apiHelper";
 import { DoctorDetails } from "@/utlis/types/interfaces";
 
-const ProfileTabes = () => {
+const DoctorProfileTabs = () => {
   const params = useParams<{ id?: string }>();
   const DoctorId = params.id;
   const [DoctorData, setDoctorData] = useState<DoctorDetails | null>(null);
@@ -109,4 +109,4 @@ const ProfileTabes = () => {
   );
 };
 
-export default ProfileTabes;
+export default DoctorProfileTabs;

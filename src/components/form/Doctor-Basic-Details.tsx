@@ -90,6 +90,8 @@ const DoctorBasicDetails = ({
   const [showAllQualifications, setShowAllQualifications] = useState(false);
   const [showAllDocuments, setShowAllDocuments] = useState(false);
   const [showFullAbout, setShowFullAbout] = useState(false);
+  const aboutText = DoctorData?.about?.trim();
+  const hasAbout = Boolean(aboutText);
 
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
@@ -977,19 +979,27 @@ const DoctorBasicDetails = ({
           <div>
             <ContentContainer className="mt-4">
               <h5 className="profile-card-main-titile">About</h5>
-              <p
-                className={`mb-0 about-text ${
-                  !showFullAbout ? "about-clamp" : ""
-                }`}
-              >
-                {DoctorData?.about ? DoctorData?.about : ""}
-              </p>
-              <div
-                className="mt-2 allreviews"
-                onClick={() => setShowFullAbout(!showFullAbout)}
-              >
-                {showFullAbout ? "Show less" : "Show more"}
-              </div>
+              {hasAbout ? (
+                <>
+                  <p
+                    className={`mb-0 about-text ${
+                      !showFullAbout ? "about-clamp" : ""
+                    }`}
+                  >
+                    {aboutText}
+                  </p>
+
+                  {/* Show toggle ONLY if text exists */}
+                  <div
+                    className="mt-2 allreviews"
+                    onClick={() => setShowFullAbout(!showFullAbout)}
+                  >
+                    {showFullAbout ? "Show less" : "Show more"}
+                  </div>
+                </>
+              ) : (
+                <p className="text-muted mb-0">No data found</p>
+              )}
             </ContentContainer>
           </div>
           {/* services provides */}

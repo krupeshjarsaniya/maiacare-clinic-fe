@@ -9,6 +9,10 @@ import {
   Row,
 } from "react-bootstrap";
 import { consultationData } from "../utlis/StaticData";
+import Skeleton from "react-loading-skeleton";
+import DummyProfile from "@/assets/images/patient_profile.png";
+import DummyDoctor from "@/assets/images/dummyimage.png";
+import VerifiedIcon from "@/assets/images/verifiedreview.png";
 import Image, { StaticImageData } from "next/image";
 import CommonTable from "@/components/ui/BaseTable";
 import { ColumnDef } from "@tanstack/react-table";
@@ -234,28 +238,32 @@ export default function Consultation() {
         const name = info.row.original.name;
         const id = info.row.original._id; // <-- Make sure you have an `id`
         const verified = info.row.original.verified; // <-- Make sure you have a `verified` field
+        const resolvedImgSrc =
+          typeof imgSrc === "string" && imgSrc.trim() !== ""
+            ? imgSrc
+            : DummyProfile;
         return (
           <Link
             href={`/patients/${id}`}
             className="text-decoration-none text-dark"
           >
-            <div className="d-flex align-items-center gap-2">
+            {/* <div className="d-flex align-items-center gap-2">
               {imgSrc ? (
                 typeof imgSrc === "string" ? (
                   <img
                     src={imgSrc}
                     alt={name}
-                    className="rounded"
-                    width="36"
-                    height="36"
+                    className="rounded object-fit-cover"
+                    width="40"
+                    height="40"
                   />
                 ) : (
                   <Image
                     src={imgSrc}
                     alt={name}
-                    width={36}
-                    height={36}
-                    className="rounded"
+                    width={40}
+                    height={40}
+                    className="rounded object-fit-cover"
                   />
                 )
               ) : (
@@ -288,6 +296,41 @@ export default function Consultation() {
                   />
                 </svg>
               )}
+            </div> */}
+            <div className="d-flex align-items-center gap-2">
+              {typeof resolvedImgSrc === "string" ? (
+                <img
+                  src={resolvedImgSrc}
+                  alt={name}
+                  width={40}
+                  height={40}
+                  className="rounded object-fit-cover"
+                  onError={(e) => {
+                    // ✅ fallback if image fails to load
+                    e.currentTarget.src = DummyProfile.src;
+                  }}
+                />
+              ) : (
+                <Image
+                  src={resolvedImgSrc}
+                  alt={name}
+                  width={40}
+                  height={40}
+                  className="rounded object-fit-cover"
+                />
+              )}
+
+              <span>{name}</span>
+
+              {verified && (
+                <Image
+                  src={VerifiedIcon}
+                  alt="Verified"
+                  width={17}
+                  height={17}
+                  // className="verified-badge"
+                />
+              )}
             </div>
           </Link>
         );
@@ -310,42 +353,46 @@ export default function Consultation() {
       cell: (info) => {
         const imgSrc = info.row.original.doctor?.profilePicture;
         const name = info.row.original.doctor?.name || "—";
-        const verified = info.row.original.doctor?.verified;
 
+        const verified = info.row.original.doctor?.verified;
+        const resolvedImgSrc =
+          typeof imgSrc === "string" && imgSrc.trim() !== ""
+            ? imgSrc
+            : DummyDoctor;
         return (
           <div className="d-flex align-items-center gap-2">
-            {imgSrc ? (
-              typeof imgSrc === "string" ? (
-                <img
-                  src={imgSrc}
-                  alt={name}
-                  className="rounded-circle border"
-                  width={36}
-                  height={36}
-                />
-              ) : (
-                <Image
-                  src={imgSrc}
-                  alt={name}
-                  width={36}
-                  height={36}
-                  className="rounded-circle border"
-                />
-              )
+            {typeof resolvedImgSrc === "string" ? (
+              <img
+                src={resolvedImgSrc}
+                alt={name}
+                width={40}
+                height={40}
+                className="rounded object-fit-cover"
+                onError={(e) => {
+                  // ✅ fallback if image fails to load
+                  e.currentTarget.src = DummyProfile.src;
+                }}
+              />
             ) : (
-              /* ✅ fallback avatar */
-              <div
-                className="rounded-circle border bg-secondary"
-                style={{ width: 36, height: 36 }}
+              <Image
+                src={resolvedImgSrc}
+                alt={name}
+                width={40}
+                height={40}
+                className="rounded object-fit-cover"
               />
             )}
 
             <span>{name}</span>
 
             {verified && (
-              <svg width="18" height="18" viewBox="0 0 18 18">
-                {/* verified icon */}
-              </svg>
+              <Image
+                src={VerifiedIcon}
+                alt="Verified"
+                width={20}
+                height={20}
+                // className="verified-badge"
+              />
             )}
           </div>
         );
@@ -492,74 +539,116 @@ export default function Consultation() {
         {/* Search Input */}
         <div className="d-flex align-items-center  mb-1 Consultations-image gap-3 justify-content-between">
           {/* Search Input */}
-          <InputGroup
-            className="custom-search-group"
-            style={{ width: "350px" }}
-          >
-            <Form.Control
-              placeholder="Search"
-              className="custom-search-input"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                borderRight: "none",
-                borderLeft: "1px solid rgb(221, 225, 232)",
-              }}
-            />
-            <InputGroup.Text className="custom-search-icon">
-              <IoSearch className="search-icon" />
-            </InputGroup.Text>
-          </InputGroup>
-
-          <div
-            className="border custom-filter-button p-2 patient-card consultations-image-summary-cards"
-            style={{ width: "35%", height: "fit-content" }}
-          >
-            <div className="consultations-image-book d-flex align-items-center">
-              <Image src={patient} alt="patients" width={40} height={40} />
-              <div className="Consultations-book">{patientTotal} Patients</div>
+          {loading ? (
+            <Skeleton width={350} height={45} />
+          ) : (
+            <InputGroup
+              className="custom-search-group"
+              style={{ width: "350px" }}
+            >
+              <Form.Control
+                placeholder="Search"
+                className="custom-search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  borderRight: "none",
+                  borderLeft: "1px solid rgb(221, 225, 232)",
+                }}
+              />
+              <InputGroup.Text className="custom-search-icon">
+                <IoSearch className="search-icon" />
+              </InputGroup.Text>
+            </InputGroup>
+          )}
+          {loading ? (
+            <div className="d-flex align-items-center gap-2">
+              <Skeleton circle height={40} width={40} />
+              <Skeleton height={20} width={120} />
             </div>
-          </div>
+          ) : (
+            <div
+              className="border custom-filter-button p-2 patient-card consultations-image-summary-cards"
+              style={{ width: "35%", height: "fit-content" }}
+            >
+              <div className="consultations-image-book d-flex align-items-center">
+                <Image src={patient} alt="patients" width={40} height={40} />
+                <div className="Consultations-book">
+                  {patientTotal} Patients
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Sort + Filter */}
         <div className="d-flex align-items-center gap-2 mb-2">
-          <span className="text-muted small short-by">Sort by:</span>
-          <Form.Select
-            className="custom-sort-select"
-            value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value)} // ✅ update state
-          >
-            <option>All Time</option>
-            <option>Today</option>
-            <option>This Week</option>
-            <option>This Month</option>
-          </Form.Select>
-          <Button variant="light" className="border custom-filter-button">
-            <PiSlidersDuotone />
-          </Button>
-
-          <Button
-            variant="default"
-            onClick={handleAddPatient}
-            className="common-btn-blue"
-          >
-            <div className="d-flex justify-content-center  align-items-center gap-2">
+          {loading ? (
+            <>
+              <Skeleton width={80} />
+              <Skeleton width={120} height={45} />
+            </>
+          ) : (
+            <>
+              <span className="text-muted small short-by">Sort by:</span>
+              <Form.Select
+                className="custom-sort-select"
+                value={timeFilter}
+                onChange={(e) => setTimeFilter(e.target.value)} // ✅ update state
+              >
+                <option>All Time</option>
+                <option>Today</option>
+                <option>This Week</option>
+                <option>This Month</option>
+              </Form.Select>
+              <Button variant="light" className="border custom-filter-button">
+                <PiSlidersDuotone />
+              </Button>
+            </>
+          )}
+          {loading ? (
+            <Skeleton width={45} height={45} />
+          ) : (
+            <div className="patient-header-filter-icon-box">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="19"
-                height="19"
-                viewBox="0 0 19 19"
+                width="27"
+                height="25"
+                viewBox="0 0 25 25"
                 fill="none"
               >
                 <path
-                  d="M18.75 9.375C18.75 9.67337 18.6315 9.95952 18.4205 10.1705C18.2095 10.3815 17.9234 10.5 17.625 10.5H10.5V17.625C10.5 17.9234 10.3815 18.2095 10.1705 18.4205C9.95952 18.6315 9.67337 18.75 9.375 18.75C9.07663 18.75 8.79048 18.6315 8.5795 18.4205C8.36853 18.2095 8.25 17.9234 8.25 17.625V10.5H1.125C0.826631 10.5 0.540483 10.3815 0.329505 10.1705C0.118526 9.95952 0 9.67337 0 9.375C0 9.07663 0.118526 8.79048 0.329505 8.5795C0.540483 8.36853 0.826631 8.25 1.125 8.25H8.25V1.125C8.25 0.826631 8.36853 0.540483 8.5795 0.329505C8.79048 0.118526 9.07663 0 9.375 0C9.67337 0 9.95952 0.118526 10.1705 0.329505C10.3815 0.540483 10.5 0.826631 10.5 1.125V8.25H17.625C17.9234 8.25 18.2095 8.36853 18.4205 8.5795C18.6315 8.79048 18.75 9.07663 18.75 9.375Z"
-                  fill="white"
+                  d="M6.30166 10.6484V4.55469C6.30166 4.35578 6.22264 4.16501 6.08199 4.02436C5.94134 3.88371 5.75057 3.80469 5.55166 3.80469C5.35275 3.80469 5.16198 3.88371 5.02133 4.02436C4.88068 4.16501 4.80166 4.35578 4.80166 4.55469V10.6484C4.15635 10.8137 3.58438 11.189 3.17593 11.7152C2.76748 12.2414 2.54578 12.8886 2.54578 13.5547C2.54578 14.2208 2.76748 14.868 3.17593 15.3942C3.58438 15.9204 4.15635 16.2957 4.80166 16.4609V21.0547C4.80166 21.2536 4.88068 21.4444 5.02133 21.585C5.16198 21.7257 5.35275 21.8047 5.55166 21.8047C5.75057 21.8047 5.94134 21.7257 6.08199 21.585C6.22264 21.4444 6.30166 21.2536 6.30166 21.0547V16.4609C6.94697 16.2957 7.51894 15.9204 7.92739 15.3942C8.33584 14.868 8.55754 14.2208 8.55754 13.5547C8.55754 12.8886 8.33584 12.2414 7.92739 11.7152C7.51894 11.189 6.94697 10.8137 6.30166 10.6484ZM5.55166 15.0547C5.25499 15.0547 4.96498 14.9667 4.7183 14.8019C4.47163 14.6371 4.27937 14.4028 4.16584 14.1287C4.05231 13.8546 4.0226 13.553 4.08048 13.2621C4.13836 12.9711 4.28122 12.7038 4.491 12.494C4.70078 12.2842 4.96805 12.1414 5.25902 12.0835C5.54999 12.0256 5.8516 12.0553 6.12568 12.1689C6.39977 12.2824 6.63404 12.4747 6.79886 12.7213C6.96369 12.968 7.05166 13.258 7.05166 13.5547C7.05166 13.9525 6.89362 14.334 6.61232 14.6153C6.33101 14.8967 5.94948 15.0547 5.55166 15.0547ZM13.0517 6.14844V4.55469C13.0517 4.35578 12.9726 4.16501 12.832 4.02436C12.6913 3.88371 12.5006 3.80469 12.3017 3.80469C12.1027 3.80469 11.912 3.88371 11.7713 4.02436C11.6307 4.16501 11.5517 4.35578 11.5517 4.55469V6.14844C10.9063 6.31366 10.3344 6.68896 9.92593 7.21517C9.51748 7.74138 9.29578 8.38856 9.29578 9.05469C9.29578 9.72082 9.51748 10.368 9.92593 10.8942C10.3344 11.4204 10.9063 11.7957 11.5517 11.9609V21.0547C11.5517 21.2536 11.6307 21.4444 11.7713 21.585C11.912 21.7257 12.1027 21.8047 12.3017 21.8047C12.5006 21.8047 12.6913 21.7257 12.832 21.585C12.9726 21.4444 13.0517 21.2536 13.0517 21.0547V11.9609C13.697 11.7957 14.2689 11.4204 14.6774 10.8942C15.0858 10.368 15.3075 9.72082 15.3075 9.05469C15.3075 8.38856 15.0858 7.74138 14.6774 7.21517C14.2689 6.68896 13.697 6.31366 13.0517 6.14844ZM12.3017 10.5547C12.005 10.5547 11.715 10.4667 11.4683 10.3019C11.2216 10.1371 11.0294 9.9028 10.9158 9.62871C10.8023 9.35462 10.7726 9.05302 10.8305 8.76205C10.8884 8.47108 11.0312 8.20381 11.241 7.99403C11.4508 7.78425 11.7181 7.64139 12.009 7.58351C12.3 7.52563 12.6016 7.55534 12.8757 7.66887C13.1498 7.7824 13.384 7.97466 13.5489 8.22133C13.7137 8.46801 13.8017 8.75802 13.8017 9.05469C13.8017 9.45251 13.6436 9.83404 13.3623 10.1153C13.081 10.3967 12.6995 10.5547 12.3017 10.5547ZM22.0517 16.5547C22.051 15.8896 21.8298 15.2435 21.4227 14.7176C21.0155 14.1917 20.4454 13.8156 19.8017 13.6484V4.55469C19.8017 4.35578 19.7226 4.16501 19.582 4.02436C19.4413 3.88371 19.2506 3.80469 19.0517 3.80469C18.8527 3.80469 18.662 3.88371 18.5213 4.02436C18.3807 4.16501 18.3017 4.35578 18.3017 4.55469V13.6484C17.6563 13.8137 17.0844 14.189 16.6759 14.7152C16.2675 15.2414 16.0458 15.8886 16.0458 16.5547C16.0458 17.2208 16.2675 17.868 16.6759 18.3942C17.0844 18.9204 17.6563 19.2957 18.3017 19.4609V21.0547C18.3017 21.2536 18.3807 21.4444 18.5213 21.585C18.662 21.7257 18.8527 21.8047 19.0517 21.8047C19.2506 21.8047 19.4413 21.7257 19.582 21.585C19.7226 21.4444 19.8017 21.2536 19.8017 21.0547V19.4609C20.4454 19.2937 21.0155 18.9177 21.4227 18.3918C21.8298 17.8659 22.051 17.2198 22.0517 16.5547ZM19.0517 18.0547C18.755 18.0547 18.465 17.9667 18.2183 17.8019C17.9716 17.6371 17.7794 17.4028 17.6658 17.1287C17.5523 16.8546 17.5226 16.553 17.5805 16.2621C17.6384 15.9711 17.7812 15.7038 17.991 15.494C18.2008 15.2842 18.4681 15.1414 18.759 15.0835C19.05 15.0256 19.3516 15.0553 19.6257 15.1689C19.8998 15.2824 20.134 15.4747 20.2989 15.7213C20.4637 15.968 20.5517 16.258 20.5517 16.5547C20.5517 16.9525 20.3936 17.334 20.1123 17.6153C19.831 17.8967 19.4495 18.0547 19.0517 18.0547Z"
+                  fill="#2B4360"
                 />
               </svg>
-              Add Patient
             </div>
-          </Button>
+          )}
+          {loading ? (
+            <Skeleton width={130} height={45} />
+          ) : (
+            <Button
+              variant="default"
+              onClick={handleAddPatient}
+              className="common-btn-blue"
+            >
+              <div className="d-flex justify-content-center  align-items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="19"
+                  height="19"
+                  viewBox="0 0 19 19"
+                  fill="none"
+                >
+                  <path
+                    d="M18.75 9.375C18.75 9.67337 18.6315 9.95952 18.4205 10.1705C18.2095 10.3815 17.9234 10.5 17.625 10.5H10.5V17.625C10.5 17.9234 10.3815 18.2095 10.1705 18.4205C9.95952 18.6315 9.67337 18.75 9.375 18.75C9.07663 18.75 8.79048 18.6315 8.5795 18.4205C8.36853 18.2095 8.25 17.9234 8.25 17.625V10.5H1.125C0.826631 10.5 0.540483 10.3815 0.329505 10.1705C0.118526 9.95952 0 9.67337 0 9.375C0 9.07663 0.118526 8.79048 0.329505 8.5795C0.540483 8.36853 0.826631 8.25 1.125 8.25H8.25V1.125C8.25 0.826631 8.36853 0.540483 8.5795 0.329505C8.79048 0.118526 9.07663 0 9.375 0C9.67337 0 9.95952 0.118526 10.1705 0.329505C10.3815 0.540483 10.5 0.826631 10.5 1.125V8.25H17.625C17.9234 8.25 18.2095 8.36853 18.4205 8.5795C18.6315 8.79048 18.75 9.07663 18.75 9.375Z"
+                    fill="white"
+                  />
+                </svg>
+                Add Patient
+              </div>
+            </Button>
+          )}
         </div>
       </div>
 

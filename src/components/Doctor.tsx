@@ -27,7 +27,7 @@ import edit from "../assets/images/edit.png";
 import DoctorAddedModal from "./DoctorAddedModel";
 import eye from "../assets/images/Eye.png";
 import Poweractivate from "../assets/images/Poweractivate.png";
-
+import DummyProfile from "@/assets/images/dummyimage.png";
 import { setHeaderData } from "@/utlis/redux/slices/headerSlice";
 import { AppDispatch } from "@/utlis/redux/store";
 
@@ -38,6 +38,7 @@ import {
 } from "./form/ActivateDeactivateModal";
 import { getDoctorsList } from "@/utlis/apis/apiHelper";
 import { formatDateTime, formatDate } from "@/utlis/Helper";
+import Skeleton from "react-loading-skeleton";
 export type ConsultationStatus = "Active" | "Deactive" | "On Leave";
 
 export type Doctor = {
@@ -61,6 +62,10 @@ export default function Doctor() {
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
   const [filteredData, setFilteredData] = useState(DoctorData);
+  const [doctorTotal, setDoctorTotal] = useState<number>(0);
+  const [activePage, setActivePage] = useState<number>(1);
+  const start = (activePage - 1) * 10;
+  const end = start + 10;
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("All Time");
   const [showActivateDeactivateModal, setShowActivateDeactivateModal] =
@@ -72,65 +77,6 @@ export default function Doctor() {
 
   const [page, setPage] = useState(1);
   const limit = 10;
-  // const doctorIdShow = "6943a7e6a55e888c3f9fa264";
-  // useEffect(() => {
-  //   let data = DoctorData;
-
-  //   // 🔹 filter by status (query param)
-  //   if (filter === "active") {
-  //     data = data.filter((item) => item.status === "Active");
-  //   } else if (filter === "cancelled") {
-  //     data = data.filter((item) => item.status === "Inactive");
-  //   }
-
-  //   // 🔹 filter by search
-  //   if (searchQuery.trim() !== "") {
-  //     const q = searchQuery.toLowerCase();
-  //     data = data.filter(
-  //       (item) =>
-  //         item.name.toLowerCase().includes(q) ||
-  //         item.email.toLowerCase().includes(q) ||
-  //         item.mobile.toLowerCase().includes(q)
-  //     );
-  //   }
-
-  //   // 🔹 filter by time
-  //   if (timeFilter !== "All Time") {
-  //     const now = new Date();
-
-  //     data = data.filter((item) => {
-  //       if (!item.date) return false; // skip if no date
-  //       const itemDate = new Date(item.date);
-  //       if (isNaN(itemDate.getTime())) return false;
-
-  //       if (timeFilter === "Today") {
-  //         return itemDate.toDateString() === now.toDateString();
-  //       }
-
-  //       if (timeFilter === "This Week") {
-  //         const weekStart = new Date(now);
-  //         weekStart.setDate(now.getDate() - now.getDay()); // Sunday
-  //         weekStart.setHours(0, 0, 0, 0);
-
-  //         const weekEnd = new Date(weekStart);
-  //         weekEnd.setDate(weekStart.getDate() + 7); // Next Sunday
-
-  //         return itemDate >= weekStart && itemDate < weekEnd;
-  //       }
-
-  //       if (timeFilter === "This Month") {
-  //         return (
-  //           itemDate.getMonth() === now.getMonth() &&
-  //           itemDate.getFullYear() === now.getFullYear()
-  //         );
-  //       }
-
-  //       return true;
-  //     });
-  //   }
-
-  //   setFilteredData(data);
-  // }, [filter, searchQuery, timeFilter]);
   const fetchDoctors = async () => {
     try {
       setLoading(true);
@@ -172,6 +118,7 @@ export default function Doctor() {
   useEffect(() => {
     fetchDoctors();
   }, [page, searchQuery, filter]);
+
   const columns: ColumnDef<Doctor>[] = [
     {
       header: "#",
@@ -187,7 +134,10 @@ export default function Doctor() {
         const name = info.row.original.name;
         const id = info.row.original.id;
         const isVerified = info.row.original.verified; // ✅ matches your data key!
-
+        const resolvedImgSrc =
+          typeof imgSrc === "string" && imgSrc.trim() !== ""
+            ? imgSrc
+            : DummyProfile;
         return (
           <Link
             href={`/doctors/${id}`}
@@ -195,7 +145,7 @@ export default function Doctor() {
           >
             <div className="d-flex align-items-center gap-2">
               {/* Profile image wrapper */}
-              <div
+              {/* <div
                 className="position-relative"
                 style={{ width: "36px", height: "36px" }}
               >
@@ -217,6 +167,42 @@ export default function Doctor() {
                   />
                 )}
 
+               
+                {isVerified && (
+                  <Image
+                    src={VerifiedIcon}
+                    alt="Verified"
+                    width={17}
+                    height={17}
+                    className="verified-badge"
+                  />
+                )}
+              </div> */}
+              <div
+                className="position-relative"
+                style={{ width: "36px", height: "36px" }}
+              >
+                {typeof resolvedImgSrc === "string" ? (
+                  <img
+                    src={resolvedImgSrc}
+                    alt={name}
+                    className="rounded-circle position-relative border"
+                    width={40}
+                    height={40}
+                    onError={(e) => {
+                      e.currentTarget.src = DummyProfile.src;
+                    }}
+                  />
+                ) : (
+                  <Image
+                    src={resolvedImgSrc}
+                    alt={name}
+                    width={40}
+                    height={40}
+                    className="rounded-circle position-relative border"
+                  />
+                )}
+
                 {/* ✅ Verified badge overlay */}
                 {isVerified && (
                   <Image
@@ -228,6 +214,7 @@ export default function Doctor() {
                   />
                 )}
               </div>
+
               <span>{name}</span>
             </div>
           </Link>
@@ -348,71 +335,107 @@ export default function Doctor() {
       <div className="d-flex justify-content-between align-items-center flex-wrap mb-3 searchbar-content">
         <div className="d-flex gap-3">
           {/* doctors */}
-          <div
-            className="border custom-filter-button  d-flex align-items-center"
-            style={{ gap: "10px" }}
-          >
-            <Image
-              src={Stethoscope}
-              alt="Stethoscope"
-              className="img-fluid women-image"
-              width={20}
-              height={20}
-            />
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div className="Consultations-book">98 Doctors</div>
+          {loading ? (
+            <div className="d-flex align-items-center gap-2">
+              <Skeleton circle height={40} width={40} />
+              <Skeleton height={20} width={120} />
             </div>
-          </div>
+          ) : (
+            <div
+              className="border custom-filter-button  d-flex align-items-center"
+              style={{ gap: "10px" }}
+            >
+              <Image
+                src={Stethoscope}
+                alt="Stethoscope"
+                className="img-fluid women-image"
+                width={20}
+                height={20}
+              />
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div className="Consultations-book">98 Doctors</div>
+              </div>
+            </div>
+          )}
+
           {/* Search Input */}
           <div className="d-flex align-items-center gap-2 mb-1 Consultations-image">
-            {/* Search Input */}
-            <InputGroup className="custom-search-group">
-              <InputGroup.Text className="custom-search-icon">
-                <Image
-                  src={serchicon}
-                  alt="serchicon"
-                  className="search-icon"
+            {loading ? (
+              <Skeleton width={350} height={45} />
+            ) : (
+              <InputGroup className="custom-search-group">
+                <InputGroup.Text className="custom-search-icon">
+                  <Image
+                    src={serchicon}
+                    alt="serchicon"
+                    className="search-icon"
+                  />
+                  {/* <IoSearch  /> */}
+                </InputGroup.Text>
+                <Form.Control
+                  placeholder="Search Doctors"
+                  className="custom-search-input ps-0"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                {/* <IoSearch  /> */}
-              </InputGroup.Text>
-              <Form.Control
-                placeholder="Search Doctors"
-                className="custom-search-input ps-0"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </InputGroup>
+              </InputGroup>
+            )}
           </div>
         </div>
 
         {/* Sort + Filter */}
         <div className="d-flex align-items-center gap-2 mb-2">
-          <span className="text-muted small short-by">Sort by:</span>
-          <Form.Select
-            className="custom-sort-select"
-            value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value)} // ✅ update state
-          >
-            <option>All Time</option>
-            <option>Today</option>
-            <option>This Week</option>
-            <option>This Month</option>
-          </Form.Select>
-          <Button variant="light" className="border custom-filter-button">
-            <PiSlidersDuotone />
-          </Button>
-          <Button
-            onClick={() => router.push("/addDoctor")}
-            className="d-flex align-items-center gap-2 add_doctor common-btn-blue"
-          >
-            <Image src={add} alt="add" width={15} height={15} />
-            Add New Doctor
-          </Button>
+          {loading ? (
+            <>
+              <Skeleton width={80} />
+              <Skeleton width={120} height={45} />
+            </>
+          ) : (
+            <>
+              <span className="text-muted small short-by">Sort by:</span>
+              <Form.Select
+                className="custom-sort-select"
+                value={timeFilter}
+                onChange={(e) => setTimeFilter(e.target.value)} // ✅ update state
+              >
+                <option>All Time</option>
+                <option>Today</option>
+                <option>This Week</option>
+                <option>This Month</option>
+              </Form.Select>{" "}
+            </>
+          )}
+          {loading ? (
+            <Skeleton width={45} height={45} />
+          ) : (
+            <Button variant="light" className="border custom-filter-button">
+              <PiSlidersDuotone />
+            </Button>
+          )}
+          {loading ? (
+            <Skeleton width={130} height={45} />
+          ) : (
+            <Button
+              onClick={() => router.push("/addDoctor")}
+              className="d-flex align-items-center gap-2 add_doctor common-btn-blue"
+            >
+              <Image src={add} alt="add" width={15} height={15} />
+              Add New Doctor
+            </Button>
+          )}
         </div>
       </div>
 
       {/* Table */}
-      <CommonTable data={doctors} columns={columns} />
+      <CommonTable
+        data={doctors}
+        columns={columns}
+        tableTotal={doctorTotal}
+        totalPages={Math.ceil(doctorTotal / 10)}
+        loading={loading}
+        setActivePage={setActivePage}
+        activePage={activePage}
+      />
 
       <DoctorAddedModal />
       {/* <ActivateDeactivateProfile

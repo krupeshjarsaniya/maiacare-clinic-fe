@@ -78,7 +78,13 @@ const DoctorDetailPageComponent = ({
                       width={16}
                       height={15}
                     />
-                    {formatDateTime(doctor?.memberSince || "")}
+                    {doctor?.yearsOfExperience}
+                    <span>
+                      {doctor?.yearsOfExperience &&
+                      doctor?.yearsOfExperience > 1
+                        ? "years"
+                        : "year"}
+                    </span>
                   </span>
                 </div>
 
@@ -106,10 +112,7 @@ const DoctorDetailPageComponent = ({
               </div>
 
               <div className="mt-3 profile-member-since profile-sub-title">
-                Member since {doctor?.yearsOfExperience}
-                <span className="me-2">
-                  {doctor?.yearsOfExperience ? "years" : "year"}
-                </span>
+                Member since {formatDateTime(doctor?.memberSince || "")}
                 {/* membersince  */}
               </div>
             </div>
@@ -133,7 +136,7 @@ const DoctorDetailPageComponent = ({
             <Dropdown.Menu className="dropdown-menu-end">
               <Dropdown.Item
                 onClick={() => {
-                  router.push(`/doctors/editdoctor/${doctorIdShow}` );
+                  router.push(`/doctors/editdoctor/${doctorIdShow}`);
                 }}
               >
                 <Image

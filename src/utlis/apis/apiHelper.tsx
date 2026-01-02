@@ -27,6 +27,11 @@ export const getProfile = () => {
   const token = localStorage.getItem("token");
   return apiClient.get("/clinic-info");
 };
+// done
+// logout
+export const logout = () => {
+  return apiClient.post("/clinic-logout");
+};
 
 // done update
 // update profile

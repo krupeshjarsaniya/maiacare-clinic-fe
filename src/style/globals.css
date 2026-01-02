@@ -486,7 +486,8 @@ body {
   background: #fffac9;
   color: #c27803;
 }
-.status-inactive,.status-deactive {
+.status-inactive,
+.status-deactive {
   background: #fdf2f2;
   color: #f05252;
 }
@@ -589,7 +590,7 @@ body {
   flex-direction: column;
   justify-content: center;
   width: 100px;
-  height: auto;
+  height: 100px;
   align-items: center;
   border: 1px dashed;
   border-radius: 7px;

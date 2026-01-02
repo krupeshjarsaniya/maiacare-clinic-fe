@@ -26,6 +26,7 @@ import { LuTrash2 } from "react-icons/lu";
 import Modal from "../ui/Modal";
 import { InputFieldGroup } from "../ui/InputField";
 import { AppointmentData } from "../../utlis/types/interfaces";
+import DummyProfile from "@/assets/images/patient_profile.png";
 import {
   BookAppointment,
   SuccessModalBookAppointment,
@@ -201,6 +202,10 @@ export default function DoctorAppointment() {
         const imgSrc = info.row.original.image;
         const name = info.row.original.name;
         const id = info.row.original.id;
+        const resolvedImgSrc =
+          typeof imgSrc === "string" && imgSrc.trim() !== ""
+            ? imgSrc
+            : DummyProfile;
         return (
           <Link
             href={`/doctors/${id}`}
@@ -234,34 +239,24 @@ export default function DoctorAppointment() {
                 className="position-relative"
                 style={{ width: "36px", height: "36px" }}
               >
-                {isValidImageSrc(imgSrc) ? (
-                  // If string and non-empty, render regular <img> tag (or Next.js Image if you prefer)
+                {typeof resolvedImgSrc === "string" ? (
                   <img
-                    src={imgSrc}
+                    src={resolvedImgSrc}
                     alt={name}
-                    width={36}
-                    height={36}
-                    className="rounded-circle border"
-                  />
-                ) : imgSrc ? (
-                  // If not string but truthy (assume StaticImageData), render Next.js <Image>
-                  <Image
-                    src={imgSrc}
-                    alt={name}
-                    width={36}
-                    height={36}
-                    className="rounded-circle border"
+                    width={40}
+                    height={40}
+                    className="rounded object-fit-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = DummyProfile.src;
+                    }}
                   />
                 ) : (
-                  // If no valid image source, render nothing or a placeholder
-                  <div
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: "50%",
-                      backgroundColor: "#ccc",
-                    }}
-                    aria-label="No image available"
+                  <Image
+                    src={resolvedImgSrc}
+                    alt={name}
+                    width={40}
+                    height={40}
+                    className="rounded object-fit-cover"
                   />
                 )}
               </div>
