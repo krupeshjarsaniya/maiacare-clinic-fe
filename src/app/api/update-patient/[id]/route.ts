@@ -3,10 +3,10 @@ import type { NextRequest } from "next/server";
 import apiServer from "@/utlis/apis/axiosBackendHelper";
 import { handleApiError } from "@/utlis/apis/errorHandler";
 
-type RouteContext = { params: { id: string } };
+type RouteContext = { params: Promise<{ id: string }> };
 
 export async function PUT(req: NextRequest, { params }: RouteContext) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const body = await req.json();
