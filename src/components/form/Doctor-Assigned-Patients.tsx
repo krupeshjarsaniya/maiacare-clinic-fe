@@ -24,7 +24,7 @@ import trash from "../../assets/images/Delete.png";
 import { getAssigned } from "@/utlis/apis/apiHelper";
 import toast from "react-hot-toast";
 export type ConsultationStatus = "Active" | "Inactive" | "On Leave";
-
+import dummyPatient from "@/assets/images/patient_profile.png";
 export default function DoctorAssignedPatients({
   doctorIdShow,
 }: {
@@ -171,35 +171,30 @@ export default function DoctorAssignedPatients({
         const imgSrc = info.row.original.image;
         const name = info.row.original.name;
         const id = info.row.original.id;
+
+        const finalImg =
+          typeof imgSrc === "string" && imgSrc.trim() !== ""
+            ? imgSrc
+            : dummyPatient.src;
         return (
           <Link
             href={`/doctors/${id}`}
             className="text-decoration-none text-dark"
           >
             <div className="d-flex align-items-center gap-2">
-              {/* Profile image wrapper */}
-              <div
-                className="position-relative"
-                style={{ width: "36px", height: "36px" }}
-              >
-                {typeof imgSrc === "string" ? (
-                  <img
-                    src={imgSrc}
-                    alt={name}
-                    className="rounded-circle position-relative border"
-                    width="40"
-                    height="auto"
-                  />
-                ) : (
-                  <Image
-                    src={imgSrc}
-                    alt={name}
-                    width={40}
-                    height={40}
-                    className="rounded-circle position-relative border"
-                  />
-                )}
+              <div style={{ width: "36px", height: "36px" }}>
+                <img
+                  src={finalImg}
+                  alt={name}
+                  width={36}
+                  height={36}
+                  className="rounded-circle border object-fit-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = dummyPatient.src;
+                  }}
+                />
               </div>
+
               <span>{name}</span>
             </div>
           </Link>

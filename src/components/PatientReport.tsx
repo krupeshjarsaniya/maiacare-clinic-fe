@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Col, Row } from "react-bootstrap";
 
 import { patientReport } from "../utlis/StaticData";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { InputFieldGroup } from "./ui/InputField";
 import { InputSelect } from "./ui/InputSelect";
 import Button from "./ui/Button";
@@ -22,6 +22,7 @@ import Delete from "@/assets/images/Delete.png";
 import Loading from "@/assets/images/Loading.png";
 import Completed from "@/assets/images/Completed.png";
 import { PatientReportType } from "../utlis/types/interfaces";
+import Skeleton from "react-loading-skeleton";
 export interface PatientReportUpload {
   reportName: string;
   name: string;
@@ -29,12 +30,35 @@ export interface PatientReportUpload {
   uploadedAt: number;
 }
 
-const PatientReport = () => {
+const PatientReport = ({
+  setActiveTab,
+  activeTab,
+}: {
+  setActiveTab: (tab: string) => void;
+  activeTab: string;
+}) => {
   const [patientReportData, setPatientReportData] =
     useState<PatientReportType[]>(patientReport);
   const [errors, setErrors] = useState<Record<number, string>>({});
   const [fileError, setFileError] = useState<string>("");
+  // const [activeTab, setActiveTab] = useState("Basic Details");
+  const [isLoading, setIsLoading] = useState(false);
 
+  // When the active tab changes to "Reports", simulate loading
+  useEffect(() => {
+    console.log("Tab name:-", activeTab);
+    if (activeTab === "Reports") {
+      setIsLoading(true);
+
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 3500); // simulate 1.5 sec loading
+
+      return () => clearTimeout(timer);
+    } else {
+      setIsLoading(false); // no loading for other tabs
+    }
+  }, [activeTab]);
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -225,37 +249,41 @@ const PatientReport = () => {
 
   return (
     <>
-      <div className="d-md-flex d-sm-none justify-content-between  mb-4">
-        <InputFieldGroup
-          name="search"
-          type="text"
-          // value={formData.name}
-          // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          //     setSearchTerm(e.target.value); /
-          // }}
-          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
-          placeholder="search"
-          required={false}
-          disabled={false}
-          readOnly={false}
-          // error={formError.name}
-          className="position-relative blood-test-search patient-header-search patient-header-search-width "
-        >
-          <div className="blood-test-search-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="21"
-              height="20"
-              viewBox="0 0 21 20"
-              fill="none"
-            >
-              <path
-                d="M18.5677 16.8364L14.8576 13.1246C15.97 11.675 16.4893 9.85652 16.3103 8.03804C16.1312 6.21956 15.2672 4.53728 13.8934 3.33245C12.5196 2.12762 10.7389 1.49047 8.91264 1.55024C7.08635 1.61001 5.35117 2.36223 4.05909 3.65431C2.76702 4.94638 2.0148 6.68156 1.95503 8.50785C1.89526 10.3341 2.53241 12.1148 3.73724 13.4886C4.94207 14.8624 6.62435 15.7264 8.44283 15.9055C10.2613 16.0846 12.0798 15.5652 13.5294 14.4528L17.2427 18.1668C17.3299 18.254 17.4335 18.3232 17.5474 18.3704C17.6613 18.4176 17.7835 18.4419 17.9068 18.4419C18.0301 18.4419 18.1522 18.4176 18.2662 18.3704C18.3801 18.3232 18.4836 18.254 18.5708 18.1668C18.658 18.0796 18.7272 17.9761 18.7744 17.8622C18.8216 17.7482 18.8459 17.6261 18.8459 17.5028C18.8459 17.3794 18.8216 17.2573 18.7744 17.1434C18.7272 17.0294 18.658 16.9259 18.5708 16.8387L18.5677 16.8364ZM3.84193 8.74965C3.84193 7.69894 4.15351 6.67182 4.73725 5.79818C5.321 4.92455 6.1507 4.24363 7.12143 3.84154C8.09216 3.43945 9.16033 3.33424 10.1909 3.53923C11.2214 3.74421 12.168 4.25018 12.9109 4.99314C13.6539 5.73611 14.1599 6.68271 14.3649 7.71323C14.5698 8.74376 14.4646 9.81192 14.0625 10.7827C13.6605 11.7534 12.9795 12.5831 12.1059 13.1668C11.2323 13.7506 10.2051 14.0621 9.15444 14.0621C7.74592 14.0607 6.3955 13.5005 5.39953 12.5046C4.40356 11.5086 3.84338 10.1582 3.84193 8.74965Z"
-                fill="#B0B4C1"
-              />
-            </svg>
-          </div>
-        </InputFieldGroup>
+      <div className="d-md-flex d-sm-none justify-content-between mb-4">
+        {isLoading ? (
+          <Skeleton height={40} width={250} />
+        ) : (
+          <InputFieldGroup
+            name="search"
+            type="text"
+            // value={formData.name}
+            // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            //     setSearchTerm(e.target.value); /
+            // }}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
+            placeholder="search"
+            required={false}
+            disabled={false}
+            readOnly={false}
+            // error={formError.name}
+            className="position-relative blood-test-search patient-header-search patient-header-search-width "
+          >
+            <div className="blood-test-search-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="21"
+                height="20"
+                viewBox="0 0 21 20"
+                fill="none"
+              >
+                <path
+                  d="M18.5677 16.8364L14.8576 13.1246C15.97 11.675 16.4893 9.85652 16.3103 8.03804C16.1312 6.21956 15.2672 4.53728 13.8934 3.33245C12.5196 2.12762 10.7389 1.49047 8.91264 1.55024C7.08635 1.61001 5.35117 2.36223 4.05909 3.65431C2.76702 4.94638 2.0148 6.68156 1.95503 8.50785C1.89526 10.3341 2.53241 12.1148 3.73724 13.4886C4.94207 14.8624 6.62435 15.7264 8.44283 15.9055C10.2613 16.0846 12.0798 15.5652 13.5294 14.4528L17.2427 18.1668C17.3299 18.254 17.4335 18.3232 17.5474 18.3704C17.6613 18.4176 17.7835 18.4419 17.9068 18.4419C18.0301 18.4419 18.1522 18.4176 18.2662 18.3704C18.3801 18.3232 18.4836 18.254 18.5708 18.1668C18.658 18.0796 18.7272 17.9761 18.7744 17.8622C18.8216 17.7482 18.8459 17.6261 18.8459 17.5028C18.8459 17.3794 18.8216 17.2573 18.7744 17.1434C18.7272 17.0294 18.658 16.9259 18.5708 16.8387L18.5677 16.8364ZM3.84193 8.74965C3.84193 7.69894 4.15351 6.67182 4.73725 5.79818C5.321 4.92455 6.1507 4.24363 7.12143 3.84154C8.09216 3.43945 9.16033 3.33424 10.1909 3.53923C11.2214 3.74421 12.168 4.25018 12.9109 4.99314C13.6539 5.73611 14.1599 6.68271 14.3649 7.71323C14.5698 8.74376 14.4646 9.81192 14.0625 10.7827C13.6605 11.7534 12.9795 12.5831 12.1059 13.1668C11.2323 13.7506 10.2051 14.0621 9.15444 14.0621C7.74592 14.0607 6.3955 13.5005 5.39953 12.5046C4.40356 11.5086 3.84338 10.1582 3.84193 8.74965Z"
+                  fill="#B0B4C1"
+                />
+              </svg>
+            </div>
+          </InputFieldGroup>
+        )}
 
         <div className="d-flex flex-sm-row align-items-center gap-sm-3 gap-2 flex-column flex-column-revserse mt-sm-0 mt-2">
           <div className="d-flex align-items-center gap-2">
@@ -313,7 +341,7 @@ const PatientReport = () => {
           </Button>
         </div>
       </div>
-      
+
       <div className="d-md-none d-sm-flex d-none flex-column align-items-sm-start align-items-center gap-3 mb-3">
         <div className="d-flex align-items-center justify-content-sm-start justify-content-center flex-wrap gap-3 w-100">
           <div className="patient-header-search-width">

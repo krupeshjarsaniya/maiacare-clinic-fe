@@ -41,7 +41,8 @@ import {
 } from "../utlis/types/interfaces";
 import { PhysicalAssessment } from "@/utlis/types/interfaces";
 import { formatDateTime } from "@/utlis/Helper";
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 const contactData = {
   phone: "+91 12345 67890",
   email: "riyadharang@miacare.com",
@@ -66,25 +67,7 @@ const getStatusBadgeClass = (status: string) => {
       return "badge bg-secondary";
   }
 };
-// interface PhysicalAssessment {
-//   date?: string;
-//   patientId: string;
-//   height: string;
-//   weight: string;
-//   bmi: string;
-//   bloodGroup: string;
-//   bloodPressureSystolic: string;
-//   bloodPressureDiastolic: string;
-//   heartRate: string;
-// }
-interface AllergyItem {
-  id?: number | string;
-  value?: string;
-}
-interface LifestyleItem {
-  id?: number | string;
-  value?: string;
-}
+
 export interface FertilityAssessmentData {
   // Patient-level
   patientId?: string;
@@ -123,6 +106,7 @@ const ProfileBasicDetail = ({
   loading?: boolean;
 }) => {
   const router = useRouter();
+  const isLoading = !patientData;
   const [activeAccordion, setActiveAccordion] = useState<string[]>([
     "0",
     "1",
@@ -273,7 +257,44 @@ const ProfileBasicDetail = ({
       title: "Physical Assessment",
       content: (
         <>
-          {modalFormPhisicalData?.length === 0 ? (
+          {isLoading ? (
+            <div>
+              {/* Add New Button Skeleton */}
+              <div className="mb-3">
+                <Skeleton width={90} height={32} borderRadius={6} />
+              </div>
+
+              {/* Accordion Skeleton Items */}
+              {[1, 2].map((_, idx) => (
+                <div
+                  key={idx}
+                  className="phisical-assessment-accordion-item mb-3 p-3 border rounded"
+                >
+                  {/* Accordion Header */}
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <Skeleton width={140} height={18} />
+                    <Skeleton width={50} height={18} />
+                  </div>
+
+                  {/* Accordion Body */}
+                  <Row className="g-3">
+                    {[1, 2, 3].map((_, i) => (
+                      <Col md={4} sm={6} key={i}>
+                        <div className="d-flex gap-3 align-items-start">
+                          <Skeleton width={43} height={43} borderRadius={8} />
+
+                          <div className="flex-grow-1">
+                            <Skeleton width={60} height={14} className="mb-2" />
+                            <Skeleton width={100} height={18} />
+                          </div>
+                        </div>
+                      </Col>
+                    ))}
+                  </Row>
+                </div>
+              ))}
+            </div>
+          ) : modalFormPhisicalData?.length === 0 ? (
             <div className="text-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -902,8 +923,88 @@ const ProfileBasicDetail = ({
       title: "Fertility Assessment",
       content: (
         <>
-          {/* Object.keys(modalFormFertilityData).length === 0 && */}
-          {modalFormFertilityData === null ? (
+          {isLoading ? (
+            modalFormFertilityData === null ? (
+              // <div className="text-center">
+
+              //   <Skeleton width={81} height={81} borderRadius={12} />
+
+              //   <Skeleton width={180} height={16} className="my-3 mx-auto" />
+
+              //   <Skeleton
+              //     width={220}
+              //     height={38}
+              //     borderRadius={8}
+              //     className="mx-auto"
+              //   />
+              // </div>
+              <div>
+                {/* ===== Edit / Add Button ===== */}
+                <div className="mb-3">
+                  <Skeleton width={70} height={30} borderRadius={6} />
+                </div>
+
+                {/* ===== Accordion Skeleton ===== */}
+                {[1, 2].map((_, accordionIndex) => (
+                  <div
+                    key={accordionIndex}
+                    className="phisical-assessment-accordion-item mb-3 p-3 border rounded"
+                  >
+                    {/* Accordion Header */}
+                    <div className="d-flex align-items-center gap-2 mb-3">
+                      <Skeleton width={35} height={35} borderRadius={6} />
+                      <Skeleton width={160} height={18} />
+                    </div>
+
+                    {/* Accordion Body */}
+                    <Row className="g-3">
+                      {[1, 2, 3, 4, 5, 6].map((_, index) => (
+                        <Col sm={6} key={index}>
+                          <div className="d-flex flex-column gap-1">
+                            <Skeleton width={170} height={13} />
+                            <Skeleton width={120} height={16} />
+                          </div>
+                        </Col>
+                      ))}
+                    </Row>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div>
+                {/* ===== Edit / Add Button ===== */}
+                <div className="mb-3">
+                  <Skeleton width={70} height={30} borderRadius={6} />
+                </div>
+
+                {/* ===== Accordion Skeleton ===== */}
+                {[1, 2].map((_, accordionIndex) => (
+                  <div
+                    key={accordionIndex}
+                    className="phisical-assessment-accordion-item mb-3 p-3 border rounded"
+                  >
+                    {/* Accordion Header */}
+                    <div className="d-flex align-items-center gap-2 mb-3">
+                      <Skeleton width={35} height={35} borderRadius={6} />
+                      <Skeleton width={160} height={18} />
+                    </div>
+
+                    {/* Accordion Body */}
+                    <Row className="g-3">
+                      {[1, 2, 3, 4, 5, 6].map((_, index) => (
+                        <Col sm={6} key={index}>
+                          <div className="d-flex flex-column gap-1">
+                            <Skeleton width={170} height={13} />
+                            <Skeleton width={120} height={16} />
+                          </div>
+                        </Col>
+                      ))}
+                    </Row>
+                  </div>
+                ))}
+              </div>
+            )
+          ) : modalFormFertilityData === null ? (
             <div className="text-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1218,6 +1319,7 @@ const ProfileBasicDetail = ({
               </Accordion>
             </div>
           )}
+          {/* Object.keys(modalFormFertilityData).length === 0 && */}
         </>
       ),
     },
@@ -1226,7 +1328,153 @@ const ProfileBasicDetail = ({
       title: "Medical History",
       content: (
         <div>
-          {medicalHistoryFormData == null ? (
+          {isLoading ? (
+            medicalHistoryFormData == null ? (
+              <div className="mb-3">
+                {/* Edit Button */}
+                <Skeleton
+                  width={70}
+                  height={30}
+                  borderRadius={6}
+                  className="mb-3"
+                />
+
+                <Row>
+                  {/* Current Medications */}
+                  <Col sm={5}>
+                    <Skeleton width={150} height={14} className="mb-2" />
+                    <Skeleton width={120} height={16} />
+                  </Col>
+
+                  {/* Surgeries */}
+                  <Col sm={7}>
+                    <Skeleton width={100} height={14} className="mb-2" />
+                    <Skeleton width={150} height={16} />
+                  </Col>
+
+                  {/* Medical condition / Allergies */}
+                  <Col sm={12}>
+                    <Skeleton width={220} height={14} className="mb-2" />
+                    <div className="d-flex flex-wrap gap-2">
+                      {[1, 2, 3].map((_, i) => (
+                        <Skeleton
+                          key={i}
+                          width={90}
+                          height={26}
+                          borderRadius={20}
+                        />
+                      ))}
+                    </div>
+                  </Col>
+
+                  {/* Family History */}
+                  <Col sm={5}>
+                    <Skeleton width={120} height={14} className="mb-2" />
+                    <Skeleton width={180} height={16} />
+                  </Col>
+
+                  {/* Lifestyle */}
+                  <Col sm={7}>
+                    <Skeleton width={80} height={14} className="mb-2" />
+                    <div className="d-flex flex-wrap gap-2">
+                      {[1, 2].map((_, i) => (
+                        <Skeleton
+                          key={i}
+                          width={80}
+                          height={26}
+                          borderRadius={20}
+                        />
+                      ))}
+                    </div>
+                  </Col>
+
+                  {/* Physical Exercise */}
+                  <Col sm={5}>
+                    <Skeleton width={130} height={14} className="mb-2" />
+                    <Skeleton width={110} height={26} borderRadius={20} />
+                  </Col>
+
+                  {/* Stress Level */}
+                  <Col sm={7}>
+                    <Skeleton width={90} height={14} className="mb-2" />
+                    <Skeleton width={70} height={26} borderRadius={20} />
+                  </Col>
+                </Row>
+              </div>
+            ) : (
+              <div className="mb-3">
+                {/* Edit Button */}
+                <Skeleton
+                  width={70}
+                  height={30}
+                  borderRadius={6}
+                  className="mb-3"
+                />
+
+                <Row>
+                  {/* Current Medications */}
+                  <Col sm={5}>
+                    <Skeleton width={150} height={14} className="mb-2" />
+                    <Skeleton width={120} height={16} />
+                  </Col>
+
+                  {/* Surgeries */}
+                  <Col sm={7}>
+                    <Skeleton width={100} height={14} className="mb-2" />
+                    <Skeleton width={150} height={16} />
+                  </Col>
+
+                  {/* Medical condition / Allergies */}
+                  <Col sm={12}>
+                    <Skeleton width={220} height={14} className="mb-2" />
+                    <div className="d-flex flex-wrap gap-2">
+                      {[1, 2, 3].map((_, i) => (
+                        <Skeleton
+                          key={i}
+                          width={90}
+                          height={26}
+                          borderRadius={20}
+                        />
+                      ))}
+                    </div>
+                  </Col>
+
+                  {/* Family History */}
+                  <Col sm={5}>
+                    <Skeleton width={120} height={14} className="mb-2" />
+                    <Skeleton width={180} height={16} />
+                  </Col>
+
+                  {/* Lifestyle */}
+                  <Col sm={7}>
+                    <Skeleton width={80} height={14} className="mb-2" />
+                    <div className="d-flex flex-wrap gap-2">
+                      {[1, 2].map((_, i) => (
+                        <Skeleton
+                          key={i}
+                          width={80}
+                          height={26}
+                          borderRadius={20}
+                        />
+                      ))}
+                    </div>
+                  </Col>
+
+                  {/* Physical Exercise */}
+                  <Col sm={5}>
+                    <Skeleton width={130} height={14} className="mb-2" />
+                    <Skeleton width={110} height={26} borderRadius={20} />
+                  </Col>
+
+                  {/* Stress Level */}
+                  <Col sm={7}>
+                    <Skeleton width={90} height={14} className="mb-2" />
+                    <Skeleton width={70} height={26} borderRadius={20} />
+                  </Col>
+                </Row>
+              </div>
+            )
+          ) : medicalHistoryFormData == null ? (
             <div className="text-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1283,136 +1531,141 @@ const ProfileBasicDetail = ({
               </Button>
             </div>
           ) : (
-            // add medical done
-            <>
-              <div className="mb-3">
-                <Button
-                  onClick={() => {
-                    setEditingMedicalHistory(medicalHistoryFormData);
-                    setShowModal(true);
-                  }}
-                  className="mb-3 add-new-button"
-                  variant="outline"
-                  contentSize="small"
+            <div className="mb-3">
+              <Button
+                onClick={() => {
+                  setEditingMedicalHistory(medicalHistoryFormData);
+                  setShowModal(true);
+                }}
+                className="mb-3 add-new-button"
+                variant="outline"
+                contentSize="small"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 14 14"
+                  className="me-2"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 14 14"
-                    className="me-2"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M13.5484 3.40848L10.7553 0.615983C10.5209 0.381644 10.203 0.25 9.87157 0.25C9.54011 0.25 9.22223 0.381644 8.98782 0.615983L1.28032 8.32286C1.16385 8.43861 1.0715 8.57633 1.00863 8.72803C0.945765 8.87973 0.913622 9.0424 0.914067 9.20661V11.9997C0.914067 12.3313 1.04576 12.6492 1.28018 12.8836C1.5146 13.118 1.83255 13.2497 2.16407 13.2497H12.6641C12.863 13.2497 13.0537 13.1707 13.1944 13.0301C13.3351 12.8894 13.4141 12.6986 13.4141 12.4997C13.4141 12.3008 13.3351 12.1101 13.1944 11.9694C13.0537 11.8288 12.863 11.7497 12.6641 11.7497H6.97657L13.5484 5.17661C13.6646 5.06053 13.7567 4.92271 13.8195 4.77102C13.8824 4.61933 13.9147 4.45674 13.9147 4.29255C13.9147 4.12835 13.8824 3.96576 13.8195 3.81407C13.7567 3.66238 13.6646 3.52456 13.5484 3.40848ZM4.85157 11.7497H2.41407V9.31223L7.66407 4.06223L10.1016 6.49973L4.85157 11.7497ZM11.1641 5.43723L8.72657 2.99973L9.87282 1.85348L12.3103 4.29098L11.1641 5.43723Z"
-                      fill="#2B4360"
-                    />
-                  </svg>
-                  Edit
-                </Button>
-                <Row className="">
-                  <Col sm={5}>
-                    <div className="">
-                      <h6 className=" contact-details-emergency">
-                        Current Medications
-                      </h6>
-                      <p className=" accordion-title-detail">
-                        {medicalHistoryFormData?.medications
-                          ?.medicationsDetails === "yes"
-                          ? medicalHistoryFormData?.medications
-                              ?.medicationsDetails || "Yes"
-                          : "No"}
-                      </p>
+                  <path
+                    d="M13.5484 3.40848L10.7553 0.615983C10.5209 0.381644 10.203 0.25 9.87157 0.25C9.54011 0.25 9.22223 0.381644 8.98782 0.615983L1.28032 8.32286C1.16385 8.43861 1.0715 8.57633 1.00863 8.72803C0.945765 8.87973 0.913622 9.0424 0.914067 9.20661V11.9997C0.914067 12.3313 1.04576 12.6492 1.28018 12.8836C1.5146 13.118 1.83255 13.2497 2.16407 13.2497H12.6641C12.863 13.2497 13.0537 13.1707 13.1944 13.0301C13.3351 12.8894 13.4141 12.6986 13.4141 12.4997C13.4141 12.3008 13.3351 12.1101 13.1944 11.9694C13.0537 11.8288 12.863 11.7497 12.6641 11.7497H6.97657L13.5484 5.17661C13.6646 5.06053 13.7567 4.92271 13.8195 4.77102C13.8824 4.61933 13.9147 4.45674 13.9147 4.29255C13.9147 4.12835 13.8824 3.96576 13.8195 3.81407C13.7567 3.66238 13.6646 3.52456 13.5484 3.40848ZM4.85157 11.7497H2.41407V9.31223L7.66407 4.06223L10.1016 6.49973L4.85157 11.7497ZM11.1641 5.43723L8.72657 2.99973L9.87282 1.85348L12.3103 4.29098L11.1641 5.43723Z"
+                    fill="#2B4360"
+                  />
+                </svg>
+                Edit
+              </Button>
+              <Row className="">
+                <Col sm={5}>
+                  <div className="">
+                    <h6 className=" contact-details-emergency">
+                      Current Medications
+                    </h6>
+                    <p className=" accordion-title-detail">
+                      {medicalHistoryFormData?.medications
+                        ?.medicationsDetails === "yes"
+                        ? medicalHistoryFormData?.medications
+                            ?.medicationsDetails || "Yes"
+                        : "No"}
+                    </p>
+                  </div>
+                </Col>
+
+                <Col sm={7}>
+                  <div className="">
+                    <h6 className=" contact-details-emergency">Surgeries</h6>
+                    <p className=" accordion-title-detail">
+                      {medicalHistoryFormData?.surgeries?.status === "Yes"
+                        ? medicalHistoryFormData?.surgeries?.surgeriesDetails ||
+                          "Yes"
+                        : "No"}
+                    </p>
+                  </div>
+                </Col>
+
+                <Col sm={12}>
+                  <div className="">
+                    <h6 className=" contact-details-emergency">
+                      Medical condition / Allergies
+                    </h6>
+                    {medicalHistoryFormData?.conditions?.map(
+                      (item: string, index: number) => (
+                        <p
+                          key={index}
+                          className="accordion-title-detail d-inline-block border-box-orange-font box-border-orange me-2 mb-2"
+                        >
+                          {item}
+                        </p>
+                      )
+                    )}
+                  </div>
+                </Col>
+
+                <Col sm={5}>
+                  <div className="">
+                    <h6 className=" contact-details-emergency">
+                      Family History
+                    </h6>
+                    <div className=" accordion-title-detail">
+                      <ul>
+                        <li className="medical-emergency-fimily-history">
+                          {medicalHistoryFormData?.familyHistory ||
+                            "No added family history"}
+                        </li>
+                      </ul>
                     </div>
-                  </Col>
+                  </div>
+                </Col>
 
-                  <Col sm={7}>
-                    <div className="">
-                      <h6 className=" contact-details-emergency">Surgeries</h6>
-                      <p className=" accordion-title-detail">
-                        {medicalHistoryFormData?.surgeries?.status === "Yes"
-                          ? medicalHistoryFormData?.surgeries
-                              ?.surgeriesDetails || "Yes"
-                          : "No"}
-                      </p>
-                    </div>
-                  </Col>
+                <Col sm={7}>
+                  <div className="">
+                    <h6 className=" contact-details-emergency">Lifestyle</h6>
 
-                  <Col sm={12}>
-                    <div className="">
-                      <h6 className=" contact-details-emergency">
-                        Medical condition / Allergies
-                      </h6>
-                      {medicalHistoryFormData?.conditions?.map(
-                        (item: string, index: number) => (
-                          <p
-                            key={index}
-                            className="accordion-title-detail d-inline-block border-box-orange-font box-border-orange me-2 mb-2"
-                          >
-                            {item}
-                          </p>
-                        )
-                      )}
-                    </div>
-                  </Col>
+                    {medicalHistoryFormData?.lifestyle?.map(
+                      (item: string, index: number) => (
+                        <p
+                          key={index}
+                          className="accordion-title-detail d-inline-block border-box-blue-font box-border-blue me-2 mb-2"
+                        >
+                          {item}
+                        </p>
+                      )
+                    )}
+                  </div>
+                </Col>
 
-                  <Col sm={5}>
-                    <div className="">
-                      <h6 className=" contact-details-emergency">
-                        Family History
-                      </h6>
-                      <div className=" accordion-title-detail">
-                        <ul>
-                          <li className="medical-emergency-fimily-history">
-                            {medicalHistoryFormData?.familyHistory ||
-                              "No added family history"}
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </Col>
+                <Col sm={5}>
+                  <div className="">
+                    <h6 className=" contact-details-emergency">
+                      Physical Exercise
+                    </h6>
+                    <p className="accordion-title-detail border-box-orange-font box-border-orange d-inline-block ">
+                      {medicalHistoryFormData?.exerciseFrequency}
+                    </p>
+                  </div>
+                </Col>
 
-                  <Col sm={7}>
-                    <div className="">
-                      <h6 className=" contact-details-emergency">Lifestyle</h6>
-
-                      {medicalHistoryFormData?.lifestyle?.map(
-                        (item: string, index: number) => (
-                          <p
-                            key={index}
-                            className="accordion-title-detail d-inline-block border-box-blue-font box-border-blue me-2 mb-2"
-                          >
-                            {item}
-                          </p>
-                        )
-                      )}
-                    </div>
-                  </Col>
-
-                  <Col sm={5}>
-                    <div className="">
-                      <h6 className=" contact-details-emergency">
-                        Physical Exercise
-                      </h6>
-                      <p className="accordion-title-detail border-box-orange-font box-border-orange d-inline-block ">
-                        {medicalHistoryFormData?.exerciseFrequency}
-                      </p>
-                    </div>
-                  </Col>
-
-                  <Col sm={7}>
-                    <div className="">
+                <Col sm={7}>
+                  <div className="">
+                    {isLoading ? (
+                      <Skeleton width={70} height={18} />
+                    ) : (
                       <h6 className=" contact-details-emergency">
                         Stress Level
                       </h6>
+                    )}
+                    {isLoading ? (
+                      <Skeleton width={50} height={18} />
+                    ) : (
                       <p className="accordion-title-detail d-inline-block border-box-red-font box-border-red">
                         {medicalHistoryFormData?.stressLevel}
                       </p>
-                    </div>
-                  </Col>
-                </Row>
-              </div>
-            </>
+                    )}
+                  </div>
+                </Col>
+              </Row>
+            </div>
           )}
         </div>
       ),
@@ -1428,96 +1681,152 @@ const ProfileBasicDetail = ({
           <Card className="mb-3 shadow-sm">
             <Card.Body className="p-4">
               <Row>
-                <h6 className="mb-3 contact-details-heading">
-                  Contact Details
-                </h6>
+                {isLoading ? (
+                  <Skeleton width={100} height={23} />
+                ) : (
+                  <h6 className="mb-3 contact-details-heading">
+                    Contact Details
+                  </h6>
+                )}
+
                 <Col lg={4} md={12}>
                   <div className="mb-3 d-flex align-items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 21 21"
-                      fill="none"
-                    >
-                      <path
-                        d="M17.482 12.7819L13.8016 11.1327L13.7914 11.128C13.6003 11.0462 13.3919 11.0134 13.185 11.0325C12.978 11.0516 12.7791 11.122 12.6063 11.2373C12.5859 11.2508 12.5663 11.2654 12.5477 11.2811L10.6461 12.9022C9.44141 12.317 8.19766 11.0827 7.61251 9.89359L9.23594 7.96312C9.25157 7.94359 9.26641 7.92406 9.28048 7.90297C9.39331 7.73055 9.46177 7.53291 9.47976 7.32763C9.49775 7.12236 9.46472 6.91582 9.3836 6.7264V6.71703L7.72969 3.03031C7.62246 2.78286 7.43807 2.57673 7.20406 2.44268C6.97005 2.30864 6.69895 2.25387 6.43126 2.28656C5.37264 2.42586 4.40093 2.94575 3.69761 3.74914C2.99429 4.55252 2.60747 5.58444 2.60938 6.65219C2.60938 12.8553 7.65626 17.9022 13.8594 17.9022C14.9271 17.9041 15.9591 17.5173 16.7624 16.814C17.5658 16.1106 18.0857 15.1389 18.225 14.0803C18.2578 13.8127 18.2031 13.5417 18.0692 13.3077C17.9353 13.0737 17.7293 12.8892 17.482 12.7819ZM13.8594 16.6522C11.2081 16.6493 8.66625 15.5948 6.79151 13.7201C4.91678 11.8453 3.86228 9.30346 3.85938 6.65219C3.85644 5.88929 4.1313 5.1514 4.63261 4.57633C5.13393 4.00126 5.82743 3.62833 6.5836 3.52719C6.58329 3.5303 6.58329 3.53344 6.5836 3.53656L8.22423 7.20844L6.60938 9.14125C6.59299 9.16011 6.5781 9.18022 6.56485 9.2014C6.44728 9.38181 6.37832 9.58953 6.36463 9.80442C6.35094 10.0193 6.393 10.2341 6.48673 10.428C7.19454 11.8756 8.65313 13.3233 10.1164 14.0303C10.3117 14.1232 10.5277 14.1638 10.7434 14.1482C10.9591 14.1325 11.167 14.0613 11.3469 13.9412C11.3669 13.9277 11.3862 13.9131 11.4047 13.8975L13.3039 12.2772L16.9758 13.9217C16.9758 13.9217 16.982 13.9217 16.9844 13.9217C16.8845 14.679 16.5121 15.3739 15.9369 15.8764C15.3617 16.379 14.6232 16.6548 13.8594 16.6522Z"
-                        fill="#3E4A57"
-                      />
-                    </svg>
-
-                    <span className="contact-details-subheading">
-                      {contactData.phone}
-                    </span>
+                    {isLoading ? (
+                      <Skeleton width={18} height={18} className="me-2" />
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 21 21"
+                        fill="none"
+                      >
+                        <path
+                          d="M17.482 12.7819L13.8016 11.1327L13.7914 11.128C13.6003 11.0462 13.3919 11.0134 13.185 11.0325C12.978 11.0516 12.7791 11.122 12.6063 11.2373C12.5859 11.2508 12.5663 11.2654 12.5477 11.2811L10.6461 12.9022C9.44141 12.317 8.19766 11.0827 7.61251 9.89359L9.23594 7.96312C9.25157 7.94359 9.26641 7.92406 9.28048 7.90297C9.39331 7.73055 9.46177 7.53291 9.47976 7.32763C9.49775 7.12236 9.46472 6.91582 9.3836 6.7264V6.71703L7.72969 3.03031C7.62246 2.78286 7.43807 2.57673 7.20406 2.44268C6.97005 2.30864 6.69895 2.25387 6.43126 2.28656C5.37264 2.42586 4.40093 2.94575 3.69761 3.74914C2.99429 4.55252 2.60747 5.58444 2.60938 6.65219C2.60938 12.8553 7.65626 17.9022 13.8594 17.9022C14.9271 17.9041 15.9591 17.5173 16.7624 16.814C17.5658 16.1106 18.0857 15.1389 18.225 14.0803C18.2578 13.8127 18.2031 13.5417 18.0692 13.3077C17.9353 13.0737 17.7293 12.8892 17.482 12.7819ZM13.8594 16.6522C11.2081 16.6493 8.66625 15.5948 6.79151 13.7201C4.91678 11.8453 3.86228 9.30346 3.85938 6.65219C3.85644 5.88929 4.1313 5.1514 4.63261 4.57633C5.13393 4.00126 5.82743 3.62833 6.5836 3.52719C6.58329 3.5303 6.58329 3.53344 6.5836 3.53656L8.22423 7.20844L6.60938 9.14125C6.59299 9.16011 6.5781 9.18022 6.56485 9.2014C6.44728 9.38181 6.37832 9.58953 6.36463 9.80442C6.35094 10.0193 6.393 10.2341 6.48673 10.428C7.19454 11.8756 8.65313 13.3233 10.1164 14.0303C10.3117 14.1232 10.5277 14.1638 10.7434 14.1482C10.9591 14.1325 11.167 14.0613 11.3469 13.9412C11.3669 13.9277 11.3862 13.9131 11.4047 13.8975L13.3039 12.2772L16.9758 13.9217C16.9758 13.9217 16.982 13.9217 16.9844 13.9217C16.8845 14.679 16.5121 15.3739 15.9369 15.8764C15.3617 16.379 14.6232 16.6548 13.8594 16.6522Z"
+                          fill="#3E4A57"
+                        />
+                      </svg>
+                    )}
+                    {isLoading ? (
+                      <Skeleton width={70} height={18} />
+                    ) : (
+                      <span className="contact-details-subheading">
+                        {contactData.phone}
+                      </span>
+                    )}
                   </div>
                 </Col>
                 <Col lg={8} md={12}>
                   <div className="mb-3 d-flex align-items-center contac-email-card">
-                    <Image
-                      src={ProfileEmail}
-                      className="me-1"
-                      width={20}
-                      height={20}
-                      alt="Email"
-                    />
-                    <span className="contact-details-subheading">
-                      {contactData.email}
-                    </span>
+                    {isLoading ? (
+                      <Skeleton width={18} height={18} className="me-2" />
+                    ) : (
+                      <Image
+                        src={ProfileEmail}
+                        className="me-1"
+                        width={20}
+                        height={20}
+                        alt="Email"
+                      />
+                    )}
+                    {isLoading ? (
+                      <Skeleton width={70} height={18} />
+                    ) : (
+                      <span className="contact-details-subheading">
+                        {contactData.email}
+                      </span>
+                    )}
                   </div>
                 </Col>
 
                 <Col lg={12} md={12}>
                   <div className="mb-4 d-flex align-items-start">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 21 21"
-                      fill="none"
-                    >
-                      <path
-                        d="M10.1094 5.40234C9.49131 5.40234 8.88712 5.58562 8.37322 5.929C7.85931 6.27238 7.45878 6.76044 7.22225 7.33146C6.98573 7.90248 6.92384 8.53081 7.04442 9.137C7.165 9.74319 7.46263 10.3 7.89967 10.7371C8.33671 11.1741 8.89353 11.4717 9.49972 11.5923C10.1059 11.7129 10.7342 11.651 11.3053 11.4145C11.8763 11.1779 12.3643 10.7774 12.7077 10.2635C13.0511 9.7496 13.2344 9.14541 13.2344 8.52734C13.2344 7.69854 12.9051 6.90369 12.3191 6.31764C11.733 5.73158 10.9382 5.40234 10.1094 5.40234ZM10.1094 10.4023C9.73853 10.4023 9.37602 10.2924 9.06768 10.0863C8.75934 9.88032 8.51901 9.58749 8.3771 9.24487C8.23519 8.90226 8.19806 8.52526 8.2704 8.16155C8.34275 7.79783 8.52133 7.46374 8.78355 7.20152C9.04577 6.93929 9.37987 6.76072 9.74358 6.68837C10.1073 6.61602 10.4843 6.65316 10.8269 6.79507C11.1695 6.93698 11.4624 7.17731 11.6684 7.48565C11.8744 7.79399 11.9844 8.1565 11.9844 8.52734C11.9844 9.02462 11.7868 9.50154 11.4352 9.85317C11.0836 10.2048 10.6067 10.4023 10.1094 10.4023ZM10.1094 1.65234C8.28665 1.65441 6.53916 2.3794 5.2503 3.66827C3.96143 4.95713 3.23644 6.70462 3.23438 8.52734C3.23438 10.9805 4.36797 13.5805 6.51562 16.0469C7.48064 17.1614 8.56676 18.165 9.75391 19.0391C9.85899 19.1127 9.98419 19.1522 10.1125 19.1522C10.2408 19.1522 10.366 19.1127 10.4711 19.0391C11.6561 18.1646 12.7401 17.161 13.7031 16.0469C15.8477 13.5805 16.9844 10.9805 16.9844 8.52734C16.9823 6.70462 16.2573 4.95713 14.9685 3.66827C13.6796 2.3794 11.9321 1.65441 10.1094 1.65234ZM10.1094 17.7461C8.81797 16.7305 4.48438 13 4.48438 8.52734C4.48438 7.0355 5.07701 5.60476 6.1319 4.54987C7.18679 3.49498 8.61753 2.90234 10.1094 2.90234C11.6012 2.90234 13.032 3.49498 14.0869 4.54987C15.1417 5.60476 15.7344 7.0355 15.7344 8.52734C15.7344 12.9984 11.4008 16.7305 10.1094 17.7461Z"
-                        fill="#3E4A57"
-                      />
-                    </svg>
-                    <span className="contact-details-subheading contact-propfile-address">
-                      {contactData.address}
-                    </span>
+                    {isLoading ? (
+                      <Skeleton width={18} height={18} className="me-2" />
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 21 21"
+                        fill="none"
+                      >
+                        <path
+                          d="M10.1094 5.40234C9.49131 5.40234 8.88712 5.58562 8.37322 5.929C7.85931 6.27238 7.45878 6.76044 7.22225 7.33146C6.98573 7.90248 6.92384 8.53081 7.04442 9.137C7.165 9.74319 7.46263 10.3 7.89967 10.7371C8.33671 11.1741 8.89353 11.4717 9.49972 11.5923C10.1059 11.7129 10.7342 11.651 11.3053 11.4145C11.8763 11.1779 12.3643 10.7774 12.7077 10.2635C13.0511 9.7496 13.2344 9.14541 13.2344 8.52734C13.2344 7.69854 12.9051 6.90369 12.3191 6.31764C11.733 5.73158 10.9382 5.40234 10.1094 5.40234ZM10.1094 10.4023C9.73853 10.4023 9.37602 10.2924 9.06768 10.0863C8.75934 9.88032 8.51901 9.58749 8.3771 9.24487C8.23519 8.90226 8.19806 8.52526 8.2704 8.16155C8.34275 7.79783 8.52133 7.46374 8.78355 7.20152C9.04577 6.93929 9.37987 6.76072 9.74358 6.68837C10.1073 6.61602 10.4843 6.65316 10.8269 6.79507C11.1695 6.93698 11.4624 7.17731 11.6684 7.48565C11.8744 7.79399 11.9844 8.1565 11.9844 8.52734C11.9844 9.02462 11.7868 9.50154 11.4352 9.85317C11.0836 10.2048 10.6067 10.4023 10.1094 10.4023ZM10.1094 1.65234C8.28665 1.65441 6.53916 2.3794 5.2503 3.66827C3.96143 4.95713 3.23644 6.70462 3.23438 8.52734C3.23438 10.9805 4.36797 13.5805 6.51562 16.0469C7.48064 17.1614 8.56676 18.165 9.75391 19.0391C9.85899 19.1127 9.98419 19.1522 10.1125 19.1522C10.2408 19.1522 10.366 19.1127 10.4711 19.0391C11.6561 18.1646 12.7401 17.161 13.7031 16.0469C15.8477 13.5805 16.9844 10.9805 16.9844 8.52734C16.9823 6.70462 16.2573 4.95713 14.9685 3.66827C13.6796 2.3794 11.9321 1.65441 10.1094 1.65234ZM10.1094 17.7461C8.81797 16.7305 4.48438 13 4.48438 8.52734C4.48438 7.0355 5.07701 5.60476 6.1319 4.54987C7.18679 3.49498 8.61753 2.90234 10.1094 2.90234C11.6012 2.90234 13.032 3.49498 14.0869 4.54987C15.1417 5.60476 15.7344 7.0355 15.7344 8.52734C15.7344 12.9984 11.4008 16.7305 10.1094 17.7461Z"
+                          fill="#3E4A57"
+                        />
+                      </svg>
+                    )}
+                    {isLoading ? (
+                      <Skeleton width={70} height={18} />
+                    ) : (
+                      <span className="contact-details-subheading contact-propfile-address">
+                        {contactData.address}
+                      </span>
+                    )}
                   </div>
                 </Col>
               </Row>
+              {isLoading ? (
+                <Skeleton width={160} height={18} />
+              ) : (
+                <h6 className=" mb-3 contact-details-heading">
+                  Emergency Contact Details
+                </h6>
+              )}
 
-              <h6 className=" mb-3 contact-details-heading">
-                Emergency Contact Details
-              </h6>
               <Row className="g-3">
                 <Col sm={4}>
                   <div>
-                    <small className="contact-details-emergency d-block">
-                      Name
-                    </small>
-                    <span className="contact-details-emergency-subdetail">
-                      {contactData.emergencyContact.name}
-                    </span>
+                    {isLoading ? (
+                      <Skeleton width={50} height={18} />
+                    ) : (
+                      <small className="contact-details-emergency d-block">
+                        Name
+                      </small>
+                    )}
+                    {isLoading ? (
+                      <Skeleton width={70} height={18} />
+                    ) : (
+                      <span className="contact-details-emergency-subdetail">
+                        {contactData.emergencyContact.name}
+                      </span>
+                    )}
                   </div>
                 </Col>
                 <Col sm={8}>
                   <div className="d-flex gap-3">
                     <div>
-                      <small className="contact-details-emergency d-block">
-                        Emergency Contact
-                      </small>
-                      <span className="contact-details-emergency-subdetail">
-                        {contactData.emergencyContact.contact}
-                      </span>
+                      {isLoading ? (
+                        <Skeleton width={50} height={18} />
+                      ) : (
+                        <small className="contact-details-emergency d-block">
+                          Emergency Contact
+                        </small>
+                      )}
+                      {isLoading ? (
+                        <Skeleton width={70} height={18} />
+                      ) : (
+                        <span className="contact-details-emergency-subdetail">
+                          {contactData.emergencyContact.contact}
+                        </span>
+                      )}
                     </div>
                     <div className="contact-details-relation">
-                      <small className="contact-details-emergency d-block">
-                        Relation
-                      </small>
-                      <span className="contact-details-emergency-subdetail">
-                        {contactData.emergencyContact.relation}
-                      </span>
+                      {isLoading ? (
+                        <Skeleton width={50} height={18} />
+                      ) : (
+                        <small className="contact-details-emergency d-block">
+                          Relation
+                        </small>
+                      )}
+                      {isLoading ? (
+                        <Skeleton width={70} height={18} />
+                      ) : (
+                        <span className="contact-details-emergency-subdetail">
+                          {contactData.emergencyContact.relation}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </Col>
@@ -1572,17 +1881,6 @@ const ProfileBasicDetail = ({
                 modalFormPhisicalData={modalFormPhisicalData}
                 patientId={patientData?._id}
                 fetchPatientData={fetchPatientData}
-                // setShowPhisicalAssessment={setShowPhisicalAssessment}
-                // editPhysicalAssessment={editPhysicalAssessment}
-                // setEditPhysicalAssessment={setEditPhysicalAssessment}
-                // modalFormPhisicalData={modalFormPhisicalData}
-                // patientId={patientData?._id}
-                // fetchPatientData={fetchPatientData}
-                // setModalFormPhisicalData={function (
-                //   value: React.SetStateAction<PhysicalAssessmentDataModel[]>
-                // ): void {
-                //   throw new Error("Function not implemented.");
-                // }}
               />
             </div>
           </Modal>
@@ -1636,122 +1934,169 @@ const ProfileBasicDetail = ({
         {/* Right Side - Patient Journey pe-auto pe-lg-0 ps-lg-auto ps-1*/}
         <Col lg={4} md={12} className="ps-0 pe-0 ps-lg-2">
           <div className="d-flex align-items-center mb-lg-4 mb-3 justify-content-between">
-            <h6 className="patient-journey-heading px-1">Patient Journey</h6>
-            <Button
-              className="maiacare-button-large patient-profile-dot   profile-card-boeder  bg-transparent btn btn-primary"
-              //   onClick={() => router.push("/profile")}
-              variant="dark"
-            >
-              <Image src={Arrowup} alt="Arrow" width={17} height={17} />
-            </Button>
-          </div>
-          {journeyData.map((item, index) => {
-            const isLastItem = index === journeyData.length - 1;
-            return (
-              <div
-                className={`position-relative ${
-                  !isLastItem ? "patient-journey-box-wrapper" : ""
-                }`}
-                key={item.id}
+            {isLoading ? (
+              <Skeleton width={180} height={23} />
+            ) : (
+              <h6 className="patient-journey-heading px-1">Patient Journey</h6>
+            )}
+            {isLoading ? (
+              <Skeleton width={40} height={40} />
+            ) : (
+              <Button
+                className="maiacare-button-large patient-profile-dot   profile-card-boeder  bg-transparent btn btn-primary"
+                //   onClick={() => router.push("/profile")}
+                variant="dark"
               >
+                <Image src={Arrowup} alt="Arrow" width={17} height={17} />
+              </Button>
+            )}
+          </div>
+          {isLoading ? (
+            <>
+              {Array.from({ length: journeyData?.length || 4 }).map(
+                (_, index) => {
+                  const isLastItem = index === (journeyData?.length || 4) - 1;
+
+                  return (
+                    <div
+                      key={index}
+                      className={`position-relative ${
+                        !isLastItem ? "patient-journey-box-wrapper" : ""
+                      }`}
+                    >
+                      <div className="patient-journey-box shadow-sm ms-5 mb-3">
+                        <div className="patient-journey-box-item d-flex justify-content-between align-items-center">
+                          <div>
+                            <Skeleton
+                              width={180}
+                              height={16}
+                              className="mb-2"
+                            />
+                            <Skeleton width={140} height={13} />
+                          </div>
+
+                          <Skeleton width={70} height={22} borderRadius={20} />
+                        </div>
+
+                        <div className="position-absolute start-0 patient-journey-dot">
+                          <Skeleton width={29} height={29} circle />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+              )}
+            </>
+          ) : (
+            journeyData.map((item, index) => {
+              const isLastItem = index === journeyData.length - 1;
+              return (
                 <div
-                  className="patient-journey-box shadow-sm ms-5 mb-3 "
+                  className={`position-relative ${
+                    !isLastItem ? "patient-journey-box-wrapper" : ""
+                  }`}
                   key={item.id}
                 >
-                  <div className="patient-journey-box-item">
-                    <div>
-                      <h6 className="patient-journey-box-title mb-1">
-                        {item.title}
-                      </h6>
-                      <p className="patient-journey-box-subtitle mb-0">
-                        {item.date} , {item.time}
-                      </p>
+                  <div
+                    className="patient-journey-box shadow-sm ms-5 mb-3 "
+                    key={item.id}
+                  >
+                    <div className="patient-journey-box-item">
+                      <div>
+                        <h6 className="patient-journey-box-title mb-1">
+                          {item.title}
+                        </h6>
+                        <p className="patient-journey-box-subtitle mb-0">
+                          {item.date} , {item.time}
+                        </p>
+                      </div>
+                      <div>
+                        {/* <Button variant="primary" size="sm">View</Button> */}
+                        <span className={getStatusBadgeClass(item.status)}>
+                          {item.status}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      {/* <Button variant="primary" size="sm">View</Button> */}
-                      <span className={getStatusBadgeClass(item.status)}>
-                        {item.status}
-                      </span>
-                    </div>
-                  </div>
 
-                  <div className="position-absolute start-0 patient-journey-dot">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="29"
-                      height="29"
-                      viewBox="0 0 29 29"
-                      fill="none"
-                    >
-                      <g filter="url(#filter0_d_2106_90109)">
-                        <rect
-                          x="2.16406"
-                          y="1.33984"
-                          width="24"
-                          height="24"
-                          rx="12"
-                          fill="white"
-                        />
-                        <rect
-                          x="2.66406"
-                          y="1.83984"
-                          width="23"
-                          height="23"
-                          rx="11.5"
-                          stroke="#DDE1E8"
-                        />
-                        <circle
-                          cx="14.1641"
-                          cy="13.3398"
-                          r="4"
-                          fill="#2ECF98"
-                        />
-                      </g>
-                      <defs>
-                        <filter
-                          id="filter0_d_2106_90109"
-                          x="0.164062"
-                          y="0.339844"
-                          width="28"
-                          height="28"
-                          filterUnits="userSpaceOnUse"
-                          colorInterpolationFilters="sRGB"
-                        >
-                          <feFlood
-                            floodOpacity="0"
-                            result="BackgroundImageFix"
+                    <div className="position-absolute start-0 patient-journey-dot">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="29"
+                        height="29"
+                        viewBox="0 0 29 29"
+                        fill="none"
+                      >
+                        <g filter="url(#filter0_d_2106_90109)">
+                          <rect
+                            x="2.16406"
+                            y="1.33984"
+                            width="24"
+                            height="24"
+                            rx="12"
+                            fill="white"
                           />
-                          <feColorMatrix
-                            in="SourceAlpha"
-                            type="matrix"
-                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                            result="hardAlpha"
+                          <rect
+                            x="2.66406"
+                            y="1.83984"
+                            width="23"
+                            height="23"
+                            rx="11.5"
+                            stroke="#DDE1E8"
                           />
-                          <feOffset dy="1" />
-                          <feGaussianBlur stdDeviation="1" />
-                          <feColorMatrix
-                            type="matrix"
-                            values="0 0 0 0 0.0627451 0 0 0 0 0.0941176 0 0 0 0 0.156863 0 0 0 0.05 0"
+                          <circle
+                            cx="14.1641"
+                            cy="13.3398"
+                            r="4"
+                            fill="#2ECF98"
                           />
-                          <feBlend
-                            mode="normal"
-                            in2="BackgroundImageFix"
-                            result="effect1_dropShadow_2106_90109"
-                          />
-                          <feBlend
-                            mode="normal"
-                            in="SourceGraphic"
-                            in2="effect1_dropShadow_2106_90109"
-                            result="shape"
-                          />
-                        </filter>
-                      </defs>
-                    </svg>
+                        </g>
+                        <defs>
+                          <filter
+                            id="filter0_d_2106_90109"
+                            x="0.164062"
+                            y="0.339844"
+                            width="28"
+                            height="28"
+                            filterUnits="userSpaceOnUse"
+                            colorInterpolationFilters="sRGB"
+                          >
+                            <feFlood
+                              floodOpacity="0"
+                              result="BackgroundImageFix"
+                            />
+                            <feColorMatrix
+                              in="SourceAlpha"
+                              type="matrix"
+                              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                              result="hardAlpha"
+                            />
+                            <feOffset dy="1" />
+                            <feGaussianBlur stdDeviation="1" />
+                            <feColorMatrix
+                              type="matrix"
+                              values="0 0 0 0 0.0627451 0 0 0 0 0.0941176 0 0 0 0 0.156863 0 0 0 0.05 0"
+                            />
+                            <feBlend
+                              mode="normal"
+                              in2="BackgroundImageFix"
+                              result="effect1_dropShadow_2106_90109"
+                            />
+                            <feBlend
+                              mode="normal"
+                              in="SourceGraphic"
+                              in2="effect1_dropShadow_2106_90109"
+                              result="shape"
+                            />
+                          </filter>
+                        </defs>
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
+        
         </Col>
       </Row>
     </Container>

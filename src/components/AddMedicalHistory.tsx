@@ -37,8 +37,8 @@ const AddMedicalHistory = () => {
 
   const dispatch: AppDispatch = useDispatch();
   // const patientId = params.id;
-  const [key, setKey] = useState<string>("basic");
-  const [activeTab, setActiveTab] = useState<string>("basic");
+  const [key, setKey] = useState<string>("basic"); //in this basic
+  const [activeTab, setActiveTab] = useState<string>("basic"); //in this basic
   const [patientData, setPatientData] = useState<PatientData | null>(null);
   const [patientIdShow, setPatientIdShow] = useState<string>("");
   const [modalFormPhisicalData, setModalFormPhisicalData] = useState<
@@ -62,13 +62,13 @@ const AddMedicalHistory = () => {
       setHeaderData({
         title: patientData?.personalDetails
           ? patientData.personalDetails.name
-          : "Patient Not Found",
+          : "Loading",
         subtitle: patientData?.personalDetails
           ? patientData.personalDetails.name
-          : "Patient Not Found",
+          : "Loading",
       })
     );
-  }, [patientData, dispatch]);
+  }, [patientData?.personalDetails?.name, dispatch]);
 
   const fetchPatientData = () => {
     console.log("patientId:-", patientId);
@@ -104,7 +104,7 @@ const AddMedicalHistory = () => {
   }, [patientId]);
   const tabOptions = [
     {
-      key: "basic", 
+      key: "basic",
       label: "Basic Details",
       content: (
         <div className="mt-4">
@@ -114,7 +114,7 @@ const AddMedicalHistory = () => {
             medicalHistoryFormData={medicalHistoryFormData}
             modalFormFertilityData={modalFormFertilityData}
             fetchPatientData={fetchPatientData}
-            // loading={loading}
+            loading={loading}
           />
         </div>
       ),
@@ -129,6 +129,7 @@ const AddMedicalHistory = () => {
             patientId={patientData?._id}
             showData={partnerDetails}
             fetchPatientData={fetchPatientData}
+            loading={loading}
           />
         </div>
       ),
@@ -138,7 +139,7 @@ const AddMedicalHistory = () => {
       label: "Appointment",
       content: (
         <div className="mt-4">
-          <PatientAppointment />
+          <PatientAppointment setActiveTab={setActiveTab} />
         </div>
       ),
     },
@@ -147,7 +148,7 @@ const AddMedicalHistory = () => {
       label: "Reports",
       content: (
         <div className="mt-4">
-          <PatientReport />
+          <PatientReport setActiveTab={setActiveTab} activeTab={activeTab} />
         </div>
       ),
     },
@@ -183,6 +184,7 @@ const AddMedicalHistory = () => {
             activeKey={activeTab}
             setActiveKey={setActiveTab}
             tabOptions={tabOptions}
+            loading={loading}
           />
         </div>
       </main>

@@ -33,6 +33,8 @@ import DeleteConfirmModal from "../ui/DeleteConfirmModal";
 import { AxiosResponse } from "axios";
 import { LuPlus } from "react-icons/lu";
 import { doctorlistingModalData } from "@/utlis/StaticData";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 type DocumentItem = {
   name: string;
   file: string;
@@ -72,6 +74,8 @@ const DoctorBasicDetails = ({
   fetchPatientData?: () => void;
   doctorIdShow: string | number | undefined;
 }) => {
+  const isLoading = !DoctorData;
+
   interface FormError {
     [key: string]: string;
   }
@@ -175,6 +179,10 @@ const DoctorBasicDetails = ({
         toast.error("Delete failed");
       });
   };
+  const skeletonCount =
+    DoctorData?.servicesOffered?.length && DoctorData.servicesOffered.length > 0
+      ? DoctorData.servicesOffered.length
+      : 5;
 
   const handleDownload = (url: string, name: string) => {
     const link = document.createElement("a");
@@ -232,12 +240,6 @@ const DoctorBasicDetails = ({
     };
   });
 
-  const validateForm = (data: FormData): FormError => {
-    const errors: FormError = {};
-
-    return errors;
-  };
-
   const validateForm1 = (quals: typeof qualifications) => {
     const errors = quals.map((q) => ({
       degree: !q.degree ? "Degree is required" : "",
@@ -269,15 +271,6 @@ const DoctorBasicDetails = ({
     const updated = [...qualifications];
     updated.splice(index, 1);
     setQualifications(updated);
-  };
-  const payload = {
-    qualifications: qualifications.map((q) => ({
-      degree: q.degree,
-      fieldOfStudy: q.fieldofstudy,
-      university: q.university,
-      startYear: Number(q.startYear),
-      endYear: Number(q.endYear),
-    })),
   };
 
   const handleSave = async () => {
@@ -321,9 +314,6 @@ const DoctorBasicDetails = ({
     }
   };
 
-  // + add Qualification button diable data show after unable
-
-  // ===== Edit button click in modal open ================
   const [selectedQualificationId, setSelectedQualificationId] = useState<
     string | null
   >(null);
@@ -468,6 +458,10 @@ const DoctorBasicDetails = ({
     }
   });
   const visibleDocuments = showAllDocuments ? documents : documents.slice(0, 4);
+  const documentSkeletonCount =
+    visibleDocuments?.length && visibleDocuments.length > 0
+      ? visibleDocuments.length
+      : 4;
   return (
     // <Container fluid className="mt-3">
     <div>
@@ -480,9 +474,13 @@ const DoctorBasicDetails = ({
             <ContentContainer className="mt-4">
               {/* edit clinic details */}
               <div className="d-flex flex-column flex-md-row justify-content-md-between align-items-center text-center text-md-start mb-3">
-                <h5 className="profile-card-main-titile mb-2 mb-md-0">
-                  Clinic Details
-                </h5>
+                {isLoading ? (
+                  <Skeleton width={160} height={23} />
+                ) : (
+                  <h5 className="profile-card-main-titile mb-2 mb-md-0">
+                    Clinic Details
+                  </h5>
+                )}
               </div>
               {DoctorData?.clinics?.map((clinic: ClinicDetails) => (
                 <div className="clinic_second_card mb-3" key={clinic._id}>
@@ -572,14 +570,22 @@ const DoctorBasicDetails = ({
           <div>
             <ContentContainer className="mt-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="profile-card-main-titile">Qualification</h5>
-                <Button
-                  onClick={handleOpen}
-                  className="profile-card-boeder bg-transparent"
-                  variant="dark"
-                >
-                  <LuPlus color="#2B4360" />
-                </Button>
+                {isLoading ? (
+                  <Skeleton width={160} height={23} />
+                ) : (
+                  <h5 className="profile-card-main-titile">Qualification</h5>
+                )}
+                {isLoading ? (
+                  <Skeleton width={40} height={40} />
+                ) : (
+                  <Button
+                    onClick={handleOpen}
+                    className="profile-card-boeder bg-transparent"
+                    variant="dark"
+                  >
+                    <LuPlus color="#2B4360" />
+                  </Button>
+                )}
 
                 <Modal
                   show={showModal}
@@ -776,7 +782,21 @@ const DoctorBasicDetails = ({
                 title="Delete"
                 message="Are you sure you want to delete this qualification?"
               />
-              {defaultQualifications.length === 0 ? (
+              {isLoading ? (
+                <>
+                  <div className="d-flex justify-content-between align-items-start p-3 mb-3 bg-white border rounded-4 profile-card-boeder">
+                    <div>
+                      <Skeleton width={220} height={16} />
+                      <Skeleton width={160} height={14} className="mt-2" />
+                      <Skeleton width={120} height={13} className="mt-1" />
+                    </div>
+                    <div className="d-flex gap-2">
+                      <Skeleton width={34} height={34} />
+                      <Skeleton width={34} height={34} />
+                    </div>
+                  </div>
+                </>
+              ) : defaultQualifications.length === 0 ? (
                 <div className="text-center text-muted p-4 border rounded-4">
                   Data not found. Please Add Data
                 </div>
@@ -933,7 +953,6 @@ const DoctorBasicDetails = ({
                         </div>
                       </Modal>
                       {/* deletebutton */}
-
                       <Button
                         className="border p-2 rounded-2 edit-del-btn bg-transparent"
                         variant="outline"
@@ -957,15 +976,27 @@ const DoctorBasicDetails = ({
                   </div>
                 ))
               )}
-              {defaultQualifications.length > 2 && (
-                <div
-                  className=" mt-3 allreviews"
-                  onClick={() =>
-                    setShowAllQualifications(!showAllQualifications)
-                  }
-                >
-                  {showAllQualifications ? "Show less" : "Show more"}
+              {/* {defaultQualifications.length === 0 ? (
+                <div className="text-center text-muted p-4 border rounded-4">
+                  Data not found. Please Add Data
                 </div>
+              ) : (
+                "hy"
+              )} */}
+              {/* Show More Show Less */}
+              {isLoading ? (
+                <Skeleton width={90} height={14} />
+              ) : (
+                defaultQualifications.length > 2 && (
+                  <div
+                    className="mt-3 allreviews"
+                    onClick={() =>
+                      setShowAllQualifications(!showAllQualifications)
+                    }
+                  >
+                    {showAllQualifications ? "Show less" : "Show more"}
+                  </div>
+                )
               )}
             </ContentContainer>
           </div>
@@ -978,8 +1009,17 @@ const DoctorBasicDetails = ({
           {/* about */}
           <div>
             <ContentContainer className="mt-4">
-              <h5 className="profile-card-main-titile">About</h5>
-              {hasAbout ? (
+              {isLoading ? (
+                <Skeleton width={160} height={23} />
+              ) : (
+                <h5 className="profile-card-main-titile">About</h5>
+              )}
+              {isLoading ? (
+                <>
+                  <Skeleton count={3} height={14} className="mb-2 mt-3" />
+                  <Skeleton width={90} height={16} />
+                </>
+              ) : hasAbout ? (
                 <>
                   <p
                     className={`mb-0 about-text ${
@@ -989,7 +1029,6 @@ const DoctorBasicDetails = ({
                     {aboutText}
                   </p>
 
-                  {/* Show toggle ONLY if text exists */}
                   <div
                     className="mt-2 allreviews"
                     onClick={() => setShowFullAbout(!showFullAbout)}
@@ -1006,27 +1045,55 @@ const DoctorBasicDetails = ({
           <div>
             <ContentContainer className="mt-4">
               <div>
-                <h5 className="mb-4 profile-card-main-titile">
-                  Service Offered & Fees
-                </h5>
+                {isLoading ? (
+                  <Skeleton width={160} height={23} className="mb-3" />
+                ) : (
+                  <h5 className="mb-4 profile-card-main-titile">
+                    Service Offered & Fees
+                  </h5>
+                )}
+
                 <div>
-                  <span className="service_text">Services</span>
+                  {isLoading ? (
+                    <Skeleton width={90} height={20} />
+                  ) : (
+                    <span className="service_text">Services</span>
+                  )}
                   <div className="d-flex gap-2 flex-wrap mt-1">
-                    {DoctorData?.servicesOffered.map(
-                      (serviceName: string, index: number) => (
-                        <div key={index} className="servicename">
-                          {serviceName}
-                        </div>
-                      )
-                    )}
+                    {isLoading
+                      ? Array.from({ length: skeletonCount }).map(
+                          (_, index) => (
+                            <Skeleton
+                              key={index}
+                              width={70}
+                              height={22}
+                              borderRadius={6}
+                            />
+                          )
+                        )
+                      : DoctorData?.servicesOffered?.map(
+                          (serviceName: string, index: number) => (
+                            <div key={index} className="servicename">
+                              {serviceName}
+                            </div>
+                          )
+                        )}
                   </div>
                 </div>
                 <div className="mt-3">
-                  <span className="service_text">Fees</span>
-                  <p className="mb-0 fw-semibold fs-5">
-                    {DoctorData?.fees ? "₹" : ""}
-                    {DoctorData?.fees}
-                  </p>
+                  {isLoading ? (
+                    <Skeleton width={90} height={20} />
+                  ) : (
+                    <span className="service_text">Fees</span>
+                  )}
+                  {isLoading ? (
+                    <Skeleton width={100} height={20} />
+                  ) : (
+                    <p className="mb-0 fw-semibold fs-5">
+                      {DoctorData?.fees ? "₹" : ""}
+                      {DoctorData?.fees}
+                    </p>
+                  )}
                 </div>
               </div>
             </ContentContainer>
@@ -1035,44 +1102,81 @@ const DoctorBasicDetails = ({
           <div>
             <ContentContainer className="mt-4">
               <div>
-                <h5 className="mb-4 profile-card-main-titile">Documents</h5>
+                {isLoading ? (
+                  <Skeleton width={160} height={23} className="mb-3" />
+                ) : (
+                  <h5 className="mb-4 profile-card-main-titile">Documents</h5>
+                )}
 
-                {visibleDocuments.map((doc, index) => (
-                  <div
-                    className="d-flex justify-content-between align-items-center border profile-card-boeder p-3 mb-3 document-main-border"
-                    key={index}
-                  >
-                    <div className="d-flex align-items-center">
-                      <Image
-                        src={Pdfimg}
-                        alt="pdf"
-                        width={40}
-                        className="me-3"
-                      />
-                      <div>
-                        <div className="card-feild">{doc.name}</div>
-                        <div className="card-year">
-                          {new Date(doc.date).toLocaleDateString()}
+                {isLoading
+                  ? Array.from({ length: documentSkeletonCount }).map(
+                      (_, index) => (
+                        <div
+                          key={index}
+                          className="d-flex justify-content-between align-items-center border profile-card-boeder p-3 mb-3 document-main-border"
+                        >
+                          {/* Left Section */}
+                          <div className="d-flex align-items-center">
+                            <Skeleton
+                              width={40}
+                              height={40}
+                              borderRadius={6}
+                              className="me-3"
+                            />
+
+                            <div>
+                              <Skeleton
+                                width={140}
+                                height={16}
+                                className="mb-2"
+                              />
+                              <Skeleton width={100} height={14} />
+                            </div>
+                          </div>
+
+                          {/* Download Button */}
+                          <Skeleton width={36} height={36} borderRadius={8} />
                         </div>
-                      </div>
-                    </div>
+                      )
+                    )
+                  : visibleDocuments.map((doc, index) => (
+                      <div
+                        className="d-flex justify-content-between align-items-center border profile-card-boeder p-3 mb-3 document-main-border"
+                        key={index}
+                      >
+                        <div className="d-flex align-items-center">
+                          <Image
+                            src={Pdfimg}
+                            alt="pdf"
+                            width={40}
+                            className="me-3"
+                          />
+                          <div>
+                            <div className="card-feild">{doc.name}</div>
+                            <div className="card-year">
+                              {new Date(doc.date).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
 
-                    <button
-                      className="d-flex bg-white justify-content-center align-items-center border profile-card-boeder rounded Download-border"
-                      onClick={() =>
-                        handleDownload(`/uploads/${doc.file}`, doc.name)
-                      }
-                    >
-                      <Image
-                        src={Download}
-                        alt="download"
-                        width={25}
-                        height={25}
-                      />
-                    </button>
-                  </div>
-                ))}
-                {documents.length > 4 && (
+                        <button
+                          className="d-flex bg-white justify-content-center align-items-center border profile-card-boeder rounded Download-border"
+                          onClick={() =>
+                            handleDownload(`/uploads/${doc.file}`, doc.name)
+                          }
+                        >
+                          <Image
+                            src={Download}
+                            alt="download"
+                            width={25}
+                            height={25}
+                          />
+                        </button>
+                      </div>
+                    ))}
+
+                {/* Show more / less */}
+                {!isLoading && documents.length > 4 && (
                   <div
                     className="mt-2 allreviews"
                     onClick={() => setShowAllDocuments(!showAllDocuments)}
