@@ -48,6 +48,21 @@ const initialFormData: AddPatientFormData = {
 };
 
 const initialFormError: FormError = {};
+const calculateAge = (dob: string): string => {
+  if (!dob) return "";
+
+  const birthDate = new Date(dob);
+  const today = new Date();
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  return age >= 0 ? age.toString() : "";
+};
 
 function AddPatientForm() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -59,8 +74,23 @@ function AddPatientForm() {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setFormError((prev) => ({ ...prev, [name]: "" }));
+
+    if (name === "date") {
+      // Calculate age when DOB changes
+      const calculatedAge = calculateAge(value);
+
+      setFormData((prev) => ({
+        ...prev,
+        date: value,
+        age: calculatedAge,
+      }));
+
+      // Clear errors for date and age
+      setFormError((prev) => ({ ...prev, date: "", age: "" }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormError((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   //********* EDIT PROFILE MODAL *********//
@@ -217,10 +247,10 @@ function AddPatientForm() {
           contactNumber: formData.emergencyContactPhone,
           relation: formData.emergencyContactRelation,
         },
-   
+
         type: "clinic",
       };
-  
+
       console.log("patient add data ", data);
 
       addPatient(data)
@@ -479,23 +509,16 @@ function AddPatientForm() {
               />
             </Col>
             <Col md={3}>
-              <InputSelect
+              <InputFieldGroup
                 label="Age"
                 name="age"
+                type="text"
                 value={formData.age}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                  handleChange(e);
-                }}
-                onBlur={(e: React.FocusEvent<HTMLSelectElement>) => {}}
+                onChange={() => {}} // no change allowed
                 required={true}
-                disabled={false}
+                disabled={true}
+                placeholder="Age"
                 error={formError.age}
-                placeholder="Select Age"
-                options={[
-                  { id: "1", value: "1", label: "1" },
-                  { id: "2", value: "2", label: "2" },
-                  { id: "3", value: "3", label: "3" },
-                ]}
               />
             </Col>
             <Col md={6}>

@@ -35,7 +35,10 @@ import { PartnerDetailData } from "@/utlis/StaticData";
 import { Dispatch } from "@reduxjs/toolkit";
 import { PartnerDetailsData } from "../AddPartnerDetails";
 import PhisicalAssessmentForm from "./PhisicalAssessmentForm";
-import { updatePatientPartnerMedicalHistory } from "@/utlis/apis/apiHelper";
+import {
+  addPatientPartnerMedicalHistory,
+  updatePatientPartnerMedicalHistory,
+} from "@/utlis/apis/apiHelper";
 // export interface PartnerDetailsData extends PartnerDetailData {}
 type PhysicalAssessmentProps = {
   // formError?: Partial<Record<keyof PhysicalAssessmentDataModel, string>>;
@@ -619,11 +622,14 @@ export function MedicalHistoryForm({
         ]),
       };
 
-      const isEditMode = Boolean(formDataMedicalHistory?._id);
+      const isEditMode = Boolean(formDataMedicalHistory);
 
       if (isEditMode) {
+        // ✅ EDIT MEDICAL HISTORY
         updatePatientPartnerMedicalHistory(updatedFormDataForEdit)
           .then((response) => {
+            console.log("Edit:-", response);
+
             if (response.data.status) {
               toast.success(response.data.message, {
                 icon: <BsInfoCircle size={22} color="white" />,
@@ -637,10 +643,20 @@ export function MedicalHistoryForm({
             toast.error(err?.response?.data?.message || "Something went wrong");
           });
       } else {
-        setPartnerMedicalHistory?.(updatedFormData);
-        setActiveTab("physical & fertility assessment");
-        setMedicalHistoryFormError({});
-        onSuccess?.();
+        addPatientPartnerMedicalHistory(updatedFormData)
+          .then((response) => {
+            console.log("Add:-", response);
+            if (response.data.status) {
+              toast.success(response.data.message);
+
+              fetchPatientData?.();
+              setEditMedicalHistory?.(false);
+              onSuccess?.();
+            }
+          })
+          .catch((err) => {
+            toast.error(err?.response?.data?.message || "Something went wrong");
+          });
       }
     }
   };

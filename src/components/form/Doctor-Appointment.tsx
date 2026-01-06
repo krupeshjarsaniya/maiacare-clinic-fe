@@ -33,6 +33,8 @@ import {
 } from "./BookAppointment";
 import DeleteConfirmModal from "../ui/DeleteConfirmModal";
 import { getAppointments } from "@/utlis/apis/apiHelper";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 export type ConsultationStatus =
   | "Confirmed"
   | "Completed"
@@ -43,7 +45,11 @@ export type ConsultationStatus =
   | "Rescheduled"
   | "Engaged";
 
-export default function DoctorAppointment() {
+export default function DoctorAppointment({
+  doctorIdShow,
+}: {
+  doctorIdShow: string | number | undefined;
+}) {
   const initialAppointments: AppointmentData[] = appointement.map((item) => ({
     status: item.status,
     visit: item.visit ?? [], // fallback to empty array if undefined
@@ -61,7 +67,15 @@ export default function DoctorAppointment() {
     phone: item.mobile,
     email: item.email ?? "",
   }));
+  console.log("doctorIdShow", doctorIdShow);
 
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [appointmentsTotal, setAppointmentsTotal] = useState<number>(0);
+  const [activePage, setActivePage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const start = (activePage - 1) * 10;
+  const end = start + 10;
   const router = useRouter();
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
@@ -83,13 +97,6 @@ export default function DoctorAppointment() {
   const [editingAppointment, setEditingAppointment] =
     useState<AppointmentData | null>(null);
 
-  // delete function
-  // const handleDelete = () => {
-  //   if (!selectedId) return;
-
-  //   const updated = filteredData.filter((item) => item.id !== selectedId);
-  //   setFilteredData(updated);
-  // };
   const handleDelete = () => {
     if (selectedId === null) return;
 
@@ -140,9 +147,12 @@ export default function DoctorAppointment() {
     try {
       const res = await getAppointments({
         view: "list",
-        doctorId: "68b5723f5e662f13011c00ff",
+        page: activePage,
+        doctorId: doctorIdShow,
       });
+      setAppointmentsTotal(res.data.total);
 
+      setTotalPages(res.data.totalPages);
       const mappedData: AppointmentData[] = res.data.data.map(
         (item: any): AppointmentData => ({
           id: item.appointId,
@@ -170,16 +180,21 @@ export default function DoctorAppointment() {
       );
 
       setAppointments(mappedData);
+
       setFilteredData(mappedData);
     } catch (error) {
       console.error("Failed to fetch appointments", error);
+    } finally {
+      setLoading(false);
     }
   };
+  // useEffect(() => {
+  //   fetchAppointments();
+  // }, []);
   useEffect(() => {
     fetchAppointments();
-  }, []);
+  }, [activePage]);
   const openDeleteModal = (id: number) => {
-    console.log("DELETE CLICKED", id);
     setSelectedId(id);
     setShowDeleteModal(true);
   };
@@ -362,81 +377,113 @@ export default function DoctorAppointment() {
           {/* Search Input */}
           <div className="d-flex align-items-center gap-2 mb-1 Consultations-image">
             {/* Search Input */}
-            <InputGroup className="custom-search-group">
-              <Form.Control
-                placeholder="Search Patients"
-                className="custom-search-input ps-3"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  borderRight: "none",
-                  borderLeft: "1px solid #dde1e8 ",
-                }}
-              />
-              <InputGroup.Text className="custom-search-icon">
-                <Image src={search} alt="search" width={24} height={24} />
-              </InputGroup.Text>
-            </InputGroup>
+            {loading ? (
+              <Skeleton width={250} height={35} />
+            ) : (
+              <InputGroup className="custom-search-group">
+                <Form.Control
+                  placeholder="Search Patients"
+                  className="custom-search-input ps-3"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    borderRight: "none",
+                    borderLeft: "1px solid #dde1e8 ",
+                  }}
+                />
+                <InputGroup.Text className="custom-search-icon">
+                  <Image src={search} alt="search" width={24} height={24} />
+                </InputGroup.Text>
+              </InputGroup>
+            )}
           </div>
           {/* appointement */}
-          <div
-            className="border custom-filter-button  d-flex align-items-center"
-            style={{ gap: "10px", padding: "10px" }}
-          >
-            <Image
-              src={calendar}
-              alt="calendar"
-              className="img-fluid women-image"
-              width={30}
-              height={30}
-            />
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div className="Consultations-book">98 Appointments</div>
+          {loading ? (
+            <Skeleton width={150} height={40} />
+          ) : (
+            <div
+              className="border custom-filter-button  d-flex align-items-center"
+              style={{ gap: "10px", padding: "10px" }}
+            >
+              <Image
+                src={calendar}
+                alt="calendar"
+                className="img-fluid women-image"
+                width={30}
+                height={30}
+              />
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div className="Consultations-book">
+                  {appointmentsTotal} Appointments
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="d-flex align-items-center gap-3">
           {/* Sort + Filter */}
           <div className="d-flex align-items-center gap-2">
-            <span className="text-muted small short-by">Sort by:</span>
-            <Form.Select
-              className="custom-sort-select"
-              value={timeFilter}
-              onChange={(e) => setTimeFilter(e.target.value)} // ✅ update state
-            >
-              <option>All Time</option>
-              <option>Today</option>
-              <option>This Week</option>
-              <option>This Month</option>
-            </Form.Select>
-            <Button variant="light" className="border custom-filter-button">
-              <PiSlidersDuotone />
-            </Button>
+            {loading ? (
+              <Skeleton width={40} height={20} />
+            ) : (
+              <span className="text-muted small short-by">Sort by:</span>
+            )}
+            {loading ? (
+              <Skeleton width={150} height={40} />
+            ) : (
+              <Form.Select
+                className="custom-sort-select"
+                value={timeFilter}
+                onChange={(e) => setTimeFilter(e.target.value)} // ✅ update state
+              >
+                <option>All Time</option>
+                <option>Today</option>
+                <option>This Week</option>
+                <option>This Month</option>
+              </Form.Select>
+            )}
+            {loading ? (
+              <Skeleton width={40} height={40} />
+            ) : (
+              <Button variant="light" className="border custom-filter-button">
+                <PiSlidersDuotone />
+              </Button>
+            )}
           </div>
           {/* book appointment */}
-          <Button
-            className="d-flex align-items-center gap-2 common-btn-blue px-4 maiacare-button"
-            variant="default"
-            onClick={() => {
-              setBookAppointmentModal(true);
-            }}
-            style={{ padding: "12px" }}
-          >
-            <Image
-              src={appointmentcalander}
-              alt="appointmentcalander"
-              width={22}
-              height={22}
-            />
-            Book Appointment
-          </Button>
+          {loading ? (
+            <Skeleton width={200} height={40} />
+          ) : (
+            <Button
+              className="d-flex align-items-center gap-2 common-btn-blue px-4 maiacare-button"
+              variant="default"
+              onClick={() => {
+                setBookAppointmentModal(true);
+              }}
+              style={{ padding: "12px" }}
+            >
+              <Image
+                src={appointmentcalander}
+                alt="appointmentcalander"
+                width={22}
+                height={22}
+              />
+              Book Appointment
+            </Button>
+          )}
         </div>
       </div>
 
       {/* Table */}
-      <CommonTable<AppointmentData> data={filteredData} columns={columns} />
-      {/* <CommonTable data={filteredData} columns={columns} /> */}
-      {/* Pagination */}
+      <CommonTable<AppointmentData>
+        data={filteredData}
+        columns={columns}
+        activePage={activePage}
+        loading={loading}
+        tableTotal={appointmentsTotal}
+        totalPages={Math.ceil(appointmentsTotal / 10)}
+        setActivePage={setActivePage}
+      />
 
       {/* book appointment modal */}
       <>

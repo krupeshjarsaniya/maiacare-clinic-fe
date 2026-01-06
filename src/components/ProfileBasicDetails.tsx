@@ -1558,28 +1558,56 @@ const ProfileBasicDetail = ({
               </Button>
               <Row className="">
                 <Col sm={5}>
-                  <div className="">
-                    <h6 className=" contact-details-emergency">
+                  <div>
+                    <h6 className="contact-details-emergency">
                       Current Medications
                     </h6>
-                    <p className=" accordion-title-detail">
-                      {medicalHistoryFormData?.medications
-                        ?.medicationsDetails === "yes"
-                        ? medicalHistoryFormData?.medications
-                            ?.medicationsDetails || "Yes"
-                        : "No"}
+
+                    <p className="accordion-title-detail">
+                      {medicalHistoryFormData?.medications?.status === "Yes" ? (
+                        <>
+                          Yes
+                          {medicalHistoryFormData?.medications
+                            ?.medicationsDetails && (
+                            <>
+                              {" "}
+                              |{" "}
+                              {
+                                medicalHistoryFormData.medications
+                                  .medicationsDetails
+                              }
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        "No"
+                      )}
                     </p>
                   </div>
                 </Col>
 
                 <Col sm={7}>
-                  <div className="">
-                    <h6 className=" contact-details-emergency">Surgeries</h6>
-                    <p className=" accordion-title-detail">
-                      {medicalHistoryFormData?.surgeries?.status === "Yes"
-                        ? medicalHistoryFormData?.surgeries?.surgeriesDetails ||
-                          "Yes"
-                        : "No"}
+                  <div>
+                    <h6 className="contact-details-emergency">Surgeries</h6>
+
+                    <p className="accordion-title-detail">
+                      {medicalHistoryFormData?.surgeries?.status === "Yes" ? (
+                        <>
+                          Yes
+                          {medicalHistoryFormData?.surgeries
+                            ?.surgeriesDetails && (
+                            <>
+                              |
+                              {
+                                medicalHistoryFormData.surgeries
+                                  .surgeriesDetails
+                              }
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        "No"
+                      )}
                     </p>
                   </div>
                 </Col>
@@ -2096,7 +2124,6 @@ const ProfileBasicDetail = ({
               );
             })
           )}
-        
         </Col>
       </Row>
     </Container>

@@ -702,7 +702,7 @@ const DoctorManageLeave = ({
                   formError.days ? "is-invalid" : ""
                 }`}
                 value={formData.days}
-                // disabled
+                disabled
               >
                 <option value="">Select</option>
 
@@ -877,14 +877,14 @@ const DoctorManageLeave = ({
             </Col>
             <Col md={4} className="p-0">
               {/* <DatePickerFieldGroup
-                label="To Date"
-                name="endDate"
-                placeholder="Select End Date"
-                value={formData.endDate}
-                onChange={handleChange}
-                required
-                error={formError.endDate}
-              /> */}
+                  label="To Date"
+                  name="endDate"
+                  placeholder="Select End Date"
+                  value={formData.endDate}
+                  onChange={handleChange}
+                  required
+                  error={formError.endDate}
+                /> */}
               <DatePickerFieldGroup
                 label="To Date"
                 name="endDate"

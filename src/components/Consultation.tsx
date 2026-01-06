@@ -131,7 +131,7 @@ export default function Consultation() {
       // await deletePatient(deletePatientId);
 
       toast.success("Patient deleted successfully");
-      fetchallpatient(); // refresh table
+      fetchallDoctor(); // refresh table
     } catch (error) {
       toast.error("Failed to delete patient");
     } finally {
@@ -480,7 +480,7 @@ export default function Consultation() {
     },
   ];
 
-  const fetchallpatient = () => {
+  const fetchallDoctor = () => {
     const tableobj = {
       limit: 10,
       page: activePage,
@@ -523,10 +523,10 @@ export default function Consultation() {
     }, 500);
   };
   useEffect(() => {
-    fetchallpatient();
+    fetchallDoctor();
   }, []);
   useEffect(() => {
-    fetchallpatient();
+    fetchallDoctor();
   }, [activePage]);
 
   return (

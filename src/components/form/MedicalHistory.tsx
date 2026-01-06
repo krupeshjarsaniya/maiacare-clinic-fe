@@ -36,10 +36,10 @@ export default function MedicalHistory({
 }: MedicalHistoryProps) {
   type FormError = Partial<Record<keyof MedicalHistoryType, string>>;
   const initialFormData: MedicalHistoryType = {
-    medication: initialData?.medications?.status || "no",
+    medication: initialData?.medications?.status || "No",
     medicationcontent: initialData?.medications?.medicationsDetails || "",
 
-    surgeries: initialData?.surgeries?.status || "yes",
+    surgeries: initialData?.surgeries?.status || "Yes",
     surgeriescontent: initialData?.surgeries?.surgeriesDetails || "",
 
     medicalCondition:
@@ -85,29 +85,7 @@ export default function MedicalHistory({
     setFormError((prev) => ({ ...prev, [name]: "" }));
   };
 
-  // const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   // Validate the formData and return any errors found
-  //   const errors = validateForm(formData);
-  //   setFormError(errors);
-  //   if (Object.keys(errors).length === 0) {
-  //     setShowModal(false);
-  //     setFormError(initialFormError);
-  //     if (initialData) {
-  //       setMedicalHistoryFormData(formData);
-  //       toast.success("Changes saved successfully", {
-  //         icon: <BsInfoCircle size={22} color="white" />,
-  //       });
-  //     } else {
-  //       // If creating new, add to the arrayd
-  //       setMedicalHistoryFormData(formData);
-  //       toast.success("Medical history added successfully", {
-  //         icon: <BsInfoCircle size={22} color="white" />,
-  //       });
-  //     }
-  //     if (onClose) onClose();
-  //   }
-  // };
+  
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Validate the formData and return any errors found
@@ -128,19 +106,17 @@ export default function MedicalHistory({
         patientId,
 
         medications: {
-          status: formData.medication?.toLowerCase() === "yes" ? "Yes" : "No",
+          status: formData.medication === "Yes" ? "Yes" : "No",
           medicationsDetails:
-            formData.medication?.toLowerCase() === "yes"
-              ? formData.medicationcontent || ""
-              : "", // remove if No
+            formData.medication === "Yes"
+              ? formData.medicationcontent.trim()
+              : "",
         },
 
         surgeries: {
-          status: formData.surgeries?.toLowerCase() === "yes" ? "Yes" : "No",
+          status: formData.surgeries === "Yes" ? "Yes" : "No",
           surgeriesDetails:
-            formData.surgeries?.toLowerCase() === "Yes"
-              ? formData.surgeriescontent || ""
-              : "", // remove if No
+            formData.surgeries === "Yes" ? formData.surgeriescontent || "" : "",
         },
 
         conditions: Array.isArray(formData.medicalCondition)
@@ -170,18 +146,16 @@ export default function MedicalHistory({
         medicalHistoryId: initialData?._id,
 
         medications: {
-          status: formData.medication?.toLowerCase() === "yes" ? "Yes" : "No",
+          status: formData.medication === "Yes" ? "Yes" : "No",
           medicationsDetails:
-            formData.medication?.toLowerCase() === "yes"
+            formData.medication === "Yes"
               ? formData.medicationcontent || ""
               : "", // remove if No
         },
         surgeries: {
-          status: formData.surgeries?.toLowerCase() === "yes" ? "Yes" : "No",
+          status: formData.surgeries === "Yes" ? "Yes" : "No",
           surgeriesDetails:
-            formData.surgeries?.toLowerCase() === "Yes"
-              ? formData.surgeriescontent || ""
-              : "", // remove if No
+            formData.surgeries === "Yes" ? formData.surgeriescontent || "" : "", // remove if No
         },
 
         conditions: Array.isArray(formData.medicalCondition)
@@ -296,7 +270,7 @@ export default function MedicalHistory({
             <RadioButtonGroup
               label="Are you currently taking any medications?"
               name="medication"
-              value={formData.medication || "yes"}
+              value={formData.medication || "Yes"}
               onChange={(e) => handleChange(e)}
               required={true}
               error={formError.medication}
@@ -306,7 +280,7 @@ export default function MedicalHistory({
               ]}
             />
 
-            {formData.medication === "yes" && (
+            {formData.medication === "Yes" && (
               <InputFieldGroup
                 type="text"
                 value={formData.medicationcontent}
@@ -322,7 +296,7 @@ export default function MedicalHistory({
             <RadioButtonGroup
               label="Have you had any surgeries?"
               name="surgeries"
-              value={formData.surgeries || "yes"}
+              value={formData.surgeries || "Yes"}
               onChange={(e) => handleChange(e)}
               required={true}
               error={formError.surgeries}
@@ -331,7 +305,7 @@ export default function MedicalHistory({
                 { label: "No", value: "No" },
               ]}
             />
-            {formData.surgeries === "yes" && (
+            {formData.surgeries === "Yes" && (
               <InputFieldGroup
                 type="text"
                 value={formData.surgeriescontent}

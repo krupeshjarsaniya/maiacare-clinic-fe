@@ -70,7 +70,7 @@ const DoctorProfileTabs = () => {
         <>
           <DoctorBasicDetails
             DoctorData={DoctorData}
-            doctorIdShow={doctorIdShow}
+            doctorIdShow={DoctorId}
             fetchPatientData={fetchPatientData}
           />
         </>
@@ -79,17 +79,17 @@ const DoctorProfileTabs = () => {
     {
       key: "leaves",
       label: "Manage Leaves",
-      content: <>{<DoctorManageLeave doctorIdShow={doctorIdShow} />}</>,
+      content: <>{<DoctorManageLeave doctorIdShow={DoctorId} />}</>,
     },
     {
       key: "assignedpatients",
       label: "Assigned Patients",
-      content: <>{<DoctorAssignedPatients doctorIdShow={doctorIdShow} />}</>,
+      content: <>{<DoctorAssignedPatients doctorIdShow={DoctorId} />}</>,
     },
     {
       key: "appointments",
       label: "Appointments",
-      content: <>{<DoctorAppointment />}</>,
+      content: <>{<DoctorAppointment doctorIdShow={DoctorId} />}</>,
     },
   ];
 
@@ -101,6 +101,7 @@ const DoctorProfileTabs = () => {
           activeKey={activeTab}
           setActiveKey={setActiveTab}
           tabOptions={tabOptions}
+          loading={loading}
         />
 
         {activeTab === "basic" && <div></div>}

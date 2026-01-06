@@ -94,7 +94,6 @@ export default function PartnerDetail({
   const [AddPhysicalAssessment, setAddPhysicalAssessment] = useState(false);
   const [EditFertilityAssessment, setEditFertilityAssessment] = useState(false);
   const [EditMedicalHistory, setEditMedicalHistory] = useState<boolean>(false);
-  console.log("loading", loading);
 
   const initialFormDataAddPhysicalAssessment: PhysicalAssessmentDataModel = {
     patientId: "",
@@ -344,50 +343,8 @@ export default function PartnerDetail({
     }
   };
 
-  // const convertHeightToCm = (heightStr: string): string => {
-  //   if (!heightStr) return "";
-
-  //   // Remove any whitespace
-  //   const cleanHeight = heightStr.trim();
-
-  //   // Check if it's already in cm
-  //   if (cleanHeight.toLowerCase().includes("cm")) {
-  //     return cleanHeight.replace(/[^\d.]/g, "");
-  //   }
-
-  //   // Match feet and inches format (e.g., "5'8", "5'8"", "5 ft 8 in")
-  //   const feetInchesMatch = cleanHeight.match(/(\d+)['′]?\s*(\d+)["″]?/);
-  //   if (feetInchesMatch) {
-  //     const feet = parseInt(feetInchesMatch[1], 10);
-  //     const inches = parseInt(feetInchesMatch[2], 10);
-  //     const totalInches = feet * 12 + inches;
-  //     return (totalInches * 2.54).toFixed(0);
-  //   }
-
-  //   // Match feet only format (e.g., "5'", "5 ft")
-  //   const feetOnlyMatch = cleanHeight.match(/(\d+)['′]?\s*(ft|feet)?$/i);
-  //   if (feetOnlyMatch) {
-  //     const feet = parseInt(feetOnlyMatch[1], 10);
-  //     const totalInches = feet * 12;
-  //     return (totalInches * 2.54).toFixed(0);
-  //   }
-
-  //   // Check if it's just inches (numeric value)
-  //   const numericValue = parseFloat(cleanHeight);
-  //   if (!isNaN(numericValue)) {
-  //     // Assume it's inches if it's a reasonable height value (24-96 inches)
-  //     if (numericValue >= 24 && numericValue <= 96) {
-  //       return (numericValue * 2.54).toFixed(0);
-  //     }
-  //     // If it's a small number, assume it's already in feet (convert to inches first)
-  //     if (numericValue >= 3 && numericValue <= 8) {
-  //       return (numericValue * 12 * 2.54).toFixed(0);
-  //     }
-  //   }
-
-  //   return "";
-  // };
-
+  const hasMedicalHistory =
+    showData?.medicalHistory && Object.keys(showData.medicalHistory).length > 0;
   return (
     <>
       {showData === null ? (
@@ -1190,7 +1147,70 @@ export default function PartnerDetail({
                   </Row>
                 </ContentContainer>
               </>
+            ) : !hasMedicalHistory ? (
+              <ContentContainer className="mt-3">
+                <div className="text-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="78"
+                    height="78"
+                    viewBox="0 0 78 78"
+                    fill="none"
+                  >
+                    <path
+                      d="M60.6072 15.509V57.2116C60.6072 59.5787 58.6882 61.4977 56.3211 61.4977H22.0085C19.6414 61.4977 17.7224 59.5787 17.7224 57.2116V6.70801C17.7224 4.34086 19.6414 2.42188 22.0085 2.42188H47.5739C51.0628 5.92883 54.5519 9.43579 58.0453 12.9382C58.8964 13.7937 59.7518 14.6491 60.6072 15.509Z"
+                      fill="#F3F4F6"
+                    />
+                    <path
+                      d="M60.6072 15.509H51.511C49.3365 15.509 47.5737 13.7463 47.5737 11.5718V2.42188C51.0626 5.92883 54.5517 9.43579 58.0451 12.9382C58.8963 13.7937 59.7518 14.6491 60.6072 15.509Z"
+                      fill="#DDE1E8"
+                    />
+                    <path
+                      d="M47.6833 28.1613V31.1021C47.6833 31.9213 47.0192 32.5854 46.2 32.5854H42.1186V36.6668C42.1186 37.486 41.4545 38.1501 40.6353 38.1501H37.6903C36.8712 38.1501 36.207 37.486 36.207 36.6668V32.5854H32.1298C31.3106 32.5854 30.6465 31.9213 30.6465 31.1021V28.1613C30.6465 27.3422 31.3106 26.678 32.1298 26.678H36.207V22.5966C36.207 21.7774 36.8712 21.1133 37.6903 21.1133H40.6353C41.4545 21.1133 42.1186 21.7774 42.1186 22.5966V26.678H46.2C47.0192 26.678 47.6833 27.3422 47.6833 28.1613Z"
+                      fill="#D2D6DE"
+                    />
+                    <path
+                      d="M70.7355 44.5053L65.9498 70.7936C65.4789 73.3803 63.2258 75.2604 60.5965 75.2604H19.5071C16.8778 75.2604 14.6247 73.3803 14.1538 70.7936L7.59299 34.7558C6.98481 31.4153 9.55093 28.3398 12.9463 28.3398H26.3864C27.5838 28.3398 28.7477 28.7348 29.6979 29.4636L39.4797 36.9658C40.4299 37.6944 41.5938 38.0895 42.7912 38.0895H65.3821C68.7776 38.0894 71.3437 41.1649 70.7355 44.5053Z"
+                      fill="#9CA3AF"
+                    />
+                    <path
+                      d="M60.3568 63.8798C60.3568 66.5187 58.2175 68.658 55.5786 68.658H48.1395C45.5006 68.658 43.3613 66.5187 43.3613 63.8798C43.3613 61.2409 45.5006 59.1016 48.1395 59.1016H55.5786C58.2175 59.1017 60.3568 61.2409 60.3568 63.8798Z"
+                      fill="#8D929C"
+                    />
+                  </svg>
+                  <p className="patient-accordion-content-subtitle my-3">
+                    No medical history
+                  </p>
+                  <Button
+                    // onClick={() => {
+                    //   setEditMedicalHistory(null);
+                    //   setShowModal(true);
+                    // }}
+                    onClick={() => {
+                      setEditMedicalHistory(true);
+                      setFormDataMedicalHistory(null);
+                    }}
+                    variant="outline"
+                    contentSize="medium"
+                  >
+                    <svg
+                      width="15"
+                      height="15"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M15.1641 8C15.1641 8.16576 15.0982 8.32473 14.981 8.44194C14.8638 8.55915 14.7048 8.625 14.5391 8.625H8.28906V14.875C8.28906 15.0408 8.22322 15.1997 8.10601 15.3169C7.9888 15.4342 7.82982 15.5 7.66406 15.5C7.4983 15.5 7.33933 15.4342 7.22212 15.3169C7.10491 15.1997 7.03906 15.0408 7.03906 14.875V8.625H0.789063C0.623302 8.625 0.464331 8.55915 0.347121 8.44194C0.229911 8.32473 0.164062 8.16576 0.164062 8C0.164062 7.83424 0.229911 7.67527 0.347121 7.55806C0.464331 7.44085 0.623302 7.375 0.789063 7.375H7.03906V1.125C7.03906 0.95924 7.10491 0.800269 7.22212 0.683058C7.33933 0.565848 7.4983 0.5 7.66406 0.5C7.82982 0.5 7.9888 0.565848 8.10601 0.683058C8.22322 0.800269 8.28906 0.95924 8.28906 1.125V7.375H14.5391C14.7048 7.375 14.8638 7.44085 14.981 7.55806C15.0982 7.67527 15.1641 7.83424 15.1641 8Z"
+                        fill="#2B4360"
+                      />
+                    </svg>
+                    <span className="ms-1">Add Medical History</span>
+                  </Button>
+                </div>
+              </ContentContainer>
             ) : (
+             
               <ContentContainer className="mt-3">
                 <div className="d-flex justify-content-between align-items-center">
                   <p className="contact-details-heading mb-3">
@@ -1329,6 +1349,7 @@ export default function PartnerDetail({
                 </Row>
               </ContentContainer>
             )}
+
           </Col>
           <Col md={5}>
             {loading ? (

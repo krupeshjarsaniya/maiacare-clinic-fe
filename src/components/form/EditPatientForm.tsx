@@ -52,6 +52,24 @@ const initialFormData: AddPatientFormData = {
 };
 
 const initialFormError: FormError = {};
+const calculateAge = (dob: string): string => {
+  if (!dob) return "";
+
+  const birthDate = new Date(dob);
+  const today = new Date();
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+
+  if (
+    monthDiff < 0 ||
+    (monthDiff === 0 && today.getDate() < birthDate.getDate())
+  ) {
+    age--;
+  }
+
+  return age > 0 ? age.toString() : "";
+};
 
 function EditPatientForm() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -198,7 +216,8 @@ function EditPatientForm() {
           emergencyContactRelation: data?.emergencyContact?.relation || "",
           profileImage: data?.personalDetails?.profileImage || "",
         });
-
+       
+        
         // ⭐ Set Profile image preview
         if (data?.personalDetails?.profileImage) {
           setSelectedImage(data.personalDetails.profileImage);
@@ -535,32 +554,36 @@ function EditPatientForm() {
                 placeholder="Enter DOB"
                 value={formData.date}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  handleChange(e);
+                  const dob = e.target.value;
+
+                  setFormData((prev) => ({
+                    ...prev,
+                    date: dob,
+                    age: calculateAge(dob), // ✅ auto calculate age
+                  }));
+
+                  setFormError((prev) => ({
+                    ...prev,
+                    date: "",
+                    age: "",
+                  }));
                 }}
-                onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
                 required={true}
                 disabled={false}
                 error={formError.date}
               />
             </Col>
             <Col md={3}>
-              <InputSelect
+              <InputFieldGroup
                 label="Age"
                 name="age"
+                type="text"
                 value={formData.age}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                  handleChange(e);
-                }}
-                onBlur={(e: React.FocusEvent<HTMLSelectElement>) => {}}
+                placeholder="Age"
                 required={true}
-                disabled={false}
+                disabled={true}
+                readOnly={true}
                 error={formError.age}
-                placeholder="Select Age"
-                options={[
-                  { id: "1", value: "1", label: "1" },
-                  { id: "2", value: "2", label: "2" },
-                  { id: "3", value: "3", label: "3" },
-                ]}
               />
             </Col>
             <Col md={6}>

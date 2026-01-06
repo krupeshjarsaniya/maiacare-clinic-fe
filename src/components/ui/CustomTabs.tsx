@@ -46,14 +46,14 @@
 
 // export default CustomTabs;
 
-'use client';
+"use client";
 
 import React from "react";
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import '../../style/customtabs.css';
+import "../../style/customtabs.css";
 
 interface TabOption {
   key: string;
@@ -75,7 +75,7 @@ const CustomTabs: React.FC<CustomTabsProps> = ({
   className = "",
   activeKey,
   setActiveKey,
-  loading = false
+  loading = false,
 }) => {
   return (
     <div>
@@ -93,15 +93,22 @@ const CustomTabs: React.FC<CustomTabsProps> = ({
         mountOnEnter={false}
         unmountOnExit={false}
       >
-        {tabOptions.map(tab => (
+        {tabOptions.map((tab) => (
           <Tab
             key={tab.key}
             eventKey={tab.key}
             // Show skeleton in title when loading, otherwise label
-            title={loading ? <Skeleton width={80} height={18} /> : tab.label}
+            title={
+              loading ? (
+                <div style={{ width: 80, height: 18 }}>
+                  <Skeleton width="100%" height="100%" />
+                </div>
+              ) : (
+                tab.label
+              )
+            }
             disabled={loading ? true : !!tab.disabled}
           >
-           
             {tab.content}
           </Tab>
         ))}
@@ -111,6 +118,3 @@ const CustomTabs: React.FC<CustomTabsProps> = ({
 };
 
 export default CustomTabs;
-
-
-

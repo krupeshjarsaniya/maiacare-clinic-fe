@@ -302,6 +302,8 @@ export const addCancelAppointment = (data: CancelAppointment) => {
 };
 
 // ====:Get Appointments :====
+// done in doctor
+// done list view- appointment
 // get Appointments
 export const getAppointments = (data: object) => {
   return apiClient.post("/appointments/get-appointments", data);

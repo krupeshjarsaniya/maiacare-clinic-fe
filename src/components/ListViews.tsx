@@ -37,6 +37,11 @@ import {
   SuccessModalBookAppointment,
 } from "./form/BookAppointment";
 import { useRouter } from "next/navigation";
+import { AppointmentData } from "@/utlis/types/interfaces";
+import { getAppointments } from "@/utlis/apis/apiHelper";
+import dummypatient from "@/assets/images/patient_profile.png";
+import dummydoctor from "@/assets/images/dummyimage.png";
+import Skeleton from "react-loading-skeleton";
 
 // const statusColor: Record<string, string> = {
 //     Completed: "success",
@@ -61,6 +66,8 @@ export interface AppointmentRow {
   Date: string;
   Time: string;
   treatment: string;
+  doctornm?: string;
+  doctorimage?: string | StaticImageData;
   status: string;
 }
 export default function ListView() {
@@ -76,6 +83,14 @@ export default function ListView() {
   const [showSuccessModalBook, setShowSuccessModalBook] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showSuccessActivate, setShowSuccessActivate] = useState(false);
+  const [appointments, setAppointments] = useState<AppointmentData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [patientAppointmentTotal, setPatientAppointmentTotal] =
+    useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [activePage, setActivePage] = useState<number>(1);
+  const start = (activePage - 1) * 10;
+  const end = start + 10;
   const [showRescheduleAppointmentModal, setRescheduleAppointmentModal] =
     useState(false);
   // const [leaveData, setLeaveData] = useState<LeaveEntry[]>(defaultLeaveData);
@@ -94,15 +109,6 @@ export default function ListView() {
     setFilteredData(updated);
   };
 
-  // useEffect(() => {
-  //     if (filter === "completed") {
-  //         setFilteredData(consultationData.filter(item => item.status === "Completed"));
-  //     } else if (filter === "cancelled") {
-  //         setFilteredData(consultationData.filter(item => item.status === "Cancelled"));
-  //     } else {
-  //         setFilteredData(consultationData);
-  //     }
-  // }, [filter]);
   useEffect(() => {
     let data = inventoryData;
 
@@ -162,6 +168,42 @@ export default function ListView() {
     setFilteredData(data);
   }, [filter, searchQuery, timeFilter]);
 
+  const fetchAppointments = async () => {
+    try {
+      const res = await getAppointments({
+        view: "list",
+        page: activePage,
+        // doctorId: doctorIdShow,
+      });
+      setPatientAppointmentTotal(res.data.total);
+
+      setTotalPages(res.data.totalPages);
+      const mappedData: AppointmentRow[] = res.data.data.map((item: any) => ({
+        id: item.appointId,
+        name: item.patient.name,
+        doctornm: item.doctor?.name || "—",
+        image: item.patient.profileImage?.trim() || "",
+        mobile: item.patient.contactNumber,
+        Date: item.appointmentDate,
+        Time: item.appointmentTime,
+        treatment: item.reason ?? "—",
+        status: item.status,
+      }));
+
+      setAppointments(res.data.data);
+
+      setFilteredData(mappedData);
+    } catch (error) {
+      console.error("Failed to fetch appointments", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAppointments();
+  }, [activePage]);
+
   const columns: ColumnDef<AppointmentRow>[] = [
     {
       header: "#",
@@ -170,36 +212,90 @@ export default function ListView() {
         return index < 10 ? `0${index}` : index; // format 01,02,03
       },
     },
-
     {
       header: "Name",
       cell: (info) => {
-        const imgSrc = info.row.original.image;
+        // const imgSrc = info.row.original.image;
         const name = info.row.original.name;
         const id = info.row.original.id; // <-- Make sure you have an `id`
-
+        const imgSrc = info.row.original.image;
+        const resolvedImgSrc =
+          typeof imgSrc === "string" && imgSrc.trim() !== ""
+            ? imgSrc
+            : dummypatient;
         return (
           // <Link href={`/patients/${id}`} className="text-decoration-none text-dark">
-          <div className="d-flex align-items-center gap-2">
-            {typeof imgSrc === "string" ? (
+          <Link
+            href={`/patients/${id}`}
+            className="d-flex align-items-center gap-2 text-decoration-none text-dark"
+          >
+            {typeof resolvedImgSrc === "string" ? (
               <img
-                src={imgSrc}
+                src={resolvedImgSrc}
                 alt={name}
-                className="rounded-circle border"
-                width="36"
-                height="36"
+                width={40}
+                height={40}
+                className="rounded object-fit-cover"
+                onError={(e) => {
+                  e.currentTarget.src = dummypatient.src;
+                }}
               />
             ) : (
               <Image
-                src={imgSrc}
+                src={resolvedImgSrc}
                 alt={name}
-                width={36}
-                height={36}
-                className="rounded"
+                width={40}
+                height={40}
+                className="rounded object-fit-cover"
               />
             )}
             {name}
-          </div>
+          </Link>
+          // </Link>
+        );
+      },
+    },
+    {
+      header: "Doctor",
+      cell: (info) => {
+        // const imgSrc = info.row.original.image;
+        const doctornm = info.row.original.doctornm;
+        const id = info.row.original.id;
+        console.log("id:", info.row);
+
+        const imgSrc = info.row.original.image;
+        const resolvedImgSrc =
+          typeof imgSrc === "string" && imgSrc.trim() !== ""
+            ? imgSrc
+            : dummydoctor;
+        return (
+          // <Link href={`/patients/${id}`} className=" ">
+          <Link
+            href={`/doctors/${id}`}
+            className="d-flex align-items-center gap-2 text-decoration-none text-dark"
+          >
+            {typeof resolvedImgSrc === "string" ? (
+              <img
+                src={resolvedImgSrc}
+                alt={doctornm}
+                width={40}
+                height={40}
+                className="rounded object-fit-cover"
+                onError={(e) => {
+                  e.currentTarget.src = dummydoctor.src;
+                }}
+              />
+            ) : (
+              <Image
+                src={resolvedImgSrc}
+                alt="doctornm"
+                width={40}
+                height={40}
+                className="rounded object-fit-cover"
+              />
+            )}
+            {doctornm}
+          </Link>
           // </Link>
         );
       },
@@ -374,69 +470,80 @@ export default function ListView() {
       <div className="d-flex justify-content-between align-items-center flex-wrap mb-3 searchbar-content">
         {/* Search Input */}
         <div className="d-flex align-items-center gap-2 mb-1 Consultations-image">
-          <div className="border custom-filter-button p-2 consultations-image-summary-cards">
-            {/* <Image src={woman} alt="Total" className="img-fluid women-image" /> */}
-            <div className="consultations-image-book">
-              <Image
-                src={calendar}
-                alt="calendar"
-                className="img-fluid women-image me-2"
-                width={30}
-                height={30}
-              />
-              <div className="Consultations-book">98 Appointment</div>
+          {loading ? (
+            <Skeleton width={200} height={35} />
+          ) : (
+            <div className="border custom-filter-button p-2 consultations-image-summary-cards">
+              <div className="consultations-image-book">
+                <Image
+                  src={calendar}
+                  alt="calendar"
+                  className="img-fluid women-image me-2"
+                  width={30}
+                  height={30}
+                />
+                <div className="Consultations-book">98 Appointment</div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Sort + Filter */}
         <div className="d-flex align-items-center gap-2 mb-2">
-          <span className="text-muted small short-by">Sort by:</span>
-          <Form.Select
-            className="custom-sort-select"
-            value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value)} // ✅ update state
-          >
-            <option>All Time</option>
-            <option>Today</option>
-            <option>This Week</option>
-            <option>This Month</option>
-          </Form.Select>
-          <Button variant="light" className="border custom-filter-button">
-            <PiSlidersDuotone />
-          </Button>
+          {loading ? (
+            <Skeleton width={70} height={18} />
+          ) : (
+            <span className="text-muted small short-by">Sort by:</span>
+          )}
+          {loading ? (
+            <Skeleton width={120} height={35} />
+          ) : (
+            <Form.Select
+              className="custom-sort-select"
+              value={timeFilter}
+              onChange={(e) => setTimeFilter(e.target.value)} // ✅ update state
+            >
+              <option>All Time</option>
+              <option>Today</option>
+              <option>This Week</option>
+              <option>This Month</option>
+            </Form.Select>
+          )}
+          {loading ? (
+            <Skeleton width={35} height={40} />
+          ) : (
+            <Button variant="light" className="border custom-filter-button">
+              <PiSlidersDuotone />
+            </Button>
+          )}
 
-          {/* <Button variant="default">
-                                  <div className="d-flex justify-content-center align-items-center gap-2">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
-                                          <path d="M18.75 9.375C18.75 9.67337 18.6315 9.95952 18.4205 10.1705C18.2095 10.3815 17.9234 10.5 17.625 10.5H10.5V17.625C10.5 17.9234 10.3815 18.2095 10.1705 18.4205C9.95952 18.6315 9.67337 18.75 9.375 18.75C9.07663 18.75 8.79048 18.6315 8.5795 18.4205C8.36853 18.2095 8.25 17.9234 8.25 17.625V10.5H1.125C0.826631 10.5 0.540483 10.3815 0.329505 10.1705C0.118526 9.95952 0 9.67337 0 9.375C0 9.07663 0.118526 8.79048 0.329505 8.5795C0.540483 8.36853 0.826631 8.25 1.125 8.25H8.25V1.125C8.25 0.826631 8.36853 0.540483 8.5795 0.329505C8.79048 0.118526 9.07663 0 9.375 0C9.67337 0 9.95952 0.118526 10.1705 0.329505C10.3815 0.540483 10.5 0.826631 10.5 1.125V8.25H17.625C17.9234 8.25 18.2095 8.36853 18.4205 8.5795C18.6315 8.79048 18.75 9.07663 18.75 9.375Z" fill="white" />
-                                      </svg>
-                                      Add Patient
-                                  </div>
-          
-                              </Button> */}
-          <Button
-            variant="default"
-            onClick={() => {
-              setBookAppointmentModal(true);
-            }}
-          >
-            <div className="d-flex justify-content-center align-items-center gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="25"
-                height="25"
-                viewBox="0 0 25 25"
-                fill="none"
-              >
-                <path
-                  d="M19.8016 3.42969H17.9266V3.05469C17.9266 2.75632 17.8081 2.47017 17.5971 2.25919C17.3862 2.04821 17.1 1.92969 16.8016 1.92969C16.5033 1.92969 16.2171 2.04821 16.0061 2.25919C15.7952 2.47017 15.6766 2.75632 15.6766 3.05469V3.42969H8.92664V3.05469C8.92664 2.75632 8.80811 2.47017 8.59713 2.25919C8.38615 2.04821 8.1 1.92969 7.80164 1.92969C7.50327 1.92969 7.21712 2.04821 7.00614 2.25919C6.79516 2.47017 6.67664 2.75632 6.67664 3.05469V3.42969H4.80164C4.30435 3.42969 3.82744 3.62723 3.47581 3.97886C3.12418 4.33049 2.92664 4.80741 2.92664 5.30469V20.3047C2.92664 20.802 3.12418 21.2789 3.47581 21.6305C3.82744 21.9821 4.30435 22.1797 4.80164 22.1797H19.8016C20.2989 22.1797 20.7758 21.9821 21.1275 21.6305C21.4791 21.2789 21.6766 20.802 21.6766 20.3047V5.30469C21.6766 4.80741 21.4791 4.33049 21.1275 3.97886C20.7758 3.62723 20.2989 3.42969 19.8016 3.42969ZM6.67664 5.67969C6.67664 5.97806 6.79516 6.2642 7.00614 6.47518C7.21712 6.68616 7.50327 6.80469 7.80164 6.80469C8.1 6.80469 8.38615 6.68616 8.59713 6.47518C8.80811 6.2642 8.92664 5.97806 8.92664 5.67969H15.6766C15.6766 5.97806 15.7952 6.2642 16.0061 6.47518C16.2171 6.68616 16.5033 6.80469 16.8016 6.80469C17.1 6.80469 17.3862 6.68616 17.5971 6.47518C17.8081 6.2642 17.9266 5.97806 17.9266 5.67969H19.4266V7.92969H5.17664V5.67969H6.67664ZM5.17664 19.9297V10.1797H19.4266V19.9297H5.17664Z"
-                  fill="white"
-                />
-              </svg>
-              Book Appointment
-            </div>
-          </Button>
+          {loading ? (
+            <Skeleton width={200} height={40} />
+          ) : (
+            <Button
+              variant="default"
+              onClick={() => {
+                setBookAppointmentModal(true);
+              }}
+            >
+              <div className="d-flex justify-content-center align-items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="25"
+                  viewBox="0 0 25 25"
+                  fill="none"
+                >
+                  <path
+                    d="M19.8016 3.42969H17.9266V3.05469C17.9266 2.75632 17.8081 2.47017 17.5971 2.25919C17.3862 2.04821 17.1 1.92969 16.8016 1.92969C16.5033 1.92969 16.2171 2.04821 16.0061 2.25919C15.7952 2.47017 15.6766 2.75632 15.6766 3.05469V3.42969H8.92664V3.05469C8.92664 2.75632 8.80811 2.47017 8.59713 2.25919C8.38615 2.04821 8.1 1.92969 7.80164 1.92969C7.50327 1.92969 7.21712 2.04821 7.00614 2.25919C6.79516 2.47017 6.67664 2.75632 6.67664 3.05469V3.42969H4.80164C4.30435 3.42969 3.82744 3.62723 3.47581 3.97886C3.12418 4.33049 2.92664 4.80741 2.92664 5.30469V20.3047C2.92664 20.802 3.12418 21.2789 3.47581 21.6305C3.82744 21.9821 4.30435 22.1797 4.80164 22.1797H19.8016C20.2989 22.1797 20.7758 21.9821 21.1275 21.6305C21.4791 21.2789 21.6766 20.802 21.6766 20.3047V5.30469C21.6766 4.80741 21.4791 4.33049 21.1275 3.97886C20.7758 3.62723 20.2989 3.42969 19.8016 3.42969ZM6.67664 5.67969C6.67664 5.97806 6.79516 6.2642 7.00614 6.47518C7.21712 6.68616 7.50327 6.80469 7.80164 6.80469C8.1 6.80469 8.38615 6.68616 8.59713 6.47518C8.80811 6.2642 8.92664 5.97806 8.92664 5.67969H15.6766C15.6766 5.97806 15.7952 6.2642 16.0061 6.47518C16.2171 6.68616 16.5033 6.80469 16.8016 6.80469C17.1 6.80469 17.3862 6.68616 17.5971 6.47518C17.8081 6.2642 17.9266 5.97806 17.9266 5.67969H19.4266V7.92969H5.17664V5.67969H6.67664ZM5.17664 19.9297V10.1797H19.4266V19.9297H5.17664Z"
+                    fill="white"
+                  />
+                </svg>
+                Book Appointment
+              </div>
+            </Button>
+          )}
+
           <Modal
             show={BookAppointmentModal}
             onHide={() => setBookAppointmentModal(false)}
@@ -456,7 +563,15 @@ export default function ListView() {
       </div>
 
       {/* Table */}
-      <CommonTable data={filteredData} columns={columns} />
+      <CommonTable
+        data={filteredData}
+        columns={columns}
+        activePage={activePage}
+        setActivePage={setActivePage}
+        loading={loading}
+        totalPages={Math.ceil(patientAppointmentTotal / 10)}
+        tableTotal={patientAppointmentTotal}
+      />
       {/* reassign_modal */}
       <ReassignRequest
         show={showRescheduleModal}
@@ -493,23 +608,6 @@ export default function ListView() {
           setRescheduleModal={setRescheduleAppointmentModal}
         />
       </Modal>
-      {/* <SuccessModalReschedule /> */}
-
-      {/* Pagination */}
-      {/* <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-                <small className="text-muted">Showing {filteredData.length} of {inventoryData.length} results</small>
-                <Pagination size="sm" className="mb-0">
-                    <Pagination.Prev disabled />
-                    {[1, 2, 3, 4, 5].map((p) => (
-                        <Pagination.Item key={p} active={p === 1}>
-                            {p}
-                        </Pagination.Item>
-                    ))}
-                    <Pagination.Ellipsis disabled />
-                    <Pagination.Item>99</Pagination.Item>
-                    <Pagination.Next />
-                </Pagination>
-            </div> */}
     </div>
   );
 }

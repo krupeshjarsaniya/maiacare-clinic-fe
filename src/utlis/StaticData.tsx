@@ -35,6 +35,7 @@ export interface AssignedPatients {
   mobile: string;
   email: string;
   pin: string;
+  patientId?:string;
   status: string;
   image: string | StaticImageData;
   treatmenttype: string[];

@@ -106,7 +106,7 @@ export default function Doctor() {
         status: doc.status,
         verified: doc.verified,
       }));
-
+      setDoctorTotal(response.data.data.pagination.total);
       setDoctors(mappedDoctors);
     } catch (error) {
       console.error("Failed to fetch doctors", error);
@@ -353,7 +353,7 @@ export default function Doctor() {
                 height={20}
               />
               <div style={{ display: "flex", alignItems: "center" }}>
-                <div className="Consultations-book">98 Doctors</div>
+                <div className="Consultations-book">{doctorTotal} Doctors</div>
               </div>
             </div>
           )}
@@ -438,13 +438,7 @@ export default function Doctor() {
       />
 
       <DoctorAddedModal />
-      {/* <ActivateDeactivateProfile
-        show={showActivateDeactivateModal}
-        onClose={() => setShowActivateDeactivateModal(false)}
-        setShowSuccessModal={setShowSuccessModal}
-        doctorIdShow={doctorIdShow} // pass real doctor id
-        title="Activate / Deactivate Profile"
-      /> */}
+
       <ActivateDeactivateProfile
         show={showActivateDeactivateModal}
         onClose={() => setShowActivateDeactivateModal(false)}

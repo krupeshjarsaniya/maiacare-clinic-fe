@@ -115,7 +115,6 @@ const DoctorDetailPageComponent = ({
                         </span>
                       </>
                     )}
-                   
                   </span>
                 </div>
 
@@ -188,7 +187,7 @@ const DoctorDetailPageComponent = ({
 
         <Col lg={5} md={3} className="text-md-end text-center mt-4 mt-md-0">
           {isLoading ? (
-            <Skeleton width={40} height={40} />
+            <Skeleton width={40} height={40} className="" />
           ) : (
             <Dropdown
               align="end"

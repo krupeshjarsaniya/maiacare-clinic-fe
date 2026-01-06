@@ -25,6 +25,7 @@ import { getAssigned } from "@/utlis/apis/apiHelper";
 import toast from "react-hot-toast";
 export type ConsultationStatus = "Active" | "Inactive" | "On Leave";
 import dummyPatient from "@/assets/images/patient_profile.png";
+import Skeleton from "react-loading-skeleton";
 export default function DoctorAssignedPatients({
   doctorIdShow,
 }: {
@@ -39,6 +40,7 @@ export default function DoctorAssignedPatients({
   const [activePage, setActivePage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
+  const [assignedTotal, setAssignedTotal] = useState<number>(0);
   const [allPatients, setAllPatients] = useState<AssignedPatients[]>([]);
 
   // delete function
@@ -78,9 +80,9 @@ export default function DoctorAssignedPatients({
             date: item.appointmentDate ?? "",
           })
         );
-
         setAllPatients(normalized);
         setTotalPages(apiData.totalPages);
+        setAssignedTotal(apiData.total);
       } else {
         setAllPatients([]);
       }
@@ -178,7 +180,7 @@ export default function DoctorAssignedPatients({
             : dummyPatient.src;
         return (
           <Link
-            href={`/doctors/${id}`}
+            href={`/patients/${id}`}
             className="text-decoration-none text-dark"
           >
             <div className="d-flex align-items-center gap-2">
@@ -311,64 +313,95 @@ export default function DoctorAssignedPatients({
       <div className="d-flex justify-content-between align-items-center flex-wrap mb-3 searchbar-content">
         <div className="d-flex gap-3">
           {/* doctors */}
-          <div
-            className="border custom-filter-button  d-flex align-items-center"
-            style={{ gap: "10px" }}
-          >
-            <Image
-              src={patient}
-              alt="patient"
-              className="img-fluid women-image"
-              width={20}
-              height={20}
-            />
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div className="Consultations-book">150 Patients</div>
+          {loading ? (
+            <Skeleton width={150} height={35} />
+          ) : (
+            <div
+              className="border custom-filter-button  d-flex align-items-center"
+              style={{ gap: "10px" }}
+            >
+              <Image
+                src={patient}
+                alt="patient"
+                className="img-fluid women-image"
+                width={20}
+                height={20}
+              />
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div className="Consultations-book">
+                  {assignedTotal} Patients
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
           {/* Search Input */}
           <div className="d-flex align-items-center gap-2 mb-1 Consultations-image">
             {/* Search Input */}
-            <InputGroup className="custom-search-group">
-              <InputGroup.Text className="custom-search-icon">
-                <Image
-                  src={serchicon}
-                  alt="serchicon"
-                  className="search-icon"
+            {loading ? (
+              <Skeleton width={200} height={35} />
+            ) : (
+              <InputGroup className="custom-search-group">
+                <InputGroup.Text className="custom-search-icon">
+                  <Image
+                    src={serchicon}
+                    alt="serchicon"
+                    className="search-icon"
+                  />
+                  {/* <IoSearch  /> */}
+                </InputGroup.Text>
+                <Form.Control
+                  placeholder="Search Patients"
+                  className="custom-search-input ps-0"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                {/* <IoSearch  /> */}
-              </InputGroup.Text>
-              <Form.Control
-                placeholder="Search Patients"
-                className="custom-search-input ps-0"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </InputGroup>
+              </InputGroup>
+            )}
           </div>
         </div>
 
         {/* Sort + Filter */}
         <div className="d-flex align-items-center gap-2 mb-2">
-          <span className="text-muted small short-by">Sort by:</span>
-          <Form.Select
-            className="custom-sort-select"
-            value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value)} // ✅ update state
-          >
-            <option>All Time</option>
-            <option>Today</option>
-            <option>This Week</option>
-            <option>This Month</option>
-          </Form.Select>
-          <Button variant="light" className="border custom-filter-button">
-            <PiSlidersDuotone />
-          </Button>
+          {loading ? (
+            <Skeleton width={70} height={20} />
+          ) : (
+            <span className="text-muted small short-by">Sort by:</span>
+          )}
+          {loading ? (
+            <Skeleton width={180} height={35} />
+          ) : (
+            <Form.Select
+              className="custom-sort-select"
+              value={timeFilter}
+              onChange={(e) => setTimeFilter(e.target.value)} // ✅ update state
+            >
+              <option>All Time</option>
+              <option>Today</option>
+              <option>This Week</option>
+              <option>This Month</option>
+            </Form.Select>
+          )}
+          {loading ? (
+            <Skeleton width={35} height={35} />
+          ) : (
+            <Button variant="light" className="border custom-filter-button">
+              <PiSlidersDuotone />
+            </Button>
+          )}
         </div>
       </div>
 
       {/* Table */}
-      <CommonTable data={filteredData} columns={columns} />
+      <CommonTable
+        data={filteredData}
+        columns={columns}
+        activePage={activePage}
+        setActivePage={setActivePage}
+        tableTotal={assignedTotal}
+        totalPages={Math.ceil(assignedTotal / 10)}
+        loading={loading}
+      />
     </div>
   );
 }

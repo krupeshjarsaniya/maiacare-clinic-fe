@@ -14,7 +14,6 @@ import { InputSelect } from './ui/InputSelect';
 import { BookAppointment, SuccessModalBookAppointment } from './form/BookAppointment';
 import ScheduleTimeOff from './ScheduleTimeOff';
 import { AppointmentsMonth } from './AppointmentsMonth';
-
 import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -1619,7 +1618,7 @@ export function ListView() {
 
       </div>
       <ListViews />
-      <div className="d-sm-flex flex-column d-xl-none d-none gap-2 my-4">
+      {/* <div className="d-sm-flex flex-column d-xl-none d-none gap-2 my-4">
         <div className='d-flex align-items-center justify-content-between'>
 
           <InputFieldGroup
@@ -1714,7 +1713,7 @@ export function ListView() {
           </div>
 
         </div>
-      </div>
+      </div> */}
 
       <>
         <Modal
