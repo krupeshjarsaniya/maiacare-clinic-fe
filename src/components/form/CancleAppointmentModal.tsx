@@ -1,15 +1,17 @@
 import React, { ChangeEvent, useState } from "react";
 import { InputSelect } from "../ui/InputSelect";
-import { CancelAppointmentForm } from "@/utlis/types/interfaces";
+import { CancelAppointmentForm, CancelAppointmentPayload } from "@/utlis/types/interfaces";
 import Textarea from "../ui/Textarea";
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import Image from "next/image";
 import SuccessImage from "../../assets/images/ReschedulingRequest.png";
+import { addCancelAppointment } from "@/utlis/apis/apiHelper";
 interface CancleAppointmentModalProps {
   setCancleModal?: React.Dispatch<React.SetStateAction<boolean>>;
   onSuccess?: () => void;
   showSuccessModal?: boolean;
+  appointmentId: string  ;
   setShowSuccessModal?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 type FormError = Partial<Record<keyof CancelAppointmentForm, string>>;
@@ -21,11 +23,13 @@ const initialFormError: FormError = {};
 export function CancleAppointmentModal({
   setCancleModal,
   setShowSuccessModal,
+  appointmentId,
 }: CancleAppointmentModalProps) {
   const [formData, setFormData] =
     useState<CancelAppointmentForm>(initialFormData);
   const [formError, setFormError] = useState<FormError>(initialFormError);
-
+ 
+  
   const handleChange = (
     e:
       | ChangeEvent<HTMLInputElement>
@@ -43,18 +47,30 @@ export function CancleAppointmentModal({
     }
     return errors;
   };
-  const handleCancle = () => {
-    const errors = validateForm(formData);
-    setFormError(errors);
+ 
+  const handleCancle = async () => {
+  const errors = validateForm(formData);
+  setFormError(errors);
 
-    if (Object.keys(errors).length > 0) {
-      return; // Stop here if validation fails
-    }
+  if (Object.keys(errors).length > 0) return;
 
-    // FORM IS VALID → close main modal → show success modal
+  const payload: CancelAppointmentPayload = {
+    appointmentId,
+    reason: formData.reasonForCancel,
+    additionalNote: formData.additionalNote || undefined,
+  };
+
+  try {
+    await addCancelAppointment(payload);
+
+    // SUCCESS
     setCancleModal?.(false);
     setShowSuccessModal?.(true);
-  };
+  } catch (error) {
+    console.error("Cancel appointment failed:", error);
+    // optionally show toast / error message here
+  }
+};
   return (
     <div>
       <div className="fw-semibold fs-6">

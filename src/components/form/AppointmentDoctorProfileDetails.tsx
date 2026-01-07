@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import ContentContainer from "../ui/ContentContainer";
 import Image from "next/image";
-import doctor from "../../assets/images/Profile-doctor.png";
+import doctorImg from "../../assets/images/Profile-doctor.png";
 import { Col, Dropdown, Row } from "react-bootstrap";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import sthetoscope from "../../assets/images/Stethoscope.png";
@@ -16,7 +16,17 @@ import {
   CancleAppointmentModal,
   SuccessModalCancle,
 } from "./CancleAppointmentModal";
-export default function AppointmentDoctorProfileDetails() {
+import { Appointment, Doctor } from "../AppointmentPatientDetail";
+interface Props {
+  doctor?: Doctor;
+  appointment: Appointment | null;
+}
+export default function AppointmentDoctorProfileDetails({
+  doctor,
+  appointment,
+}: Props) {
+  if (!appointment || !doctor) return null;
+
   const [showRescheduleAppointmentModal, setRescheduleAppointmentModal] =
     useState(false);
   const [showCancleAppointment, setShowCancleAppointment] = useState(false);
@@ -25,6 +35,9 @@ export default function AppointmentDoctorProfileDetails() {
   const handleCheckIn = () => {
     setShowCheckIn(1);
   };
+  const statusClass = `status-${appointment?.status
+    .toLowerCase()
+    .replace(/\s/g, "")}`;
   return (
     <div>
       <ContentContainer>
@@ -34,11 +47,19 @@ export default function AppointmentDoctorProfileDetails() {
               <h6 className="mb-0 doctor-profile-heading me-2">
                 Appointment Details
               </h6>
-              <span className="doctor-journey-badge-InProgress">New</span>
+              <span
+                // className="doctor-journey-badge-InProgress"
+                className={`status-pill ${statusClass}`}
+              >
+                {appointment?.status}
+              </span>
             </div>
             <div>
               <span style={{ color: "#3E4A57" }}>
-                Appointment ID <span className="fw-semibold">#123456</span>
+                Appointment ID
+                <span className="fw-semibold ps-1">
+                  {appointment?.appointId ? "#" + appointment?.appointId : "#"}
+                </span>
               </span>
             </div>
           </div>
@@ -112,14 +133,14 @@ export default function AppointmentDoctorProfileDetails() {
         <div className="d-flex align-items-start mt-3 appointment-reschedule-patient-box align-items-sm-center gap-3 flex-column flex-sm-row">
           <div className="d-flex align-items-center gap-2">
             <Image
-              src={doctor}
+              src={doctorImg}
               alt="doctor"
               width={50}
               height={50}
               className="rounded-3"
             />
             <div>
-              <span className="fw-semibold">Dr. Riya Dharang</span>
+              <span className="fw-semibold">{doctor?.name}</span>
               <div className="d-flex gap-2">
                 <div className="d-flex gap-1">
                   <Image
@@ -129,7 +150,7 @@ export default function AppointmentDoctorProfileDetails() {
                     height={15}
                   />
                   <span className="appointment-reschedule-profile-detail">
-                    Gynecologist
+                    {doctor?.email}
                   </span>
                 </div>
                 <div className="d-flex gap-1">
@@ -158,7 +179,7 @@ export default function AppointmentDoctorProfileDetails() {
             <div className="d-flex align-items-center gap-1">
               <Image src={calender} alt="calender" width={20} height={20} />
               <span className="modal-custom-content appointment-doctor-profile-detail">
-                26 Feb 2025
+                {appointment?.appointmentDate}
               </span>
             </div>
           </Col>
@@ -166,7 +187,7 @@ export default function AppointmentDoctorProfileDetails() {
             <div className="d-flex align-items-center gap-1">
               <Image src={clock} alt="clock" width={16} height={16} />
               <span className="modal-custom-content appointment-doctor-profile-detail">
-                5:30 PM
+                {appointment?.appointmentTime}
               </span>
             </div>
           </Col>
@@ -176,8 +197,13 @@ export default function AppointmentDoctorProfileDetails() {
             Concern/Treatment
           </span>
           <div className="my-2">
-            <span className="servicename me-2">PCOS</span>
-            <span className="servicename">Fertility Support</span>
+            {appointment?.concerns && appointment?.concerns.length > 0
+              ? appointment?.concerns.map((item: any, index: number) => (
+                  <span className="servicename me-2" key={index}>
+                    {item}
+                  </span>
+                ))
+              : "-"}
           </div>
         </div>
         <div className="my-3">
@@ -185,12 +211,11 @@ export default function AppointmentDoctorProfileDetails() {
             Additional Comment
           </span>
           <div className="modal-custom-content appointment-doctor-profile-detail">
-            Experiencing irregular cycles and seeking guidance on fertility
-            options.
+            {appointment?.additionalNote}
           </div>
         </div>
         <Row>
-          {showCheckIn === 0? (
+          {showCheckIn === 0 ? (
             <>
               <Col md={6}>
                 <Button className="maiacare-button maiacare-button-large outline-layout w-100 btn">
@@ -199,7 +224,7 @@ export default function AppointmentDoctorProfileDetails() {
               </Col>
               <Col md={6}>
                 <Button
-                  className="common-btn-blue maiacare-button w-100"
+                  className="common-btn-blue maiacare-button w-100 mt-3 mt-md-0"
                   onClick={handleCheckIn}
                 >
                   Check In
@@ -226,6 +251,8 @@ export default function AppointmentDoctorProfileDetails() {
         <RescheduleAppointment
           // onClose={() => setRescheduleAppointmentModal(false)}
           setRescheduleModal={setRescheduleAppointmentModal}
+        appointmentId={appointment?.id || ""}
+
         />
       </Modal>
       {/* CANCEL APPOINTMENT MODAL */}
@@ -236,6 +263,7 @@ export default function AppointmentDoctorProfileDetails() {
         header="Request to Cancel Appointment"
       >
         <CancleAppointmentModal
+        appointmentId={appointment?.id || ""}
           setCancleModal={setShowCancleAppointment}
           setShowSuccessModal={setShowCancleSuccess}
         />

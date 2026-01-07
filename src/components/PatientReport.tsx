@@ -470,6 +470,7 @@ const PatientReport = ({
           )}
         </div>
       </div>
+
       <div>
         <div className="d-flex gap-3 flex-wrap ">
           {completedFiles.map((file, idx) => (

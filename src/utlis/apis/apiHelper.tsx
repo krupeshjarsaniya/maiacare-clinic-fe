@@ -9,7 +9,7 @@ import {
   PhysicalAssessmentDataModel,
   Qualification,
   ReassignDoctor,
-  RescheduleAppointment,
+  
 } from "../types/interfaces";
 import { LoginRequest } from "../types/requestInterface";
 import apiClient from "./axiosInstance";
@@ -282,22 +282,28 @@ export const addAppointment = (data: Appointment) => {
 export const getAppointmentPatientInfo = (id: string | number) => {
   return apiClient.get(`/appointments/getshort-patient-info/${id}`);
 };
+// get appointment by id (view appointment)
+export const getAppointmentById = (id: string | number) => {
+  return apiClient.get(`/appointments/get-appointment/${id}`);
+}
 
 //  ====: Reschedule Appointment :====
+// done 
 // add Reschedule Appointment
-export const addRescheduleAppointment = (data: RescheduleAppointment) => {
+export const addRescheduleAppointment = (data: object) => {
   return apiClient.post("/appointments/reschedule-appointment", data);
 };
 
 //  ====: Reassign Appointment :====
 // add Reassign Appointment
-export const addReassignAppointment = (data: ReassignDoctor) => {
+export const addReassignAppointment = (data: object) => {
   return apiClient.post("/appointments/reassign-doctor", data);
 };
 
 // ====: Cancel Appointment :====
+// done cancel appointment
 // add Cancel Appointment
-export const addCancelAppointment = (data: CancelAppointment) => {
+export const addCancelAppointment = (data: object) => {
   return apiClient.post("/appointments/cancel-appointment", data);
 };
 

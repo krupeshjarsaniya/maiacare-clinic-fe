@@ -13,12 +13,14 @@ import Modal from "../ui/Modal";
 import Image from "next/image";
 import SuccessImage from "@/assets/images/rescheduleAppointment.png";
 import Textarea from "../ui/Textarea";
+import { addRescheduleAppointment } from "@/utlis/apis/apiHelper";
 
 interface RescheduleAppointmentProps {
   setRescheduleModal?: React.Dispatch<React.SetStateAction<boolean>>;
   onSuccess?: () => void;
   showSuccessModal?: boolean;
   setShowSuccessModal?: React.Dispatch<React.SetStateAction<boolean>>;
+  appointmentId?: string;
 }
 
 type FormError = Partial<Record<keyof RescheduleAppointmentForm, string>>;
@@ -48,6 +50,7 @@ const initialFormData: RescheduleAppointmentForm = {
 export function RescheduleAppointment({
   setRescheduleModal,
   setShowSuccessModal,
+  appointmentId,
 }: RescheduleAppointmentProps) {
   const [formData, setFormData] =
     useState<RescheduleAppointmentForm>(initialFormData);
@@ -56,6 +59,7 @@ export function RescheduleAppointment({
   const [stepper, setStepper] = useState(1);
   const totalSteps = 2;
 
+  
   const handleChange = (
     e:
       | ChangeEvent<HTMLInputElement>
@@ -94,23 +98,54 @@ export function RescheduleAppointment({
     }
   };
 
-  const handelSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const errors = validateForm2(formData);
-    setFormError(errors);
-    if (Object.keys(errors).length === 0) {
-      console.log("form submit success");
+  // const handelSubmit = (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   const errors = validateForm2(formData);
+  //   setFormError(errors);
+  //   if (Object.keys(errors).length === 0) {
+  //     console.log("form submit success");
 
-      // stepper
-      setStepper((prev) => Math.max(1, prev + 1));
+  //     // stepper
+  //     setStepper((prev) => Math.max(1, prev + 1));
 
-      // close main modal
-      setRescheduleModal?.(false);
+  //     // close main modal
+  //     setRescheduleModal?.(false);
 
-      // show success modal
-      setShowSuccessModal?.(true);
-    }
-  };
+  //     // show success modal
+  //     setShowSuccessModal?.(true);
+  //   }
+  // };
+const handelSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  const errors = validateForm2(formData);
+  setFormError(errors);
+
+  if (Object.keys(errors).length !== 0) return;
+
+  try {
+    const payload = {
+      appointmentId: appointmentId, // coming from props
+      newDate: formData.appointmentDate, // "2025-12-06"
+      newTime: formData.appointmentTime, // "10:40 AM"
+      reason: formData.reason, // Step 1 reason
+    };
+
+    await addRescheduleAppointment(payload);
+
+    // stepper
+    setStepper((prev) => Math.min(prev + 1, totalSteps));
+
+    // close main modal
+    setRescheduleModal?.(false);
+
+    // show success modal
+    setShowSuccessModal?.(true);
+  } catch (error) {
+    console.error("Reschedule failed:", error);
+    // optional: show toast / error modal
+  }
+};
 
   const handelPrevious = () => {
     setStep(1);

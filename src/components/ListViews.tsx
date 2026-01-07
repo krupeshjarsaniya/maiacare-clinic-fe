@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Dropdown, Form, InputGroup, Pagination } from "react-bootstrap";
-import { inventoryData } from "../utlis/StaticData";
+
 import Image, { StaticImageData } from "next/image";
 import CommonTable from "@/components/ui/BaseTable";
 import { ColumnDef } from "@tanstack/react-table";
@@ -58,23 +58,38 @@ export type ConsultationStatus =
   | "No Response"
   | "Rescheduled"
   | "Cancelled";
-export interface AppointmentRow {
-  id: number;
+export interface DoctorInfo {
+  id: string;
   name: string;
-  image: string | StaticImageData;
-  mobile: string;
-  Date: string;
-  Time: string;
-  treatment: string;
-  doctornm?: string;
-  doctorimage?: string | StaticImageData;
-  status: string;
+  profilePicture?: string;
+  email?: string;
+  contactNumber?: string;
 }
+export interface PatientInfo {
+  id: string;
+  name: string;
+  profileImage?: string;
+  contactNumber?: string;
+  email?: string;
+}
+
+export interface AppointmentRow {
+  id: string; // appointId
+  date: string;
+  time: string;
+  treatment: string;
+  status: string;
+
+  patient: PatientInfo; // ✅ patient object
+  doctor?: DoctorInfo; // ✅ doctor object
+}
+
 export default function ListView() {
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
   const router = useRouter();
-  const [filteredData, setFilteredData] = useState(inventoryData);
+  const [allAppointments, setAllAppointments] = useState<AppointmentRow[]>([]);
+  const [filteredData, setFilteredData] = useState<AppointmentRow[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("All Time");
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
@@ -104,13 +119,13 @@ export default function ListView() {
   };
 
   // delete function
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     const updated = filteredData.filter((item) => item.id !== id);
     setFilteredData(updated);
   };
 
   useEffect(() => {
-    let data = inventoryData;
+    let data = [...allAppointments];
 
     // 🔹 filter by status (query param)
     if (filter === "completed") {
@@ -124,9 +139,9 @@ export default function ListView() {
       const q = searchQuery.toLowerCase();
       data = data.filter(
         (item) =>
-          item.name.toLowerCase().includes(q) ||
+          item.patient.name.toLowerCase().includes(q) ||
           item.treatment.toLowerCase().includes(q) ||
-          item.mobile.toLowerCase().includes(q)
+          item.patient.contactNumber?.toLowerCase().includes(q)
       );
     }
 
@@ -179,19 +194,33 @@ export default function ListView() {
 
       setTotalPages(res.data.totalPages);
       const mappedData: AppointmentRow[] = res.data.data.map((item: any) => ({
-        id: item.appointId,
-        name: item.patient.name,
-        doctornm: item.doctor?.name || "—",
-        image: item.patient.profileImage?.trim() || "",
-        mobile: item.patient.contactNumber,
-        Date: item.appointmentDate,
-        Time: item.appointmentTime,
-        treatment: item.reason ?? "—",
+        id: item.id,
+
+        date: item.appointmentDate,
+        time: item.appointmentTime,
+        treatment: item.reason?.[0] ?? "—",
         status: item.status,
+
+        patient: {
+          id: item.patient._id,
+          name: item.patient.name,
+          profileImage: item.patient.profileImage,
+          contactNumber: item.patient.contactNumber,
+          email: item.contactEmail,
+        },
+
+        doctor: item.doctor
+          ? {
+              id: item.doctor._id,
+              name: item.doctor.name,
+              profilePicture: item.doctor.profilePicture,
+              email: item.doctor.email,
+              contactNumber: item.doctor.contactNumber,
+            }
+          : undefined,
       }));
-
-      setAppointments(res.data.data);
-
+      const appointmentId = mappedData.map((item) => item.id);
+      setAllAppointments(mappedData);
       setFilteredData(mappedData);
     } catch (error) {
       console.error("Failed to fetch appointments", error);
@@ -215,24 +244,20 @@ export default function ListView() {
     {
       header: "Name",
       cell: (info) => {
-        // const imgSrc = info.row.original.image;
-        const name = info.row.original.name;
-        const id = info.row.original.id; // <-- Make sure you have an `id`
-        const imgSrc = info.row.original.image;
-        const resolvedImgSrc =
-          typeof imgSrc === "string" && imgSrc.trim() !== ""
-            ? imgSrc
-            : dummypatient;
+        const patient = info.row.original.patient;
+        const resolvedImg = patient.profileImage?.trim()
+          ? patient.profileImage
+          : dummypatient;
+
         return (
-          // <Link href={`/patients/${id}`} className="text-decoration-none text-dark">
           <Link
-            href={`/patients/${id}`}
+            href={`/patients/${patient.id}`}
             className="d-flex align-items-center gap-2 text-decoration-none text-dark"
           >
-            {typeof resolvedImgSrc === "string" ? (
+            {typeof resolvedImg === "string" ? (
               <img
-                src={resolvedImgSrc}
-                alt={name}
+                src={resolvedImg}
+                alt={patient.name}
                 width={40}
                 height={40}
                 className="rounded object-fit-cover"
@@ -242,42 +267,39 @@ export default function ListView() {
               />
             ) : (
               <Image
-                src={resolvedImgSrc}
-                alt={name}
+                src={resolvedImg}
+                alt={patient.name}
                 width={40}
                 height={40}
                 className="rounded object-fit-cover"
               />
             )}
-            {name}
+            {patient.name}
           </Link>
-          // </Link>
         );
       },
     },
+
     {
       header: "Doctor",
       cell: (info) => {
-        // const imgSrc = info.row.original.image;
-        const doctornm = info.row.original.doctornm;
-        const id = info.row.original.id;
-        console.log("id:", info.row);
+        const doctor = info.row.original.doctor;
 
-        const imgSrc = info.row.original.image;
-        const resolvedImgSrc =
-          typeof imgSrc === "string" && imgSrc.trim() !== ""
-            ? imgSrc
-            : dummydoctor;
+        if (!doctor) return <span>—</span>;
+
+        const resolvedImg = doctor.profilePicture?.trim()
+          ? doctor.profilePicture
+          : dummydoctor;
+
         return (
-          // <Link href={`/patients/${id}`} className=" ">
           <Link
-            href={`/doctors/${id}`}
+            href={`/doctors/${doctor.id}`}
             className="d-flex align-items-center gap-2 text-decoration-none text-dark"
           >
-            {typeof resolvedImgSrc === "string" ? (
+            {typeof resolvedImg === "string" ? (
               <img
-                src={resolvedImgSrc}
-                alt={doctornm}
+                src={resolvedImg}
+                alt={doctor.name}
                 width={40}
                 height={40}
                 className="rounded object-fit-cover"
@@ -287,31 +309,33 @@ export default function ListView() {
               />
             ) : (
               <Image
-                src={resolvedImgSrc}
-                alt="doctornm"
+                src={resolvedImg}
+                alt={doctor.name}
                 width={40}
                 height={40}
                 className="rounded object-fit-cover"
               />
             )}
-            {doctornm}
+            {doctor.name}
           </Link>
-          // </Link>
         );
       },
     },
+
     {
       header: "Mobile No",
-      accessorKey: "mobile",
+      cell: (info) => info.row.original.patient.contactNumber ?? "—",
     },
+
     {
       header: "Date",
-      accessorKey: "Date",
+      accessorKey: "date",
     },
     {
       header: "Time",
-      accessorKey: "Time",
+      accessorKey: "time",
     },
+
     {
       header: "Reason for visit",
       cell: (info) => (
@@ -335,10 +359,8 @@ export default function ListView() {
             {/* <span className={`status-pill ${statusClass}`}>{status}</span> */}
 
             {/* 👇 Show 2 SVGs only for "Rani Desai" */}
-            {row.name === "Himari Roy" && (
+            {row.patient.name === "Himari Roy" && (
               <div className="text-center d-flex">
-                {/* SVG 1 */}
-
                 <Button
                   variant="light"
                   className="d-flex bg-white justify-content-center align-items-center action_btn border profile-card-boeder rounded  me-2"
@@ -386,7 +408,7 @@ export default function ListView() {
     {
       header: "Actions",
       cell: (info) => {
-        const id = info.row.original.id; // <-- use id directly
+        const id = info.row.original.id;
         return (
           <div className="d-flex align-items-center">
             <Dropdown align="end" className="d-flex align-items-center">
@@ -604,6 +626,7 @@ export default function ListView() {
         header="Request to Reschedule Appointment"
       >
         <RescheduleAppointment
+        // appointmentId={appointmentId}
           // onClose={() => setRescheduleAppointmentModal(false)}
           setRescheduleModal={setRescheduleAppointmentModal}
         />

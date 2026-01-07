@@ -282,9 +282,10 @@ export interface PhysicalAssessmentDataModel {
   bloodPressureDiastolic: string;
   heartRate: string;
 }
-export interface CancelAppointmentForm {
-  reasonForCancel: string;
-  additionalNote: string;
+export interface CancelAppointmentPayload {
+  appointmentId: string;
+  reason: string;
+  additionalNote?: string;
 }
 
 export interface PhysicalAssessmentData {
@@ -850,10 +851,10 @@ export interface Appointment {
   appointmentDate: string;
   appointmentTime: string;
 }
-export interface RescheduleAppointment {
-  appointmentId: string;
-  newDate: string;
-  newTime: string;
+export interface RescheduleAppointmentPayload {
+  appointmentId?: string;
+  newDate: string; 
+  newTime: string; 
   reason: string;
 }
 export interface ReassignDoctor {

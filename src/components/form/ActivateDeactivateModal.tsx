@@ -33,7 +33,6 @@ interface ActivateDeactivateProfileProps {
 }
 // doctor details interface
 
-
 // form
 interface ProfileStatusForm {
   profile: "Active" | "Deactive";
@@ -328,7 +327,7 @@ export function ActivateDeactivateProfile({
         </div>
         <div className="mt-3">
           <Row>
-            <Col md={6} className="pe-0">
+            <Col md={6} className="pe-md-0 ">
               <Button
                 variant="outline"
                 className="edit-profile-btn w-100 fw-semibold"
@@ -340,7 +339,7 @@ export function ActivateDeactivateProfile({
             <Col md={6}>
               <Button
                 variant="dark"
-                className="maiacare-button common-btn-blue w-100 fw-semibold"
+                className="maiacare-button common-btn-blue w-100 fw-semibold mt-2 mt-md-0"
                 onClick={handleSubmit}
                 type="button"
               >
