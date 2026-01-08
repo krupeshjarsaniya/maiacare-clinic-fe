@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Nav } from "react-bootstrap";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -45,6 +45,7 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
   const dispatch = useDispatch();
 
   const navRef = useRef<HTMLDivElement | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   const headerValue = useSelector((state: RootState) => state.header.value);
   const { title, subtitle } = headerValue || {};
@@ -83,20 +84,32 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
       navRef.current.scrollBy({ top: 100, behavior: "smooth" });
     }
   };
-  const handleLogout = () => {
-    logout()
-      .then(() => {
-        ClearData();
-        toast.success("Logout successfully");
-        localStorage.clear();
-        dispatch(setToken(""));
-        router.push("/login");
-      })
-      .catch(() => {
-        toast.error("Logout failed");
-      });
-  };
 
+  // const handleLogout = () => {
+  //   logout()
+  //     .then(() => {
+  //       ClearData();
+  //       toast.success("Logout successfully");
+  //       localStorage.clear();
+  //       dispatch(setToken(""));
+  //       router.push("/login");
+  //     })
+  //     .catch(() => {
+  //       toast.error("Logout failed");
+  //     });
+  // };
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch {
+      // Token already expired → ignore
+    } finally {
+      ClearData();
+      localStorage.clear();
+      toast.success("Logged out");
+      router.replace("/login");
+    }
+  };
   return (
     <div className="layout">
       {/* ====== DESKTOP SIDEBAR ====== */}

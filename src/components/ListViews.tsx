@@ -93,6 +93,9 @@ export default function ListView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("All Time");
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<
+    string | null
+  >(null);
   const [showActiveDeactiveModal, setShowActiveDeactiveModal] = useState(false);
   const [BookAppointmentModal, setBookAppointmentModal] = useState(false);
   const [showSuccessModalBook, setShowSuccessModalBook] = useState(false);
@@ -232,7 +235,7 @@ export default function ListView() {
   useEffect(() => {
     fetchAppointments();
   }, [activePage]);
-
+  
   const columns: ColumnDef<AppointmentRow>[] = [
     {
       header: "#",
@@ -435,7 +438,10 @@ export default function ListView() {
                   View Profile
                 </Dropdown.Item>
                 <Dropdown.Item
-                  onClick={() => setRescheduleAppointmentModal(true)}
+                  onClick={() => {
+                    setSelectedAppointmentId(id); // ✅ STORE ID
+                    setRescheduleAppointmentModal(true); // ✅ OPEN MODAL
+                  }}
                 >
                   <Image
                     src={RescheduleAppointmentimg}
@@ -446,6 +452,7 @@ export default function ListView() {
                   />
                   Reschedule Appointment
                 </Dropdown.Item>
+
                 <Dropdown.Item onClick={() => setShowActiveDeactiveModal(true)}>
                   <Image
                     src={active_deactive}
@@ -625,11 +632,12 @@ export default function ListView() {
         closeButton
         header="Request to Reschedule Appointment"
       >
-        <RescheduleAppointment
-        // appointmentId={appointmentId}
-          // onClose={() => setRescheduleAppointmentModal(false)}
-          setRescheduleModal={setRescheduleAppointmentModal}
-        />
+        {selectedAppointmentId && (
+          <RescheduleAppointment
+            appointmentId={selectedAppointmentId} // ✅ CORRECT ID
+            setRescheduleModal={setRescheduleAppointmentModal}
+          />
+        )}
       </Modal>
     </div>
   );

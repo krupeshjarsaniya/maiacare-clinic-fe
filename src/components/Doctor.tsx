@@ -62,6 +62,8 @@ export default function Doctor() {
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
   const [filteredData, setFilteredData] = useState(DoctorData);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+
   const [doctorTotal, setDoctorTotal] = useState<number>(0);
   const [activePage, setActivePage] = useState<number>(1);
   const start = (activePage - 1) * 10;
@@ -307,7 +309,7 @@ export default function Doctor() {
                 </Dropdown.Item> */}
                 <Dropdown.Item
                   onClick={() => {
-                    setSelectedDoctorId(id!);
+                    setSelectedDoctor(info.row.original); // 👈 full row data
                     setShowActivateDeactivateModal(true);
                   }}
                 >
@@ -442,7 +444,8 @@ export default function Doctor() {
       <ActivateDeactivateProfile
         show={showActivateDeactivateModal}
         onClose={() => setShowActivateDeactivateModal(false)}
-        doctorIdShow={selectedDoctorId}
+        // doctorIdShow={selectedDoctorId}
+        doctor={selectedDoctor}
         setShowSuccessModal={setShowSuccessModal}
         onStatusChange={(newStatus) => {
           setDoctors((prev) =>

@@ -10,8 +10,8 @@ import Button from "../ui/Button";
 import { Col, Dropdown, Form, Row } from "react-bootstrap";
 import Image from "next/image";
 import SuccessImageRescheduleAppointment from "../../assets/images/ReschedulingRequest.png";
-import doctor from "../../assets/images/doctor1.png";
-import patient from "./../../assets/images/Img-1.png";
+import doctorimg from "../../assets/images/doctor1.png";
+import patientimg from "./../../assets/images/Img-1.png";
 import Arrowup from "../../assets/images/ArrowUpRight.png";
 import temppatientImg1 from "../../assets/images/patient1.png";
 import doctor1 from "../../assets/images/doctor1.png";
@@ -21,12 +21,16 @@ import doctor4 from "../../assets/images/doctor4.jpg";
 import doctor5 from "../../assets/images/doctor5.png";
 import { InputSelect } from "../ui/InputSelect";
 import Textarea from "../ui/Textarea";
+import { GetAllPatient } from "@/utlis/types/interfaces";
+import { useRouter } from "next/navigation";
 interface RescheduleAppointmentRequestProps {
   show: boolean;
   onClose: () => void;
   onSubmit: (data: { date: string; time: string; reason: string }) => void;
   setShowSuccessModalBook: React.Dispatch<React.SetStateAction<boolean>>;
   title?: string;
+  patient?: GetAllPatient | null;
+  doctor?: GetAllPatient["doctor"] | null;
 }
 interface Doctor {
   id: number;
@@ -56,7 +60,10 @@ export function ReassignRequest({
   onSubmit,
   title = "Reassign Appointment",
   setShowSuccessModalBook,
+  patient,
+  doctor,
 }: RescheduleAppointmentRequestProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     type: "",
@@ -70,6 +77,8 @@ export function ReassignRequest({
   const [highlightIndex, setHighlightIndex] = useState<number>(-1);
   const [step, setStep] = useState(0);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  console.log("doctor:", doctor);
+  console.log("patient:", patient);
 
   // Mock patient data (replace with API data if needed)
   const Doctors: Doctor[] = [
@@ -155,73 +164,90 @@ export function ReassignRequest({
           <h6 className="fw-semibold" style={{ color: "#2B4360" }}>
             Basic Details
           </h6>
-          <Row className="mb-4">
-            <Col md={6}>
-              <div className="reassign_cards">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="d-flex align-items-center gap-2">
-                    <Image src={doctor} alt="doctor" width={43} height={43} />
-                    <span className="reassign_text">Dr. Ashok Kumar</span>
+          <Row className="mb-4 flex-md-column flex-lg-row">
+            {doctor && (
+              <Col md={12} lg={6}>
+                <div className="reassign_cards">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <div className="d-flex align-items-center gap-2">
+                      <Image
+                        src={doctorimg}
+                        alt="doctor"
+                        width={43}
+                        height={43}
+                      />
+                      <span className="reassign_text">{doctor?.name}</span>
+                    </div>
+                    <Button
+                      className="maiacare-button-large   profile-card-boeder  bg-transparent btn btn-primary"
+                      variant="dark"
+                      onClick={()=>router.push(`/doctors/${doctor._id}`)}
+
+                    >
+                      <Image src={Arrowup} alt="Arrow" width={14} height={14} />
+                    </Button>
                   </div>
-                  <Button
-                    className="maiacare-button-large   profile-card-boeder  bg-transparent btn btn-primary"
-                    variant="dark"
-                  >
-                    <Image src={Arrowup} alt="Arrow" width={14} height={14} />
-                  </Button>
-                </div>
-                <div className="reassign_card_text">
-                  <div className="mt-2">
-                    Phone no :<span className="ms-1">+91 9092038491</span>
-                  </div>
-                  <div className="mt-1">
-                    Email :<span className="ms-1">ashok.kumar@gmail.com</span>
-                  </div>
-                  <div className="mt-1">
-                    Specialisation :
-                    <span className="ms-1">Fertility Specialist</span>
-                  </div>
-                  <div className="mt-1">
-                    No. of Patients :<span className="ms-1">18</span>
-                  </div>
-                </div>
-              </div>
-            </Col>
-            <Col md={6}>
-              <div className="reassign_cards">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="d-flex align-items-center gap-2">
-                    <Image src={patient} alt="doctor" width={43} height={43} />
-                    <span className="reassign_text">Rani Desai</span>
-                  </div>
-                  <Button
-                    className="maiacare-button-large   profile-card-boeder  bg-transparent btn btn-primary"
-                    variant="dark"
-                  >
-                    <Image src={Arrowup} alt="Arrow" width={14} height={14} />
-                  </Button>
-                </div>
-                <div className="reassign_card_text">
-                  <div className="mt-2">
-                    Phone no :<span className="ms-1">+91 9092038491</span>
-                  </div>
-                  <div className="mt-1">
-                    Email :
-                    <span className="ms-1">ranidesai@protonmail.com</span>
-                  </div>
-                  <div className="mt-1">
-                    Specialisation :
-                    <span className="ms-1">Fertility Support</span>
-                  </div>
-                  <div className="mt-1">
-                    Stage :
-                    <span className="reassign_stage ms-1">
-                      Fertility assessment
-                    </span>
+                  <div className="reassign_card_text">
+                    <div className="mt-2">
+                      Phone no :<span className="ms-1">+91 9092038491</span>
+                    </div>
+                    <div className="mt-1">
+                      Email :<span className="ms-1">ashok.kumar@gmail.com</span>
+                    </div>
+                    <div className="mt-1">
+                      Specialisation :
+                      <span className="ms-1">{doctor?.specialty}</span>
+                    </div>
+                    <div className="mt-1">
+                      No. of Patients :<span className="ms-1">18</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Col>
+              </Col>
+            )}
+            {patient && (
+              <Col md={12} lg={6}>
+                <div className="reassign_cards mt-md-4 mt-lg-0">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <div className="d-flex align-items-center gap-2">
+                      <Image
+                        src={patientimg}
+                        alt="doctor"
+                        width={43}
+                        height={43}
+                      />
+                      <span className="reassign_text">{patient?.name}</span>
+                    </div>
+                    <Button
+                      className="maiacare-button-large   profile-card-boeder  bg-transparent btn btn-primary"
+                      variant="dark"
+                      onClick={()=>router.push(`/patients/${patient._id}`)}
+                    >
+                      <Image src={Arrowup} alt="Arrow" width={14} height={14} />
+                    </Button>
+                  </div>
+                  <div className="reassign_card_text">
+                    <div className="mt-2">
+                      Phone no :
+                      <span className="ms-1">{patient?.contactNumber}</span>
+                    </div>
+                    <div className="mt-1">
+                      Email :<span className="ms-1">{patient?.email}</span>
+                    </div>
+                    <div className="mt-1">
+                      Specialisation :
+                      <span className="ms-1">Fertility Support</span>
+                    </div>
+                    <div className="mt-1">
+                      Stage :
+                      <span className="reassign_stage ms-1">
+                        Fertility assessment
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Col>
+            )}
           </Row>
           {step === 0 ? (
             <>

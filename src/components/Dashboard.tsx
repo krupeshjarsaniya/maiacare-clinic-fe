@@ -38,9 +38,9 @@ import {
 
 import Image, { StaticImageData } from "next/image";
 import { InputSelect } from "./ui/InputSelect";
-import { useDispatch } from 'react-redux';
-import { setHeaderData } from '@/utlis/redux/slices/headerSlice';
-import { AppDispatch } from '@/utlis/redux/store';
+import { useDispatch } from "react-redux";
+import { setHeaderData } from "@/utlis/redux/slices/headerSlice";
+import { AppDispatch } from "@/utlis/redux/store";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 
@@ -184,7 +184,7 @@ const AppoitmentWaveChart: React.FC<WaveChartProps> = ({
   }, [width, height]);
 
   return (
-    <div className="card h-100">
+    <div className="card h-100 mt-md-4 mt-xl-0">
       <div className="px-3 pt-3 text-center">
         <div className="d-flex align-items-center justify-content-between px-2">
           <h6 className="mb-0 d-flex align-items-start justify-content-start dashboard-chart-heading">
@@ -299,7 +299,7 @@ const WaveChart: React.FC<WaveChartProps> = ({ width = 800, height = 400 }) => {
   }, [width, height]);
 
   return (
-    <div className="card shadow-sm">
+    <div className="card shadow-sm mt-md-5 mt-lg-5 mt-xl-0">
       <div className="px-3 pt-3 text-center">
         <div className="d-flex align-items-center justify-content-between px-2">
           <h6 className="mb-0 d-flex align-items-start justify-content-start dashboard-chart-heading">
@@ -345,10 +345,10 @@ const WaveChart: React.FC<WaveChartProps> = ({ width = 800, height = 400 }) => {
 // ---------- Dashboard Component ----------
 const Dashboard: React.FC = () => {
   const router = useRouter();
-   const dispatch: AppDispatch = useDispatch();
-        useEffect(() => {
-          dispatch(setHeaderData({ title: "Dashboard", subtitle: "Dashboard" }));
-        }, []);
+  const dispatch: AppDispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setHeaderData({ title: "Dashboard", subtitle: "Dashboard" }));
+  }, []);
   const [formData, setFormData] = useState<FormData>();
   const initialData = {
     appointments: 18,
@@ -576,8 +576,13 @@ const Dashboard: React.FC = () => {
     <>
       <div className="py-2">
         {/* Top Stats */}
-        <Row className="mb-3 gap-3 gap-md-0">
-          <Col md={3} xxl={2}>
+        <Row
+          //  className="mb-3 gap-3 gap-md-0 "
+          className="dashboard-grid mb-3"
+        >
+          <Col
+          // md={4} lg={3} xxl={2}
+          >
             <Card className="">
               <Card.Body>
                 <Card.Title className="phisical-assessment-accordion-title-showData">
@@ -586,7 +591,7 @@ const Dashboard: React.FC = () => {
                     alt="Appointments"
                     width={38}
                     height={38}
-                    className="me-3"
+                    className="me-2"
                   ></Image>
                   Appointments
                 </Card.Title>
@@ -599,7 +604,9 @@ const Dashboard: React.FC = () => {
               </Card.Body>
             </Card>
           </Col>
-          <Col md={3} xxl={2}>
+          <Col
+          //  md={4} lg={3} xxl={2}
+          >
             <Card className="">
               <Card.Body>
                 <Card.Title className="phisical-assessment-accordion-title-showData">
@@ -608,7 +615,7 @@ const Dashboard: React.FC = () => {
                     alt="Active Patients"
                     width={38}
                     height={38}
-                    className="me-3"
+                    className="me-2"
                   ></Image>
                   Patients
                 </Card.Title>
@@ -619,7 +626,9 @@ const Dashboard: React.FC = () => {
               </Card.Body>
             </Card>
           </Col>
-          <Col md={3} xxl={2}>
+          <Col
+          // md={4} lg={3} xxl={2}
+          >
             <Card className="">
               <Card.Body>
                 <Card.Title className="phisical-assessment-accordion-title-showData">
@@ -628,7 +637,7 @@ const Dashboard: React.FC = () => {
                     alt="Doctors"
                     width={38}
                     height={38}
-                    className="me-3"
+                    className="me-2"
                   ></Image>{" "}
                   Doctors
                 </Card.Title>
@@ -639,7 +648,9 @@ const Dashboard: React.FC = () => {
               </Card.Body>
             </Card>
           </Col>
-          <Col md={3} xxl={2}>
+          <Col
+          //  md={4} lg={3} xxl={2} className="mt-md-4 mt-lg-0"
+          >
             <Card className="">
               <Card.Body>
                 <Card.Title className="phisical-assessment-accordion-title-showData">
@@ -648,7 +659,7 @@ const Dashboard: React.FC = () => {
                     alt="NoShowRate"
                     width={38}
                     height={38}
-                    className="me-3"
+                    className="me-2"
                   ></Image>
                   No Show Rate
                 </Card.Title>
@@ -659,8 +670,10 @@ const Dashboard: React.FC = () => {
               </Card.Body>
             </Card>
           </Col>
-          <Col md={3} xxl={2}>
-            <Card className="mt-md-4 mt-xxl-0">
+          <Col
+          //  md={4} lg={3} xxl={2}
+          >
+            <Card className=" mt-lg-0">
               <Card.Body>
                 <Card.Title className="phisical-assessment-accordion-title-showData">
                   <Image
@@ -668,12 +681,12 @@ const Dashboard: React.FC = () => {
                     alt="Rating"
                     width={38}
                     height={38}
-                    className="me-3"
+                    className="me-2"
                   ></Image>
                   Rating
                 </Card.Title>
                 <h2 className="dashboard-subheader mt-3 mb-0">
-                  {data.noShowRate}%
+                  {data.noShowRate}
                 </h2>
                 {formatChange(data.noShowRateChange)}
               </Card.Body>
@@ -682,10 +695,10 @@ const Dashboard: React.FC = () => {
         </Row>
         {/* second container */}
         <Row>
-          <Col md={8}>
+          <Col md={8} lg={8}>
             <Row>
-              <Col lg={6}>
-                <div>
+              <Col xl={6}>
+                <div className="mt-lg-3 mt-xl-0">
                   <div className="card border-0">
                     <div className="card-body treatment-success-rate-charts">
                       {/* Header */}
@@ -821,14 +834,14 @@ const Dashboard: React.FC = () => {
                   </div>
                 </div>
               </Col>
-              <Col lg={6}>
+              <Col xl={6}>
                 <AppoitmentWaveChart height={330} />
               </Col>
             </Row>
             {/* Charts & doctors*/}
             <Row className="mb-4 mt-4">
-              <Col lg={6}>
-                <Card className="h-100">
+              <Col xl={6}>
+                <Card className="h-100 mt-md-4 mt-lg-4 mt-xl-0">
                   <Card.Body>
                     <div className="d-flex justify-content-between align-items-center">
                       <Card.Title className="dashboard-chart-heading">
@@ -914,14 +927,14 @@ const Dashboard: React.FC = () => {
                   </Card.Body>
                 </Card>
               </Col>
-              <Col lg={6}>
+              <Col xl={6}>
                 <WaveChart height={345} />
               </Col>
             </Row>
           </Col>
           {/* notification */}
           <Col md={4}>
-            <Card className="h-100">
+            <Card className="h-auto">
               <Card.Body>
                 <div className="d-flex align-items-center justify-content-between">
                   <Card.Title className="mb-0 dashboard-chart-heading">
@@ -990,9 +1003,7 @@ const Dashboard: React.FC = () => {
                             <div className=" fw-semibold notification_card">
                               {card.name}
                             </div>
-                            <div style={{ color: "#8A8D93", fontSize: "14px" }}>
-                              6 Jan 2024 10 AM
-                            </div>
+                            <div className="time-con">6 Jan 2024 10 AM</div>
                           </div>
                         </div>
 
@@ -1009,12 +1020,12 @@ const Dashboard: React.FC = () => {
                         )}
                       </div>
                       {/* decline & confirm  */}
-                      <div className="d-flex justify-content-evenly align-items-center mt-3">
+                      <div className="d-flex flex-md-column  flex-xl-row gap-sm-3 justify-content-evenly align-items-center gap-md-2 gap-lg-2 gap-xl-2 mt-3">
                         <div className="w-50 d-flex align-items-center declinecon justify-content-center">
                           <IoClose fontSize={24} />
                           Decline
                         </div>
-                        <div className="w-50 d-flex align-items-center confirmcon justify-content-center">
+                        <div className=" w-50 d-flex ml-md-0 align-items-center confirmcon justify-content-center">
                           <FaCheck fontSize={18} />
                           Confirm
                         </div>

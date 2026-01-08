@@ -926,7 +926,7 @@
 
 /* Dashboard.css */
 .phisical-assessment-accordion-title-showData {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   line-height: 20px;
 
@@ -961,7 +961,7 @@
   color: var(--color-heading);
 }
 .card {
-  border: none  ;
+  border: none;
   border-radius: 12px;
 }
 .dashboard-progress-bar {
@@ -1089,7 +1089,6 @@
   border: 1.5px solid #2ecf98;
   padding: 4px;
   font-weight: 600;
-  margin-left: 1rem;
   border-radius: 9px;
   color: #2ecf98;
   gap: 5px;
@@ -2978,6 +2977,61 @@
   line-height: 18px;
   font-style: Regular;
   color: var(--color-sidebar-icon);
+}
+.time-con {
+  color: #8a8d93;
+  font-size: 14px;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+.dashboard-grid .col{
+  padding: 0 !important;
+}
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+@media (min-device-width: 575px) and (max-device-width: 1024px) {
+  .phisical-assessment-accordion-title-showData {
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 20px;
+    color: var(--color-radio-lable);
+  }
+  .notification_card {
+    font-size: 14px;
+  }
+  .declinecon {
+    width: 100% !important;
+  }
+  .confirmcon {
+    margin-left: 0;
+
+    width: 100% !important;
+  }
+  .time-con {
+    font-size: 12px;
+  }
+}
+@media (min-device-width:992px) and (max-device-width:1200px){
+   .declinecon {
+    width: 100% !important;
+  }
+  .confirmcon {
+    margin-left: 0;
+
+    width: 100% !important;
+  }
 }
 @media screen and (max-width: 575px) {
   .patient-profile-dot {

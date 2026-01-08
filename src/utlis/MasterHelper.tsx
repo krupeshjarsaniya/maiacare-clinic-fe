@@ -19,7 +19,7 @@ function MasterHelper({ children }: { children: React.ReactNode }) {
   ];
 
   const pathName = usePathname();
- 
+
   return (
     <Provider store={store}>
       {authPages.includes(pathName) ? (
@@ -36,3 +36,4 @@ function MasterHelper({ children }: { children: React.ReactNode }) {
 }
 
 export default MasterHelper;
+

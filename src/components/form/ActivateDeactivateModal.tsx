@@ -21,6 +21,8 @@ import temppatientImg1 from "../../assets/images/patient1.png";
 import { RadioButtonGroup } from "../ui/RadioField";
 import toast from "react-hot-toast";
 import { getProfileStatus } from "@/utlis/apis/apiHelper";
+import { Doctor } from "../Doctor";
+import { GetAllPatient } from "@/utlis/types/interfaces";
 
 interface ActivateDeactivateProfileProps {
   show: boolean;
@@ -28,7 +30,8 @@ interface ActivateDeactivateProfileProps {
   setShowSuccessModal?: React.Dispatch<React.SetStateAction<boolean>>;
   title?: string;
   initialStatus?: "deactivate" | "activate";
-  doctorIdShow?: string | null;
+  doctor?: Doctor | null;
+  patient?: GetAllPatient | null;
   onStatusChange?: (status: "Active" | "Deactive") => void;
 }
 // doctor details interface
@@ -52,16 +55,26 @@ export function ActivateDeactivateProfile({
   show,
   onClose,
   setShowSuccessModal,
-  doctorIdShow,
+  doctor,
+  patient,
   title = "Profile Activation/Deactivation",
   onStatusChange,
 }: ActivateDeactivateProfileProps) {
+  const isDoctor = !!doctor;
+  const isPatient = !!patient;
+  const profileId = isDoctor ? doctor?.id : patient?._id;
+  const name = isDoctor ? doctor?.name : patient?.name;
+  const emailValue = isDoctor ? doctor?.email : patient?.email;
+  const mobileValue = isDoctor ? undefined : patient?.contactNumber;
+
+  const imageSrc = isDoctor ? doctor?.image : patient?.profileImage;
   const [formData, setFormData] = useState<ProfileStatusForm>({
     profile: "Active",
     reason: "",
     note: "",
     notifyAdmin: false,
   });
+  console.log("modal:", doctor);
 
   const [formError, setFormError] = useState<FormError>({});
   type Reason = {
@@ -108,7 +121,7 @@ export function ActivateDeactivateProfile({
   };
 
   // validation
-
+  const doctorIdShow = doctor?.id;
   const validateForm = (data: ProfileStatusForm) => {
     const errors: FormError = {};
 
@@ -148,52 +161,6 @@ export function ActivateDeactivateProfile({
     }
   };
 
-  // const handleSubmit = async () => {
-  //   // e.preventDefault();
-  //   console.log("Submit clicked", formData);
-  //   const errors = validateForm(formData);
-  //   setFormError(errors);
-
-  //   if (Object.keys(errors).length !== 0) return;
-
-  //   try {
-  //     const payload = {
-  //       doctorId: String(doctorIdShow),
-  //       status: formData.profile, // activate | deactivate
-  //       reason: formData.reason,
-  //       notes: formData.note,
-  //       notifyAdmin: formData.notifyAdmin,
-  //     };
-
-  //     await getProfileStatus(payload);
-
-  //     toast.success(
-  //       formData.profile === "Active"
-  //         ? "Profile activated successfully!"
-  //         : "Profile deactivated successfully!"
-  //     );
-
-  //     // setShowModal(false);
-  //     setShowSuccessModal(true);
-  //     onClose();
-  //     setFormError({});
-  //     setFormData({
-  //       profile: "Active",
-  //       reason: "",
-  //       note: "",
-  //       notifyAdmin: false,
-  //     });
-  //   } catch (error: unknown) {
-  //     console.error("Profile status error:", error);
-
-  //     if (error instanceof Error) {
-  //       toast.error(error.message);
-  //     } else {
-  //       toast.error("Something went wrong");
-  //     }
-  //   }
-  // };
-
   return (
     <Modal show={show} onHide={onClose} header={title} closeButton>
       <Form>
@@ -201,12 +168,19 @@ export function ActivateDeactivateProfile({
           <div className="d-flex align-items-center justify-content-between">
             <div className="kycmodal_profile">
               <Image
-                src={temppatientImg1}
-                alt="doctor"
+                src={
+                  typeof imageSrc === "string" && imageSrc.trim() !== ""
+                    ? imageSrc
+                    : temppatientImg1
+                }
+                alt={name || "profile"}
                 width={50}
                 height={50}
+                className="rounded-circle"
               />
-              <h6 className="mb-0 fw-semibold">Dr.Riya Dharang</h6>
+
+              <h6 className="mb-0 fw-semibold">{name || "—"}</h6>
+
               {/* <Image src={Verified} alt="Verified" width={22} height={22} /> */}
             </div>
             <Button
@@ -217,26 +191,19 @@ export function ActivateDeactivateProfile({
             </Button>
           </div>
           <div className="kycmodal_info_text mt-3">
-            <div>
-              <Image
-                src={phone}
-                alt="phone"
-                width={18}
-                height={18}
-                className="me-1"
-              />
-              <span>+91 12345 67890</span>
-            </div>
-            <div>
-              <Image
-                src={email}
-                alt="email"
-                width={18}
-                height={18}
-                className="me-1"
-              />
-              <span>riyadharang@miacare.com</span>
-            </div>
+            {mobileValue && (
+              <div>
+                <Image src={phone} alt="phone" width={18} height={18} />
+                <span>{mobileValue}</span>
+              </div>
+            )}
+
+            {emailValue && (
+              <div>
+                <Image src={email} alt="email" width={18} height={18} />
+                <span>{emailValue}</span>
+              </div>
+            )}
           </div>
           <div className="kycmodal_info_text mt-2 gap-5">
             <div>
@@ -250,13 +217,13 @@ export function ActivateDeactivateProfile({
               <span>Gynecologist</span>
             </div>
             <div>
-              <Image
+              {/* <img
                 src={patient}
                 alt="patient"
                 width={18}
                 height={13}
                 className="me-1"
-              />
+              /> */}
               <span>22 Patients</span>
             </div>
           </div>

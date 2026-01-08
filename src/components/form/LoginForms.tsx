@@ -69,7 +69,7 @@ export function LoginForms() {
   const router = useRouter();
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (validateForm()) {
       login(formData)
         .then((response) => {
@@ -93,7 +93,7 @@ export function LoginForms() {
     }
   };
 
-  return (  
+  return (
     <div>
       <form onSubmit={handleFormSubmit}>
         <InputFieldGroup
@@ -103,7 +103,7 @@ export function LoginForms() {
           onChange={handleChange}
           error={formError.email}
           label="Email Address"
-          placeholder="doctor@maiacare.com"
+          placeholder="clinic@maiacare.com"
           required={true}
           className={`position-relative  input-email-login-data mt-4`}
         >

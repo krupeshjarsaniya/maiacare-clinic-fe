@@ -74,7 +74,9 @@ export default function Consultation() {
   const [activePage, setActivePage] = useState<number>(1);
   const start = (activePage - 1) * 10;
   const end = start + 10;
-
+  const [selectedDoctor, setSelectedDoctor] = useState<
+    GetAllPatient["doctor"] | null
+  >(null);
   const router = useRouter();
   // const [selectedPatient, setSelectedPatient] = useState<ConsultationInfo | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<GetAllPatient | null>(
@@ -109,9 +111,7 @@ export default function Consultation() {
   const [patientCoute, setPatientCoute] = useState<number>(0);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletePatientId, setDeletePatientId] = useState<string | null>(null);
-
   const [getAllPatients, setGetAllPatients] = useState<GetAllPatient[]>([]);
-
   const [loading, setLoading] = useState<boolean>(true);
   const handleOpenDeleteModal = (id: string) => {
     setDeletePatientId(id);
@@ -210,6 +210,7 @@ export default function Consultation() {
   const handleRescheduleClose = () => setShowRescheduleModal(false);
   const handleActive = (patient: GetAllPatient) => {
     setSelectedPatient(patient);
+    setSelectedDoctor(patient.doctor ?? null); // 👈 store doctor
     const newProfileState: "activate" | "deactivate" =
       patient.status === "Active" ? "deactivate" : "activate";
 
@@ -221,6 +222,11 @@ export default function Consultation() {
     });
 
     setActivedeactive(true); // 🔥 opens modal
+  };
+  const handleReassign = (patient: GetAllPatient) => {
+    setSelectedPatient(patient);
+    setSelectedDoctor(patient.doctor ?? null);
+    setShowRescheduleModal(true);
   };
 
   const columns: ColumnDef<GetAllPatient>[] = [
@@ -453,10 +459,22 @@ export default function Consultation() {
                   />
                   Activate/Deactivate
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => setShowRescheduleModal(true)}>
+                {/* <Dropdown.Item onClick={() => setShowRescheduleModal(true)}>
                   <Image
                     src={Reassign}
                     alt="Poweractivate"
+                    width={18}
+                    height={18}
+                    className="me-2"
+                  />
+                  Reassign Doctor
+                </Dropdown.Item> */}
+                <Dropdown.Item
+                  onClick={() => handleReassign(info.row.original)}
+                >
+                  <Image
+                    src={Reassign}
+                    alt="Reassign"
                     width={18}
                     height={18}
                     className="me-2"
@@ -686,7 +704,7 @@ export default function Consultation() {
               ? "activate"
               : "activate"
           }
-          doctorIdShow={selectedPatient?.doctor?._id ?? null}
+          patient={selectedPatient}
         />
       )}
 
@@ -701,6 +719,8 @@ export default function Consultation() {
         show={showRescheduleModal}
         onClose={() => setShowRescheduleModal(false)}
         onSubmit={(data) => console.log(data)}
+        patient={selectedPatient}
+        doctor={selectedDoctor}
         setShowSuccessModalBook={setShowSuccessModalBook}
       />
 
