@@ -1,6 +1,6 @@
 import { setHeaderData } from "../utlis/redux/slices/headerSlice";
 import { AppDispatch } from "../utlis/redux/store";
-import { AppointmentData } from "../utlis/StaticData";
+
 import { Patient } from "../utlis/types/interfaces";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -18,9 +18,11 @@ import {
   BookAppointment,
   SuccessModalBookAppointment,
 } from "./form/BookAppointment";
+import { getAppointmentsPatient } from "@/utlis/apis/apiHelper";
+import { useParams } from "next/navigation";
 
 interface Appointment {
-  id: number;
+  id: number | string;
   reason: string;
   date: string;
   time: string;
@@ -30,10 +32,23 @@ interface Appointment {
   invoice: string;
   actions: string;
 }
+interface AppointmentApiItem {
+  reason?: string | string[];
+  appointmentDate?: string;
+  appointmentTime?: string;
+  payment?: string;
+  status?: string;
+  Prescription?: unknown;
+  Invoice?: unknown;
+}
 const columns: ColumnDef<Appointment>[] = [
   {
     header: "#",
     accessorKey: "id",
+  },
+  {
+    header:"Doctor",
+    accessorKey: "doctor",
   },
   {
     header: "Reason",
@@ -65,21 +80,81 @@ const columns: ColumnDef<Appointment>[] = [
       );
     },
   },
+  // {
+  //   header: "Status",
+  //   accessorKey: "status",
+  //   cell: (info) => {
+  //     const status = info.getValue() as string;
+  //     return (
+  //       <span
+  //         className={` ${
+  //           status === "Upcoming"
+  //             ? "patient-journey-badge-InProgress"
+  //             : status === "Completed" && "patient-journey-badge-success"
+  //         }`}
+  //       >
+  //         {status}
+  //       </span>
+  //     );
+  //   },
+  // },
   {
     header: "Status",
-    accessorKey: "status",
     cell: (info) => {
-      const status = info.getValue() as string;
+      const row = info.row.original;
+      const status = row.status;
+      const statusClass = `status-${status.toLowerCase().replace(/\s/g, "")}`;
+
       return (
-        <span
-          className={` ${
-            status === "Upcoming"
-              ? "patient-journey-badge-InProgress"
-              : status === "Completed" && "patient-journey-badge-success"
-          }`}
-        >
-          {status}
-        </span>
+        <div className="d-flex items-center gap-2">
+          {status && (
+            <span className={`status-pill ${statusClass}`}>{status}</span>
+          )}
+          {/* <span className={`status-pill ${statusClass}`}>{status}</span> */}
+
+          {/* {row.patient.name === "Himari Roy" && (
+            <div className="text-center d-flex">
+              <Button
+                variant="light"
+                className="d-flex bg-white justify-content-center align-items-center action_btn border profile-card-boeder rounded  me-2"
+                //   onClick={() =>
+                //     handleDownload(`/files/${name}.pdf`, `${name}.pdf`)
+                //   }
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <path
+                    d="M17.9422 6.06754L7.9422 16.0675C7.88415 16.1256 7.81522 16.1717 7.73935 16.2032C7.66348 16.2347 7.58215 16.2508 7.50001 16.2508C7.41788 16.2508 7.33655 16.2347 7.26067 16.2032C7.1848 16.1717 7.11587 16.1256 7.05782 16.0675L2.68282 11.6925C2.56555 11.5753 2.49966 11.4162 2.49966 11.2503C2.49966 11.0845 2.56555 10.9254 2.68282 10.8082C2.8001 10.6909 2.95916 10.625 3.12501 10.625C3.29086 10.625 3.44992 10.6909 3.5672 10.8082L7.50001 14.7418L17.0578 5.18316C17.1751 5.06588 17.3342 5 17.5 5C17.6659 5 17.8249 5.06588 17.9422 5.18316C18.0595 5.30044 18.1254 5.4595 18.1254 5.62535C18.1254 5.7912 18.0595 5.95026 17.9422 6.06754Z"
+                    fill="#2ECF98"
+                  />
+                </svg>
+              </Button>
+              <Button
+                variant="light"
+                // size="sm"
+                className="btn profile-card-boeder action_btn border bg-white"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <path
+                    d="M16.0672 15.1832C16.1252 15.2412 16.1713 15.3102 16.2027 15.386C16.2342 15.4619 16.2503 15.5432 16.2503 15.6253C16.2503 15.7075 16.2342 15.7888 16.2027 15.8647C16.1713 15.9405 16.1252 16.0095 16.0672 16.0675C16.0091 16.1256 15.9402 16.1717 15.8643 16.2031C15.7884 16.2345 15.7071 16.2507 15.625 16.2507C15.5429 16.2507 15.4615 16.2345 15.3857 16.2031C15.3098 16.1717 15.2409 16.1256 15.1828 16.0675L9.99998 10.8839L4.81717 16.0675C4.69989 16.1848 4.54083 16.2507 4.37498 16.2507C4.20913 16.2507 4.05007 16.1848 3.93279 16.0675C3.81552 15.9503 3.74963 15.7912 3.74963 15.6253C3.74963 15.4595 3.81552 15.3004 3.93279 15.1832L9.11639 10.0003L3.93279 4.81753C3.81552 4.70026 3.74963 4.5412 3.74963 4.37535C3.74963 4.2095 3.81552 4.05044 3.93279 3.93316C4.05007 3.81588 4.20913 3.75 4.37498 3.75C4.54083 3.75 4.69989 3.81588 4.81717 3.93316L9.99998 9.11675L15.1828 3.93316C15.3001 3.81588 15.4591 3.75 15.625 3.75C15.7908 3.75 15.9499 3.81588 16.0672 3.93316C16.1844 4.05044 16.2503 4.2095 16.2503 4.37535C16.2503 4.5412 16.1844 4.70026 16.0672 4.81753L10.8836 10.0003L16.0672 15.1832Z"
+                    fill="#E85966"
+                  />
+                </svg>
+              </Button>
+            </div>
+          )} */}
+        </div>
       );
     },
   },
@@ -248,40 +323,77 @@ const columns: ColumnDef<Appointment>[] = [
     },
   },
 ];
+interface GetAppointmentsPayload {
+  patientId?: string;
+  search: string;
+  page: number;
+  limit: number;
+}
 
 const PatientAppointment = ({
+ 
   setActiveTab,
- 
 }: {
-  setActiveTab: (tab: string) => void;
  
+  setActiveTab: (tab: string) => void;
 }) => {
-  const dispatch: AppDispatch = useDispatch();
-  // const [tableData, setTableData] = useState<any>([]);
+  const params = useParams<{ id?: string }>();
+  const Id = params.id;
+  console.log("ID", Id);
+
   const [tableData, setTableData] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const [activePage, setActivePage] = useState<number>(1);
+  const [search, setSearch] = useState("");
+  const [activePage, setActivePage] = useState(1);
+  const limit = 10;
   const [BookAppointmentModal, setBookAppointmentModal] = useState(false);
   const [showSuccessModalBook, setShowSuccessModalBook] = useState(false);
 
-  useEffect(() => {
-    setLoading(true);
-    dispatch(
-      setHeaderData({
-        title: "Sample Page",
-        subtitle: "Sample Page for check common components",
-      })
-    );
-    setTimeout(() => {
-      setTableData(AppointmentData);
+  const fetchAppointments = async () => {
+    if (!Id) return;
+    try {
+      setLoading(true);
+
+      const payload: GetAppointmentsPayload = {
+        patientId: Id,
+        search,
+        page: activePage,
+        limit,
+      };
+
+      const response = await getAppointmentsPatient(payload);
+
+      const mappedData: Appointment[] = response.data.data.map(
+        (item: AppointmentApiItem, index: number): Appointment => ({
+          id: String((activePage - 1) * limit + index + 1).padStart(2, "0"),
+          reason: Array.isArray(item.reason)
+            ? item.reason.join(", ")
+            : item.reason ?? "N/A",
+          date: item.appointmentDate ?? "N/A",
+          time: item.appointmentTime ?? "N/A",
+          payment: item.payment ?? "-",
+          status: item.status ?? "Upcoming",
+          prescription: item.Prescription ? "viewfile" : "N/A",
+          invoice: item.Invoice ? "viewfile" : "N/A",
+          actions: "View",
+        })
+      );
+
+      setTableData(mappedData);
+    } catch (error) {
+      console.error("Failed to fetch appointments", error);
+    } finally {
       setLoading(false);
-    }, 800);
+    }
+  };
 
-    // setTableData(AppointmentData);
-    // setLoading(false);
-  }, []);
-
+  useEffect(() => {
+    fetchAppointments();
+  }, [activePage, search, Id]);
+  const handlePageChange = (page: number) => {
+    setActivePage(page);
+  };
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {

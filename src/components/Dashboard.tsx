@@ -347,8 +347,11 @@ const Dashboard: React.FC = () => {
   const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
-    dispatch(setHeaderData({ title: "Dashboard", subtitle: "Dashboard" }));
-  }, []);
+    dispatch(
+      setHeaderData({ title: "Dashboard", subtitle: "Doctor - Dashboard" })
+    );
+  }, [dispatch]);
+
   const [formData, setFormData] = useState<FormData>();
   const initialData = {
     appointments: 18,

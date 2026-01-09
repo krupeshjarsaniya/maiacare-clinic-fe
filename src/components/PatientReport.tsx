@@ -46,7 +46,7 @@ const PatientReport = ({
 
   // When the active tab changes to "Reports", simulate loading
   useEffect(() => {
-    console.log("Tab name:-", activeTab);
+   
     if (activeTab === "Reports") {
       setIsLoading(true);
 

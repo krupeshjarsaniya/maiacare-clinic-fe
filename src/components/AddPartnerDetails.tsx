@@ -244,12 +244,13 @@ export function PhysicalFertilityAssessmentAccordion({
 
     return errors;
   };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = (
+    e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
 
     const errorsPhysical = validateFormPhysical(formDataPhysical);
     const errorsFertility = validateFormPhysicalFertility(formDataFertility);
-    // console.log("Errors Physical :", errorsPhysical);
 
     setFormErrorPhysical(errorsPhysical);
     setFormErrorFertility(errorsFertility);
@@ -289,9 +290,6 @@ export function PhysicalFertilityAssessmentAccordion({
         },
       };
 
-      console.log("formDataPhysical Form data", updatedFormDataPhysical);
-      console.log("formDataFertility Form data", updatedFormDataFertility);
-
       if (!partnerBasicDetails) return;
       if (!partnerMedicalHistory) return;
 
@@ -309,7 +307,6 @@ export function PhysicalFertilityAssessmentAccordion({
             const fertilityOK = fertilityRes?.data?.status;
 
             if (basicDetailOk && medicalHistory && physicalOK && fertilityOK) {
-              // console.log("all API calls successful");
               toast.success("Partner added successfully", {
                 icon: <BsInfoCircle size={22} color="white" />,
               });

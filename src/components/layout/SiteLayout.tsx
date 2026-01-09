@@ -47,8 +47,10 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
   const navRef = useRef<HTMLDivElement | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
 
-  const headerValue = useSelector((state: RootState) => state.header.value);
-  const { title, subtitle } = headerValue || {};
+  // const headerValue = useSelector((state: RootState) => state.header.value);
+  const { title, subtitle, image } = useSelector(
+    (state: RootState) => state.header
+  );
   const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   const navItems = [
@@ -78,6 +80,7 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
 
     { label: "Settings", href: "/settings", icon: <MdSettings size={22} /> },
   ];
+  console.log("Header subtitle:", subtitle);
 
   const handleScrollDown = () => {
     if (navRef.current) {
@@ -271,9 +274,43 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
             >
               <HiOutlineChevronDoubleRight size={18} />
             </button>
-            <div>
+            {/* back button */}
+            {image && (
+              <img
+                src={typeof image === "string" ? image : image.src}
+                alt="Header"
+                className="header-image-wrapper"
+                onClick={() => router.back()}
+              />
+            )}
+            {/* <div>
               <h2 className="layout__title">{title}</h2>
               <h4 className="layout__subtitle mt-1">{subtitle}</h4>
+            </div> */}
+            <div>
+              <h2 className="layout__title">{title}</h2>
+
+              {typeof subtitle === "string" ? (
+                <span className="layout__subtitle">{subtitle}</span>
+              ) : (
+                <div className="header__breadcrumb">
+                  <span className="header__text__left">{subtitle.left}</span>
+
+                  {subtitle.image && (
+                    <img
+                      src={
+                        typeof subtitle.image === "string"
+                          ? subtitle.image
+                          : subtitle.image.src
+                      }
+                      alt="arrow"
+                      className="header-subtitle-image"
+                    />
+                  )}
+
+                  <span className="header__text__right">{subtitle.right}</span>
+                </div>
+              )}
             </div>
           </div>
           <div className="d-flex align-items-center gap-2">
@@ -295,13 +332,7 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
               <MdOutlineLogout size={20} />
               Logout
             </Button>
-            {/* <div
-              className="sidebar__nav-item d-flex align-items-center justify-content-start"
-              onClick={handleLogout}
-            >
-              <MdOutlineLogout size={20} />
-              <span className="sidebar__text">Logout</span>
-            </div> */}
+           
           </div>
         </header>
         <div className="layout__body">{children}</div>

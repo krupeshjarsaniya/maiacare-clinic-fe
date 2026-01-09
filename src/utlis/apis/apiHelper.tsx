@@ -9,7 +9,6 @@ import {
   PhysicalAssessmentDataModel,
   Qualification,
   ReassignDoctor,
-  
 } from "../types/interfaces";
 import { LoginRequest } from "../types/requestInterface";
 import apiClient from "./axiosInstance";
@@ -282,13 +281,19 @@ export const addAppointment = (data: Appointment) => {
 export const getAppointmentPatientInfo = (id: string | number) => {
   return apiClient.get(`/appointments/getshort-patient-info/${id}`);
 };
+// done but some data is missing in API
 // get appointment by id (view appointment)
 export const getAppointmentById = (id: string | number) => {
   return apiClient.get(`/appointments/get-appointment/${id}`);
-}
+};
+
+// get-appointments-patient (patient)
+export const getAppointmentsPatient = (data: object) => {
+  return apiClient.post("/get-appointments-patient", data);
+};
 
 //  ====: Reschedule Appointment :====
-// done 
+// done
 // add Reschedule Appointment
 export const addRescheduleAppointment = (data: object) => {
   return apiClient.post("/appointments/reschedule-appointment", data);

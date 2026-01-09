@@ -696,69 +696,75 @@ export default function EditDoctorBasicDetails({
 
       {/* services offered & Fee */}
       <ContentContainer className="mt-3">
-        <div>
-          <div>
-            <h5 className="profile-card-main-titile mb-3">Services Offered</h5>
+        <Row>
+          <Col>
+            <div>
+              <h5 className="profile-card-main-titile mb-3">
+                Services Offered
+              </h5>
 
-            <InputSelectMultiSelect
-              name="services"
-              values={formData.services}
-              // onChange={(values: ServiceOption[]) => {
-              //   setFormData((prev) => ({
-              //     ...prev,
-              //     services: values,
-              //   }));
-              //   setFormError((prev) => ({ ...prev, services: "" }));
-              // }}
-              onChange={(values: ServiceOption[]) => {
-                setFormData((prev) => ({ ...prev, services: values }));
+              <InputSelectMultiSelect
+                name="services"
+                values={formData.services}
+                // onChange={(values: ServiceOption[]) => {
+                //   setFormData((prev) => ({
+                //     ...prev,
+                //     services: values,
+                //   }));
+                //   setFormError((prev) => ({ ...prev, services: "" }));
+                // }}
+                onChange={(values: ServiceOption[]) => {
+                  setFormData((prev) => ({ ...prev, services: values }));
 
-                onChange({
-                  servicesOffered: values.map((v) => v.value),
-                });
-              }}
-              options={[
-                {
-                  id: "1",
-                  value: "Fertility Support",
-                  label: "Fertility Support",
-                },
-                { id: "2", value: "IUI", label: "IUI" },
-                { id: "3", value: "IVF", label: "IVF" },
-                { id: "4", value: "ICSI", label: "ICSI" },
-                { id: "5", value: "Other", label: "Other" },
-              ]}
-              placeholder="Select Services"
-              addPlaceholder="Select Services"
-              required={true}
-              dropdownHandle={false} // open close arrow icon show hide
-              error={formError.services}
-            />
-          </div>
-          <div>
-            <InputFieldGroup
-              label="Fees"
-              name="Fees"
-              type="text"
-              value={formData.Fees}
-              // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              //   setFormData({ ...formData, Fees: e.target.value });
-              //   if (formError.Fees) {
-              //     // typing in hide error
-              //     setFormError({ ...formError, Fees: "" });
-              //   }
-              // }}
-              onChange={handleChange}
-              onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
-              placeholder="Enter Amount"
-              required={true}
-              disabled={false}
-              readOnly={false}
-              error={formError.Fees}
-              className="position-relative mt-3"
-            ></InputFieldGroup>
-          </div>
-        </div>
+                  onChange({
+                    servicesOffered: values.map((v) => v.value),
+                  });
+                }}
+                options={[
+                  {
+                    id: "1",
+                    value: "Fertility Support",
+                    label: "Fertility Support",
+                  },
+                  { id: "2", value: "IUI", label: "IUI" },
+                  { id: "3", value: "IVF", label: "IVF" },
+                  { id: "4", value: "ICSI", label: "ICSI" },
+                  { id: "5", value: "Other", label: "Other" },
+                ]}
+                placeholder="Select Services"
+                addPlaceholder="Select Services"
+                required={true}
+                dropdownHandle={false} // open close arrow icon show hide
+                error={formError.services}
+              />
+            </div>
+          </Col>
+          <Col>
+            <div>
+              <InputFieldGroup
+                label="Fees"
+                name="Fees"
+                type="text"
+                value={formData.Fees}
+                // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                //   setFormData({ ...formData, Fees: e.target.value });
+                //   if (formError.Fees) {
+                //     // typing in hide error
+                //     setFormError({ ...formError, Fees: "" });
+                //   }
+                // }}
+                onChange={handleChange}
+                onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
+                placeholder="Enter Amount"
+                required={true}
+                disabled={false}
+                readOnly={false}
+                error={formError.Fees}
+                className="position-relative mt-3"
+              ></InputFieldGroup>
+            </div>
+          </Col>
+        </Row>
       </ContentContainer>
       {/* Qualtification details */}
       <ContentContainer className="mt-3">

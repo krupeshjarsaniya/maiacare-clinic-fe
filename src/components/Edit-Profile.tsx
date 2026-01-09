@@ -151,7 +151,7 @@ const EditProfile = () => {
       const payload = {
         ...clinicDetails,
       };
-      console.log("All data:=====>", payload.contactPerson);
+    
 
       await updateProfile(payload);
       toast.success("Profile updated successfully");

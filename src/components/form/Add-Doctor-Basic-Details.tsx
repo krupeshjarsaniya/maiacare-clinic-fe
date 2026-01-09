@@ -726,64 +726,71 @@ export default function AddDoctorBasicDetails({
 
       {/* services offered & Fee */}
       <ContentContainer className="mt-3">
-        <div>
-          <div>
-            <h5 className="profile-card-main-titile">Services Offered</h5>
-            <Form.Select onChange={handleSelect} defaultValue="">
-              <option value="" disabled>
-                Select Services
-              </option>
-              {services.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.service}
+        <Row>
+          <Col md={6}>
+            <div>
+              <h5 className="profile-card-main-titile">Services Offered</h5>
+              <Form.Select onChange={handleSelect} defaultValue="">
+                <option value="" disabled>
+                  Select Services
                 </option>
-              ))}
-            </Form.Select>
-            {selectedServices.length > 0 && (
-              <div
-                className="mt-2 mb-3  "
-                style={{ color: "rgba(138, 141, 147, 1)", fontSize: "14px" }}
-              >
-                {selectedServices.length} Services selected
-              </div>
-            )}
-            <div className="mt-2 d-flex flex-wrap">
-              {selectedServices.map((s) => (
+                {services.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.service}
+                  </option>
+                ))}
+              </Form.Select>
+              {selectedServices.length > 0 && (
                 <div
-                  key={s.id}
-                  className="me-2 mb-2 servicename d-flex align-items-center"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => removeService(s.id)}
+                  className="mt-2 mb-3  "
+                  style={{
+                    color: "rgba(138, 141, 147, 1)",
+                    fontSize: "14px",
+                  }}
                 >
-                  {s.service}
-                  <Image src={cross} alt="cross" className="editcross" />
+                  {selectedServices.length} Services selected
                 </div>
-              ))}
+              )}
+              <div className="mt-2 d-flex flex-wrap">
+                {selectedServices.map((s) => (
+                  <div
+                    key={s.id}
+                    className="me-2 mb-2 servicename d-flex align-items-center"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => removeService(s.id)}
+                  >
+                    {s.service}
+                    <Image src={cross} alt="cross" className="editcross" />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div>
-            <InputFieldGroup
-              label="Fees"
-              name="Fees"
-              type="text"
-              value={formData.Fees}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setFormData({ ...formData, Fees: e.target.value });
-                if (formError.Fees) {
-                  // typing in hide error
-                  setFormError({ ...formError, Fees: "" });
-                }
-              }}
-              onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
-              placeholder="Enter Amount"
-              required={true}
-              disabled={false}
-              readOnly={false}
-              error={formError.Fees}
-              className="position-relative"
-            ></InputFieldGroup>
-          </div>
-        </div>
+          </Col>
+          <Col md={6}>
+            <div>
+              <InputFieldGroup
+                label="Fees"
+                name="Fees"
+                type="text"
+                value={formData.Fees}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setFormData({ ...formData, Fees: e.target.value });
+                  if (formError.Fees) {
+                    // typing in hide error
+                    setFormError({ ...formError, Fees: "" });
+                  }
+                }}
+                onBlur={(e: React.FocusEvent<HTMLInputElement>) => {}}
+                placeholder="Enter Amount"
+                required={true}
+                disabled={false}
+                readOnly={false}
+                error={formError.Fees}
+                className="position-relative"
+              ></InputFieldGroup>
+            </div>
+          </Col>
+        </Row>
       </ContentContainer>
 
       {/* qualifications */}

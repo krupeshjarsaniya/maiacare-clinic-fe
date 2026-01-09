@@ -77,7 +77,7 @@ export function AppointmentsMonth({
   });
 
   const handleDateClick = (fullDate: string) => {
-    // console.log("click date is : ", fullDate);
+
 
     setClickDate?.(fullDate);
     setShowTooltip(false);

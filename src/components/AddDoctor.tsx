@@ -102,14 +102,7 @@ const AddDoctor = () => {
       kycDetails: kycData,
     }));
 
-    // FINAL SUBMIT / API CALL CAN GO HERE
-    console.log("Final Doctor Payload 👉", {
-      ...doctorDetails,
-      kycDetails: kycData,
-    });
-
-    // optional: move to list or reset
-    // setCurrentStep("list");
+ 
   };
   const tabOptions = [
     {

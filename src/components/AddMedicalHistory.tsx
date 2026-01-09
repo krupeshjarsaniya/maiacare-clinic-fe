@@ -33,7 +33,6 @@ import { AppDispatch } from "@/utlis/redux/store";
 const AddMedicalHistory = () => {
   const params = useParams<{ id?: string }>();
   const patientId = params?.id;
-  console.log(patientId);
 
   const dispatch: AppDispatch = useDispatch();
   // const patientId = params.id;
@@ -71,15 +70,15 @@ const AddMedicalHistory = () => {
   }, [patientData?.personalDetails?.name, dispatch]);
 
   const fetchPatientData = () => {
-    console.log("patientId:-", patientId);
-
     if (!patientId) return; // guard undefined
     setLoading(true); // start loader
     getPatientInfo(patientId)
       .then((response) => {
         if (response.data.status) {
+          
+          
           setPatientData(response.data.data);
-          setPatientIdShow(response.data.data?.patientId);
+          setPatientIdShow(response.data.data?._id);
           setModalFormPhisicalData(response.data.data?.physicalAssessment);
           setMedicalHistoryFormData(response.data.data?.medicalHistory);
           setModalFormFertilityData(response.data.data?.fertilityAssessment);
@@ -139,7 +138,10 @@ const AddMedicalHistory = () => {
       label: "Appointment",
       content: (
         <div className="mt-4">
-          <PatientAppointment setActiveTab={setActiveTab} />
+          <PatientAppointment
+            setActiveTab={setActiveTab}
+          
+          />
         </div>
       ),
     },

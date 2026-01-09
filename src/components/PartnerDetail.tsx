@@ -262,7 +262,7 @@ export default function PartnerDetail({
       console.log("formDataAddPhysicalAssessment : ", updatedFormData);
       addPatientPartnerPhysicalAssessment(updatedFormData)
         .then((response) => {
-          console.log("physicalassessmentpost response : ", response.data);
+     
 
           if (response.data.status) {
             toast.success(response.data.message, {

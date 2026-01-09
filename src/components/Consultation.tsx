@@ -509,7 +509,7 @@ export default function Consultation() {
       getAll(tableobj)
         .then((response) => {
           if (response.data.status) {
-            // console.log("response: ", response.data);
+     
             setGetAllPatients(response.data.data);
             setPatientTotal(response.data.total);
             setTotalPages(response.data.pages);
